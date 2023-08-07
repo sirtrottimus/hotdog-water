@@ -3,13 +3,15 @@
  * Any helper functions that are used in multiple places should be added here.
  * If a helper function is only used in one place, it should be added to the file where it is used.
  *
- * Author: Shagger
+ * Author: DetectiveScarn
  * Date: 21/12/2022
  * Version: 1.0.0
  * License: MIT
  *
  */
-import { User } from '../database/schema';
+import mongoose from 'mongoose';
+import { Permission, Role, User } from '../database/schema';
+import fs from 'fs/promises';
 
 /**
  * Helper function for logging messages if debugging is enabled.
@@ -38,8 +40,9 @@ export interface ValidateUserPerms {
  * @param perms An array of permissions to check
  * @returns An object containing a success boolean, data, error, and msg
  * @example const result = await validateUserPerms('1234567890', ['ADMINISTRATOR']);
+ * // output: { success: true, data: user, error: null, msg: 'Current User is authorized' }
+ *
  */
-
 export async function validateUserPerms(
   userId: string,
   perms: string[]
@@ -78,4 +81,54 @@ export async function validateUserPerms(
     error: null,
     msg: 'Current User is authorized',
   };
+}
+
+/**
+ * Helper function to populate the database with default data. This includes the permissions, roles, and a superadmin user.
+ * @returns void
+ * @example populateDatabase();
+ *
+ */
+export async function populateDatabase(): Promise<void> {
+  const path = __dirname;
+  const permissionData = await fs.readFile(
+    `${path}/json/permissions.json`,
+    'utf-8'
+  );
+  const roleData = await fs.readFile(`${path}/json/roles.json`, 'utf-8');
+  const userData = await fs.readFile(`${path}/json/users.json`, 'utf-8');
+
+  const initialisationFlag = await fs.readFile(
+    `${path}/json/initialised.json`,
+    'utf-8'
+  );
+
+  if (initialisationFlag === 'true') {
+    return;
+  }
+
+  const parsedPermissions = JSON.parse(permissionData);
+  const parsedRoles = JSON.parse(roleData);
+
+  for (const permissionData of parsedPermissions) {
+    // Extract and convert the $oid value to a proper ObjectId
+    const id = new mongoose.Types.ObjectId(permissionData._id.$oid);
+    const permissionFields = { ...permissionData, _id: id };
+    await Permission.create(permissionFields);
+  }
+
+  for (const roleData of parsedRoles) {
+    // Extract and convert the $oid value to a proper ObjectId
+    const id = new mongoose.Types.ObjectId(roleData._id.$oid);
+    const permissions = roleData.permissions.map(
+      (permission: any) => permission.$oid
+    );
+    const assignables = roleData.assignables.map(
+      (assignable: any) => assignable.$oid
+    );
+    const roleFields = { ...roleData, permissions, assignables, _id: id };
+    await Role.create(roleFields);
+  }
+
+  await fs.writeFile(`${path}/json/initialised.json`, 'true');
 }
