@@ -1,7 +1,7 @@
 # HatBot Dashboard
 
 
-Welcome to the HatBot Dashboard repository! This project is a comprehensive web-based dashboard for managing and monitoring HatBot, powered by Node.js for both frontend and backend development. The frontend utilizes Next.js, while the backend is built with Express.js. The frontend is hosted on Vercel, and the backend is deployed on a custom server.
+Welcome to the HatBot Dashboard repository! This project is a comprehensive web-based dashboard for managing and monitoring HatBot, powered by Node.js for both frontend and backend development. The front end utilizes Next.js, while the backend is built with Express.js. The frontend is hosted on Vercel, and the backend is deployed on a custom server.
 
 > **Note:** The internal project name for this project is "Hotdog Water".
 
@@ -40,7 +40,7 @@ The HatBot Dashboard is deployed as follows:
 
 ## License
 
-This project is licensed under the [MIT Non-Commercial License](LICENSE).
+This project is under the proprietary license outlined [Here](LICENSE).
 
 ---
 
