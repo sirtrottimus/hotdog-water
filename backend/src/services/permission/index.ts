@@ -14,8 +14,7 @@ export class PermissionService {
       'SUPERADMIN',
       'ADMIN',
       'MODERATOR',
-      'READ_PERMISSIONS',
-      'READ_ALL_PERMISSIONS',
+      'VIEW_PERMISSIONS_PAGE',
     ]);
 
     if (!validationResult.success) {
@@ -39,8 +38,7 @@ export class PermissionService {
       'SUPERADMIN',
       'ADMIN',
       'MODERATOR',
-      'READ_PERMISSIONS',
-      'READ_ALL_PERMISSIONS',
+      'VIEW_PERMISSIONS_PAGE',
     ]);
 
     if (!validationResult.success) {
@@ -57,10 +55,7 @@ export class PermissionService {
       throw new Error('No ID Parameter');
     }
 
-    const validationResult = await validateUserPerms(userId, [
-      'SUPERADMIN',
-      'CREATE_PERMISSIONS',
-    ]);
+    const validationResult = await validateUserPerms(userId, ['SUPERADMIN']);
 
     if (!validationResult.success) {
       return validationResult;
@@ -90,10 +85,7 @@ export class PermissionService {
       throw new Error('No ID Parameter');
     }
 
-    const validationResult = await validateUserPerms(userId, [
-      'SUPERADMIN',
-      'UPDATE_PERMISSIONS',
-    ]);
+    const validationResult = await validateUserPerms(userId, ['SUPERADMIN']);
 
     if (!validationResult.success) {
       return validationResult;
@@ -125,10 +117,7 @@ export class PermissionService {
       throw new Error('No EID Parameter');
     }
 
-    const validationResult = await validateUserPerms(userId, [
-      'SUPERADMIN',
-      'DELETE_PERMISSIONS',
-    ]);
+    const validationResult = await validateUserPerms(userId, ['SUPERADMIN']);
 
     if (!validationResult.success) {
       return validationResult;

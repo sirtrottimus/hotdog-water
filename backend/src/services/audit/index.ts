@@ -13,7 +13,7 @@ export class AuditService {
       'SUPERADMIN',
       'ADMIN',
       'MODERATOR',
-      'READ_ALL_AUDIT',
+      'VIEW_AUDIT_PAGE',
     ]);
 
     if (!validationResult.success) {
@@ -35,7 +35,7 @@ export class AuditService {
       'SUPERADMIN',
       'ADMIN',
       'MODERATOR',
-      'READ_ALL_AUDIT',
+      'VIEW_AUDIT_PAGE',
     ]);
 
     if (!validationResult.success) {

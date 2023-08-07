@@ -46,8 +46,7 @@ export class UserService {
       'SUPERADMIN',
       'ADMIN',
       'MODERATOR',
-      'READ_USER',
-      'READ_ALL_USERS',
+      'VIEW_USER',
     ]);
     if (!validationResult.success) return validationResult;
 
@@ -85,8 +84,7 @@ export class UserService {
     const validationResult = await validateUserPerms(userId, [
       'SUPERADMIN',
       'ADMIN',
-      'MODERATOR',
-      'READ_ALL_USERS',
+      'VIEW_USERS',
     ]);
     if (!validationResult.success) return validationResult;
 

@@ -18,8 +18,7 @@ export class RoleService {
     const validationResult = await validateUserPerms(userId, [
       'SUPERADMIN',
       'ADMIN',
-      'MODERATOR',
-      'READ_ALL_ROLES',
+      'VIEW_ROLES',
     ]);
 
     if (!validationResult.success) {
@@ -42,7 +41,6 @@ export class RoleService {
     const validationResult = await validateUserPerms(userId, [
       'SUPERADMIN',
       'ADMIN',
-      'MODERATOR',
     ]);
 
     if (!validationResult.success) {
@@ -87,9 +85,7 @@ export class RoleService {
     const validationResult = await validateUserPerms(userId, [
       'SUPERADMIN',
       'ADMIN',
-      'MODERATOR',
-      'READ_ROLES',
-      'READ_ALL_ROLES',
+      'VIEW_ROLES',
     ]);
 
     if (!validationResult.success) {
