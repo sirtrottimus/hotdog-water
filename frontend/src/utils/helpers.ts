@@ -113,6 +113,7 @@ export function getAPIUrl() {
  * @param twitchUsername - Twitch Username
  * @returns Promise with success flag, data and error message (if any)
  *
+ * Todo: Look into replacing with websocket connection. See https://dev.twitch.tv/docs/api/webhooks-reference
  */
 export async function checkTwitchStatus({
   twitchClientID,

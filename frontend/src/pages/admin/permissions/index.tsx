@@ -1,4 +1,10 @@
-import { Alert, Button, Group, Text } from '@mantine/core';
+import {
+  Alert,
+  Button,
+  Group,
+  Text,
+  useMantineColorScheme,
+} from '@mantine/core';
 import { IconEditCircle, IconPlus, IconTrash } from '@tabler/icons';
 import {
   UseMutationResult,
@@ -8,7 +14,7 @@ import {
 } from '@tanstack/react-query';
 import { useMachine } from '@xstate/react';
 import { MRT_ColumnDef, MRT_Row } from 'mantine-react-table';
-import { ReactElement, useMemo } from 'react';
+import { ReactElement, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { MainLayout } from '../../../components/Layout/mainLayout';
 import FormModal from '../../../components/modals/form';
@@ -18,9 +24,14 @@ import formMachine from '../../../utils/machines/modalFormMachine';
 import { APIResponse, PermissionInt, UserInt } from '../../../utils/types';
 import CreatePermissionForm from '../../../components/forms/createPermissions';
 import PermissionService from '../../../utils/api/PermissionService';
+import CenteredLoader from '../../../components/misc/CenteredLoader';
+import { useRouter } from 'next/router';
 
 const Index = ({ user }: { user: UserInt }) => {
   const [state, send] = useMachine(formMachine);
+  const [pushed, setPushed] = useState(false);
+  const router = useRouter();
+  const { colorScheme } = useMantineColorScheme();
   const { data, isLoading, isFetching, isError, refetch } = useQuery(
     ['permissions'],
     async () => {
@@ -61,8 +72,12 @@ const Index = ({ user }: { user: UserInt }) => {
       },
     }
   );
-
-  const { isAuthorized: canEdit, isLoading: isAuthLoading } = useAuthorization(
+  const { isAuthorized: canView, isLoading: isAuthLoading } = useAuthorization(
+    user,
+    ['SUPERADMIN', 'VIEW_PERMISSIONS_PAGE'],
+    'admin'
+  );
+  const { isAuthorized: canEdit } = useAuthorization(
     user,
     ['SUPERADMIN', 'ADMIN', 'EDIT_PERMISSION'],
     'editPermission'
@@ -74,55 +89,71 @@ const Index = ({ user }: { user: UserInt }) => {
     'deletePermission'
   );
 
+  switch (true) {
+    case isAuthLoading:
+      return <CenteredLoader colorScheme={colorScheme} size={'xl'} />;
+
+    case !isAuthLoading && !canView:
+      router.push('/dashboard');
+
+      if (!pushed) {
+        setPushed(true);
+        toast.error('You are not authorized to view this page.');
+      }
+      return (
+        <CenteredLoader colorScheme={colorScheme} redirecting size={'xl'} />
+      );
+    case isError:
+      return <CenteredLoader colorScheme={colorScheme} errored size={'xl'} />;
+    default:
+      break;
+  }
+
   return (
     <>
-      {!isAuthLoading && (
-        <>
-          <GenericTable
-            data={data ?? []}
-            columns={columns}
-            isLoading={isLoading}
-            isFetching={isFetching}
-            isError={isError}
-            refetch={refetch}
-            extraToolbarActions={
-              <Button
-                variant="light"
-                color="violet"
-                onClick={() => {
-                  send('OPEN', {
-                    title: 'Create Permission',
-                    form: 'createPermission',
-                    element: (
-                      <CreatePermissionForm
-                        submitCallback={() => {
-                          send('CLOSE');
-                        }}
-                        action="create"
-                      />
-                    ),
-                  });
-                }}
-              >
-                <IconPlus size={'19px'} />
-              </Button>
+      <GenericTable
+        data={data ?? []}
+        columns={columns}
+        isLoading={isLoading}
+        isFetching={isFetching}
+        isError={isError}
+        refetch={refetch}
+        extraToolbarActions={
+          <Button
+            variant="light"
+            color="violet"
+            onClick={() => {
+              send('OPEN', {
+                title: 'Create Permission',
+                form: 'createPermission',
+                element: (
+                  <CreatePermissionForm
+                    submitCallback={() => {
+                      send('CLOSE');
+                    }}
+                    action="create"
+                  />
+                ),
+              });
+            }}
+          >
+            <IconPlus size={'19px'} />
+          </Button>
+        }
+        enableRowActions={true}
+        rowActions={({ row }) =>
+          RowActions(
+            { row },
+            {
+              auth: { canEdit, canDelete },
+              send,
+              deletePermissionMutation,
             }
-            enableRowActions={true}
-            rowActions={({ row }) =>
-              RowActions(
-                { row },
-                {
-                  auth: { canEdit, canDelete },
-                  send,
-                  deletePermissionMutation,
-                }
-              )
-            }
-          />
+          )
+        }
+      />
 
-          <FormModal state={state} send={send} />
-        </>
-      )}
+      <FormModal state={state} send={send} />
     </>
   );
 };

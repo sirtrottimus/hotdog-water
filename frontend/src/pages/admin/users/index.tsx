@@ -1,28 +1,28 @@
+import { Button, useMantineColorScheme } from '@mantine/core';
+import { IconSearch } from '@tabler/icons';
 import { useQuery } from '@tanstack/react-query';
-import { MRT_ColumnDef } from 'mantine-react-table';
-import { ReactElement, useMemo } from 'react';
-import { MainLayout } from '../../../components/Layout/mainLayout';
-import { UserInt } from '../../../utils/types';
-import { useMantineColorScheme, Button } from '@mantine/core';
-import { IconEditCircle, IconSearch } from '@tabler/icons';
-import { useRouter } from 'next/router';
 import { useMachine } from '@xstate/react';
-import formMachine from '../../../utils/machines/modalFormMachine';
-import FormModal from '../../../components/modals/form';
+import { MRT_ColumnDef } from 'mantine-react-table';
+import { useRouter } from 'next/router';
+import { ReactElement, useMemo, useState } from 'react';
+import { MainLayout } from '../../../components/Layout/mainLayout';
 import CenteredLoader from '../../../components/misc/CenteredLoader';
-import StatusCell from '../../../components/table/UserStatusCell';
+import FormModal from '../../../components/modals/form';
+import formMachine from '../../../utils/machines/modalFormMachine';
+import { UserInt } from '../../../utils/types';
 import GenericTable from '../../../components/table/GenericTable';
-import RankCell from '../../../components/table/RankCell';
-import UserService from '../../../utils/api/UserService';
-import RolesDisplay from '../../../components/misc/RolesDisplay';
 import { IconPlus } from '@tabler/icons-react';
-import CreateRoleForm from '../../../components/forms/createRoles';
+import RolesDisplay from '../../../components/misc/RolesDisplay';
+import UserService from '../../../utils/api/UserService';
 import CreateUserForm from '../../../components/forms/createUser';
+import useAuthorization from '../../../hooks/useAuthorization';
+import { toast } from 'react-toastify';
 
 const MembersPage = ({ user }: { user: UserInt }) => {
   const [state, send] = useMachine(formMachine);
   const path = '/dashboard/profile';
   const router = useRouter();
+  const [pushed, setPushed] = useState(false);
   const { colorScheme } = useMantineColorScheme();
   const { data, isLoading, isFetching, isError, refetch } = useQuery(
     ['members'],
@@ -35,6 +35,12 @@ const MembersPage = ({ user }: { user: UserInt }) => {
         return [];
       }
     }
+  );
+
+  const { isAuthorized: canView, isLoading: isAuthLoading } = useAuthorization(
+    user,
+    ['SUPERADMIN', 'VIEW_USERS_PAGE'],
+    'admin'
   );
 
   const columns = useMemo<MRT_ColumnDef<UserInt>[]>(() => {
@@ -64,8 +70,23 @@ const MembersPage = ({ user }: { user: UserInt }) => {
     ];
   }, [isLoading, user]);
 
-  if (isLoading) {
-    return <CenteredLoader colorScheme={colorScheme} size={'xl'} />;
+  switch (true) {
+    case isAuthLoading:
+      return <CenteredLoader colorScheme={colorScheme} size={'xl'} />;
+
+    case !isAuthLoading && !canView:
+      router.push('/dashboard');
+      if (!pushed) {
+        setPushed(true);
+        toast.error('You are not authorized to view this page.');
+      }
+      return (
+        <CenteredLoader colorScheme={colorScheme} redirecting size={'xl'} />
+      );
+    case isError:
+      return <CenteredLoader colorScheme={colorScheme} errored size={'xl'} />;
+    default:
+      break;
   }
 
   return (
