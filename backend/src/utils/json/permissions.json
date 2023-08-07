@@ -1,0 +1,178 @@
+[
+  {
+    "_id": {
+      "$oid": "646ba8872454420f2071e650"
+    },
+    "name": "SUPERADMIN",
+    "description": "Automatically has access to all other permissions, as well as future perms.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "647613ce354ddcd06e7bd6d7"
+    },
+    "name": "MODERATOR",
+    "description": "For Moderators",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64a6ec45df8a6a501ce7acbb"
+    },
+    "name": "VIEW_PERMISSIONS_PAGE",
+    "description": "Gives View Access to this page.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "646baa5a2454420f2071e6a4"
+    },
+    "name": "ADMIN",
+    "description": "Can access most of the areas and permissions",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64a6ec41df8a6a501ce7ac9f"
+    },
+    "name": "VIEW_ROLES_PAGE",
+    "description": "Gives View Access to the Roles Page.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64a6ec4fdf8a6a501ce7acf3"
+    },
+    "name": "VIEW_AUDIT_PAGE",
+    "description": "Gives View Access to the audit page.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64c867ff1249c683db8f3cc0"
+    },
+    "name": "POST_ANNOUNCEMENT_DISCORD",
+    "description": "Allows a user to post using a discord Webhook.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64c868191249c683db8f3ccc"
+    },
+    "name": "POST_ANNOUNCEMENT_TWITTER",
+    "description": "Allows a user to post to twitter.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64c8686f1249c683db8f3d0a"
+    },
+    "name": "DELETE_DISCORD_SETTINGS",
+    "description": "Allows a user to delete a discord settings instance",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64c8688a1249c683db8f3d20"
+    },
+    "name": "UPDATE_DISCORD_SETTINGS",
+    "description": "Allows a user to update a Discord Setting instance.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64c868a51249c683db8f3d36"
+    },
+    "name": "CREATE_DISCORD_SETTINGS",
+    "description": "Allows a user to create new Discord Settings Instances.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64c868b71249c683db8f3d4c"
+    },
+    "name": "VIEW_DISCORD_SETTINGS",
+    "description": "Allows a user to View the Discord Settings Page.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64cc8b5bbcfad33ad95d147e"
+    },
+    "name": "EDIT_TWITCH_SETTINGS",
+    "description": "Allows a user to update Twitch Settings.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64cc8b6bbcfad33ad95d148a"
+    },
+    "name": "DELETE_TWITCH_SETTINGS",
+    "description": "Allows a user to delete Twitch Settings.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64cc8b79bcfad33ad95d1496"
+    },
+    "name": "CREATE_TWITCH_SETTINGS",
+    "description": "Allows a user to create Twitch Settings.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64cc8b87bcfad33ad95d14a2"
+    },
+    "name": "VIEW_TWITCH_SETTINGS",
+    "description": "Allows a user to view Twitch Settings.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64d093af4baf3a7861ed58f4"
+    },
+    "name": "VIEW_ROLES",
+    "description": "Allows a user to view roles assigned to others.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64d093dbd73f31af1cc99db8"
+    },
+    "name": "CREATE_ROLE",
+    "description": "Allows a user to create new roles. This includes assigning new Permissions. Be careful with this.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64d093f8d73f31af1cc99dc4"
+    },
+    "name": "UPDATE_ROLE",
+    "description": "Allows a user to update existing roles.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64d0940dd73f31af1cc99dda"
+    },
+    "name": "DELETE_ROLE",
+    "description": "Allows a user to delete existing roles.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64d094351e29cbb4b9f180df"
+    },
+    "name": "VIEW_USER",
+    "description": "Allows a user to view other users.",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64d094e6eb54f04ef9c211ba"
+    },
+    "name": "VIEW_USERS_PAGE",
+    "description": "Allows a user to see the user page.",
+    "__v": 0
+  }
+]

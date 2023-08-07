@@ -1,0 +1,66 @@
+[
+  {
+    "_id": {
+      "$oid": "6475c47525752298bb687c85"
+    },
+    "name": "Senior Admin",
+    "description": "A Role that contains all permissions",
+    "permissions": [
+      {
+        "$oid": "646ba8872454420f2071e650"
+      }
+    ],
+    "assignables": [
+      {
+        "$oid": "6475c47525752298bb687c85"
+      }
+    ],
+    "members": [],
+    "color": "#ff0000",
+    "roleGroup": {
+      "$oid": "6475bd41b14119f8c9b16d80"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64c2f44f10841437aabb8d62"
+    },
+    "name": "Hat Films",
+    "description": "The main role for a boik.",
+    "permissions": [
+      {
+        "$oid": "646ba8872454420f2071e650"
+      }
+    ],
+    "assignables": [
+      {
+        "$oid": "6475c47525752298bb687c85"
+      }
+    ],
+    "color": "#5b2d9c",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64c2f47510841437aabb8d7f"
+    },
+    "name": "Moderator",
+    "description": "A role for mods.",
+    "permissions": [
+      {
+        "$oid": "647613ce354ddcd06e7bd6d7"
+      }
+    ],
+    "assignables": [
+      {
+        "$oid": "6475c47525752298bb687c85"
+      },
+      {
+        "$oid": "64c2f44f10841437aabb8d62"
+      }
+    ],
+    "color": "#094f1d",
+    "__v": 0
+  }
+]
