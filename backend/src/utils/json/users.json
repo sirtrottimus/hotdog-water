@@ -1,14 +1,28 @@
-[{
-  "_id": {
-    "$oid": "64b6b3342319df1cd7f49256"
+[
+  {
+    "_id": {
+      "$oid": "64b6b3342319df1cd7f49256"
+    },
+    "discordId": "120286005696659456",
+    "username": "detectivemichealscarn",
+    "accessToken": "mOhLeVCljiqI2sEuMyBKDVoIkqu2nQ",
+    "roles": [
+      {
+        "$oid": "6475c47525752298bb687c85"
+      }
+    ],
+    "avatar": "9cef7233f9a585283f340cac83bb7e42"
   },
-  "discordId": "120286005696659456",
-  "username": "detectivemichealscarn",
-  "accessToken": "mOhLeVCljiqI2sEuMyBKDVoIkqu2nQ",
-  "roles": [
-    {
-      "$oid": "6475c47525752298bb687c85"
-    }
-  ],
-  "avatar": "9cef7233f9a585283f340cac83bb7e42"
-}]
+  {
+    "_id": {
+      "$oid": "64b6b3342319df1cd7f49257"
+    },
+    "discordId": "104905509626204160",
+    "username": "Trotty2Hotty",
+    "roles": [
+      {
+        "$oid": "6475c47525752298bb687c85"
+      }
+    ]
+  }
+]

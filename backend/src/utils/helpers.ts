@@ -130,5 +130,15 @@ export async function populateDatabase(): Promise<void> {
     await Role.create(roleFields);
   }
 
+  const parsedUsers = JSON.parse(userData);
+
+  for (const userData of parsedUsers) {
+    // Extract and convert the $oid value to a proper ObjectId
+    const id = new mongoose.Types.ObjectId(userData._id.$oid);
+    const roles = userData.roles?.map((role: any) => role.$oid);
+    const userFields = { ...userData, roles, _id: id };
+    await User.create(userFields);
+  }
+
   await fs.writeFile(`${path}/json/initialised.json`, 'true');
 }

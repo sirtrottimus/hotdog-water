@@ -65,7 +65,7 @@ function AnnouncementsViewer({ isBlurred }: { isBlurred?: boolean }) {
       sx={{
         border: `3px solid ${
           theme.colorScheme === 'dark'
-            ? theme.colors.dark[4]
+            ? theme.colors.dark[9]
             : theme.colors.gray[2]
         }`,
       }}
