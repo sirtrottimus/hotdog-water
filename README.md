@@ -35,8 +35,8 @@ The HatBot Dashboard is designed to provide an intuitive and user-friendly inter
 
 The HatBot Dashboard is deployed as follows:
 
-- **Frontend**: The frontend is hosted on [Vercel](https://vercel.com/) at `https://your-vercel-url`.
-- **Backend**: The backend is deployed on a custom server at `https://your-custom-server-url`.
+- **Frontend**: The frontend is hosted on [Vercel](https://vercel.com/) at `https://dashboard.hat-films.com`.
+- **Backend**: The backend is deployed on a custom server at `https://api.hat-films.com`.
 
 ## License
 
