@@ -5,6 +5,7 @@ import DiscordSettings from './DiscordSetting';
 import TwitchSettings from './TwitchSetting';
 import TwitterSettings from './TwitterSetting';
 import Announcement from './Announcement';
+import StreamElementsSettings from './StreamElementsSetting';
 
 export {
   User,
@@ -14,4 +15,5 @@ export {
   TwitchSettings,
   TwitterSettings,
   Announcement,
+  StreamElementsSettings,
 };

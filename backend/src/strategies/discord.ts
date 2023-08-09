@@ -49,7 +49,7 @@ passport.use(
     accessToken: string,
     refreshToken: string,
     profile: Profile,
-    done
+    done: (error: any, user?: any, info?: any) => void
   ) {
     const { id: discordId } = profile;
     try {
@@ -69,14 +69,18 @@ passport.use(
             upsert: true,
           }
         );
-        return done(null, existingUser);
+        // Call the 'done' function with the existing user
+        done(null, existingUser);
+      } else {
+        // Call the 'done' function with the error and additional info
+        done(null, undefined, {
+          message: 'No user found with that Discord ID, No Access Granted',
+          redirectUrl: `${process.env.CLIENT_URL}/dashboard?error=NOUSER`,
+        });
       }
-      return done(null, undefined, {
-        message: 'No user found with that Discord ID, No Access Granted',
-        redirectUrl: `${process.env.CLIENT_URL}/dashboard?error=NOUSER`,
-      });
     } catch (error) {
-      return done(error as any, undefined);
+      // Call the 'done' function with the error
+      done(error);
     }
   })
 );

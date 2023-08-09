@@ -73,9 +73,9 @@ class AnnouncementService extends BaseApiService {
     offset: number,
     limit: number
   ): Promise<APIPaginationResponse<AnnouncementInt[]>> {
-    return await this.get(`${this.url}/?offset=${offset}&limit=${limit}`, {
+    return (await this.get(`${this.url}/?offset=${offset}&limit=${limit}`, {
       includePagination: true,
-    });
+    })) as APIPaginationResponse<AnnouncementInt[]>;
   }
 
   /**

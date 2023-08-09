@@ -4,6 +4,7 @@ import { MainLayout } from '../../components/Layout/mainLayout';
 import AnnouncementSelector from '../../components/announcements/announcementSelector';
 import AnnouncementsViewer from '../../components/announcements/announcementsViewer';
 import { UserInt as User } from '../../utils/types';
+import ActivityViewer from '../../components/activity/ActivityViewer';
 
 export default function Home({
   user,
@@ -19,6 +20,8 @@ export default function Home({
           Welcome {isBlurred ? 'totally anonymous user ;)' : user.username}
         </Title>
       </Center>
+
+      <ActivityViewer />
 
       <SimpleGrid mt={30} cols={2}>
         <AnnouncementSelector user={user} />

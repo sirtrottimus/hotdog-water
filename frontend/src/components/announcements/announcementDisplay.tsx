@@ -71,7 +71,7 @@ export default function AnnouncementDisplay({
             Announcement
           </Text>
           <Text fz="xs" c="dimmed">
-            {dayjs(announcement.createdAt).format('MMMM D, YYYY h:mm A')}
+            {dayjs(announcement.createdAt).fromNow()}
           </Text>
         </div>
       </Group>
