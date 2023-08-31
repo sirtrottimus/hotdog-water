@@ -1,6 +1,6 @@
 import { Badge, Group } from '@mantine/core';
 import { MRT_Cell } from 'mantine-react-table';
-import { DiscordSettingsInt } from '../../utils/api/discord';
+import { DiscordSettingsInt } from '../../utils/api/DiscordService';
 
 const WebhookLinkCell = ({
   cell,

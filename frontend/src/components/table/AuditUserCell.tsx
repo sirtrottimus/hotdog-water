@@ -1,6 +1,6 @@
 import { Avatar } from '@mantine/core';
 import { MRT_Cell } from 'mantine-react-table';
-import { IFunctionLog } from '../../utils/api/audit';
+import { IFunctionLog } from '../../utils/api/AuditService';
 
 const UserCell = ({
   cell,

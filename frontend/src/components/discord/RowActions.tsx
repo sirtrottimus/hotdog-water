@@ -1,5 +1,5 @@
 import { MRT_Row } from 'mantine-react-table';
-import { DiscordSettingsInt } from '../../utils/api/discord';
+import { DiscordSettingsInt } from '../../utils/api/DiscordService';
 import { UseMutationResult } from '@tanstack/react-query';
 import { APIResponse } from '../../utils/types';
 import { Alert, Button, Group, Text } from '@mantine/core';

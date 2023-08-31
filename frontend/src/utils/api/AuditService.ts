@@ -10,11 +10,12 @@
 
 import { APIResponse } from '../types';
 import BaseApiService from './BaseApiService';
+import { UserInt } from './UserService';
 
 // ------ Types ------ //
 export interface IFunctionLog {
   _id: string;
-  user: string;
+  user: UserInt;
   controller: string;
   functionName: string;
   success: boolean;

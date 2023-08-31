@@ -1,12 +1,7 @@
 import { Avatar } from '@mantine/core';
 import { MRT_Cell } from 'mantine-react-table';
-import { ApplicationInt } from '../../utils/types';
 
-const Usercell = ({
-  cell,
-}: {
-  cell: MRT_Cell<ApplicationInt>;
-}): React.ReactElement => {
+const Usercell = ({ cell }: { cell: MRT_Cell<any> }): React.ReactElement => {
   return (
     <div
       style={{
