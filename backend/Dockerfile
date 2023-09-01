@@ -37,7 +37,7 @@ WORKDIR /app
 
 # Copy the compiled application from the build stage
 COPY --from=build /app/backend/dist ./dist
-COPY package*.json ./
+COPY --from=build /app/backend/package*.json ./
 
 # Install production dependencies
 RUN npm install --production

@@ -18,7 +18,7 @@ RUN chmod 600 /root/.ssh/id_rsa
 RUN ssh-keyscan -t rsa github.com >> /root/.ssh/known_hosts
 
 # Clone the private repository (replace <repository_url> with the actual URL)
-RUN git clone git@github.com:danB-dev/hotdog-water.git  .
+RUN git clone git@github.com:DanB-dev/hotdog-water.git  .
 
 # Switch to the /app/backend directory where your package.json is located
 WORKDIR /app/backend
@@ -35,12 +35,17 @@ FROM node:bullseye-slim AS production
 
 WORKDIR /app
 
+# Debugging: List contents of the directory
+RUN ls -al
+
 # Copy the compiled application from the build stage
 COPY --from=build /app/backend/dist ./dist
-COPY package*.json ./
+
+# Copy package.json and package-lock.json from the "backend" directory
+COPY --from=build /app/backend/package*.json ./
 
 # Install production dependencies
-RUN npm install --production
+RUN npm install
 
 # Set ownership to the non-root user "node" for security
 RUN chown -R node:node /app

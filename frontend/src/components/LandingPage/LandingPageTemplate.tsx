@@ -1,17 +1,17 @@
-import Script from "next/script";
-import styles from "./LandingPageTemplate.module.css";
-import { Container } from "./components/Container";
-import { Paragraph } from "./components/Paragraph";
-import { Section } from "./components/Section";
-import { Subtitle } from "./components/Subtitle";
-import { IconBrandDiscord } from "@tabler/icons-react";
+import Script from 'next/script';
+import styles from './LandingPageTemplate.module.css';
+import { Container } from './components/Container';
+import { Paragraph } from './components/Paragraph';
+import { Section } from './components/Section';
+import { Subtitle } from './components/Subtitle';
+import { IconBrandDiscord } from '@tabler/icons-react';
 
-import { H1 } from "./components/headings";
-import { Button, Group } from "@mantine/core";
+import { H1 } from './components/headings';
+import { Button, Group } from '@mantine/core';
 
 const LandingPageTemplate = () => {
   const onConfettiLoad = () => {
-    const key = "create-next-stack-hasShownConfetti-hat-bot-dashboard";
+    const key = 'create-next-stack-hasShownConfetti-hat-bot-dashboard';
     const hasShownConfetti = localStorage.getItem(key);
     if (hasShownConfetti != null) return;
 
@@ -34,15 +34,15 @@ const LandingPageTemplate = () => {
           y: Math.random() - 0.2,
         },
         colors: [
-          "#26ccff",
-          "#a25afd",
-          "#ff5e7e",
-          "#88ff5a",
-          "#fcff42",
-          "#ffa62d",
-          "#ff36ff",
+          '#26ccff',
+          '#a25afd',
+          '#ff5e7e',
+          '#88ff5a',
+          '#fcff42',
+          '#ffa62d',
+          '#ff36ff',
         ],
-        shapes: ["square", "circle"],
+        shapes: ['square', 'circle'],
         gravity: randomInRange(0.4, 0.6),
         scalar: randomInRange(0.8, 1.2),
         drift: randomInRange(-0.1, 0.1),
@@ -53,22 +53,22 @@ const LandingPageTemplate = () => {
       }
     })();
 
-    localStorage.setItem(key, "true");
+    localStorage.setItem(key, 'true');
   };
 
   const handleLogin = () => {
-    // if (process.env.NODE_ENV === 'development') {
-    //   window.location.href = `${process.env.DEV_API_URL}/api/auth/discord`;
-    //   return;
-    // }
-    window.location.href = "http://localhost:6969/api/auth/discord";
+    if (process.env.NODE_ENV === 'development') {
+      window.location.href = `${process.env.DEV_API_URL}/api/auth/discord`;
+      return;
+    }
+    window.location.href = `${process.env.PROD_API_URL}/api/auth/discord`;
   };
 
   return (
     <div
       className={styles.landingPageTemplate}
       style={{
-        height: "100vh",
+        height: '100vh',
       }}
     >
       <Script
@@ -94,7 +94,7 @@ const LandingPageTemplate = () => {
       </style>
       <main
         style={{
-          height: "85%",
+          height: '85%',
         }}
       >
         <Section>
@@ -109,8 +109,8 @@ const LandingPageTemplate = () => {
               size="xl"
               variant="gradient"
               gradient={{
-                from: "#6838f1",
-                to: "#dc51f2",
+                from: '#6838f1',
+                to: '#dc51f2',
               }}
               onClick={handleLogin}
             >
