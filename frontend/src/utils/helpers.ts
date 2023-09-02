@@ -101,7 +101,7 @@ export function getAPIUrl() {
     if (!process.env.PROD_API_URL) {
       throw new Error('Missing PROD_API_URL environment variable');
     }
-    API_URL = 'http://localhost:6969';
+    API_URL = 'http://api.hatfilms.co.uk';
   }
   return API_URL;
 }

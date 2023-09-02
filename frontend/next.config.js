@@ -9,7 +9,7 @@ const nextConfig = {
   },
   env: {
     MONGO_URI: process.env.MONGODB_URI,
-    PROD_API_URL: 'https://api.vikingpmc.com',
+    PROD_API_URL: 'https://api.hatfilms.co.uk',
     DEV_API_URL: 'http://localhost:6969',
   },
 };
