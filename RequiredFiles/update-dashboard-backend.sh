@@ -18,4 +18,4 @@ cd /home/sammy/hatbot
 docker build -t $IMAGE_NAME . -f Dockerfile --no-cache
 
 # Run the new container
-docker run  -p 3002:3002 --name $CONTAINER_NAME  -e NODE_ENV=production -e PORT="3002" -e PROD_DISCORD_CLIENT_ID="" -e PROD_DISCORD_CLIENT_SECRET="" -e PROD_DISCORD_SERVER_URL="https://api.hat-films.com" -e PROD_DISCORD_CLIENT_URL="https://dashboard.hat-films.com" -e MONGO_URI="" -e SESSION_SECRET="" -e DEBUG="false" -d $IMAGE_NAME
+docker run  -p 3002:3002 --name $CONTAINER_NAME  -e NODE_ENV="production" -e PORT="3002" -e PROD_DISCORD_CLIENT_ID="" -e PROD_DISCORD_CLIENT_SECRET="" -e PROD_DISCORD_SERVER_URL="https://api.hatfilms.co.uk" -e PROD_DISCORD_CLIENT_URL="https://dashboard.hatfilms.co.uk" -e MONGO_URI="" -e SESSION_SECRET="" -e DEBUG="false" -d $IMAGE_NAME

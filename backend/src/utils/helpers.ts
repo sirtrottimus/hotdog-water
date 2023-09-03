@@ -91,54 +91,84 @@ export async function validateUserPerms(
  */
 export async function populateDatabase(): Promise<void> {
   const path = __dirname;
-  const permissionData = await fs.readFile(
-    `${path}/json/permissions.json`,
-    'utf-8'
-  );
-  const roleData = await fs.readFile(`${path}/json/roles.json`, 'utf-8');
-  const userData = await fs.readFile(`${path}/json/users.json`, 'utf-8');
 
-  const initialisationFlag = await fs.readFile(
-    `${path}/json/initialised.json`,
-    'utf-8'
-  );
+  try {
+    // Check if the 'permissions' collection already contains data
+    const permissionsExist = await Permission.exists({});
+    if (permissionsExist) {
+      console.log(
+        '[DATABASE]: Database already populated with default permission data'
+      );
+      return;
+    }
+    if (!permissionsExist) {
+      const permissionData = await fs.readFile(
+        `${path}/json/permissions.json`,
+        'utf-8'
+      );
 
-  if (initialisationFlag === 'true') {
-    return;
+      const parsedPermissions = JSON.parse(permissionData);
+
+      for (const permissionData of parsedPermissions) {
+        // Extract and convert the $oid value to a proper ObjectId
+        const id = new mongoose.Types.ObjectId(permissionData._id.$oid);
+        const permissionFields = { ...permissionData, _id: id };
+        await Permission.create(permissionFields);
+      }
+    }
+
+    // Check if the 'roles' collection already contains data
+    const rolesExist = await Role.exists({});
+    if (rolesExist) {
+      console.log(
+        '[DATABASE]: Database already populated with default role data'
+      );
+      return;
+    }
+    if (!rolesExist) {
+      const roleData = await fs.readFile(`${path}/json/roles.json`, 'utf-8');
+
+      const parsedRoles = JSON.parse(roleData);
+
+      for (const roleData of parsedRoles) {
+        // Extract and convert the $oid value to a proper ObjectId
+        const id = new mongoose.Types.ObjectId(roleData._id.$oid);
+        const permissions = roleData.permissions.map(
+          (permission: any) => permission.$oid
+        );
+        const assignables = roleData.assignables.map(
+          (assignable: any) => assignable.$oid
+        );
+        const roleFields = { ...roleData, permissions, assignables, _id: id };
+        await Role.create(roleFields);
+      }
+    }
+
+    // Check if the 'users' collection already contains data
+    const usersExist = await User.exists({});
+    if (usersExist) {
+      console.log(
+        '[DATABASE]: Database already populated with default user data'
+      );
+      return;
+    }
+    if (!usersExist) {
+      const userData = await fs.readFile(`${path}/json/users.json`, 'utf-8');
+
+      const parsedUsers = JSON.parse(userData);
+
+      for (const userData of parsedUsers) {
+        // Extract and convert the $oid value to a proper ObjectId
+        const id = new mongoose.Types.ObjectId(userData._id.$oid);
+        const roles = userData.roles?.map((role: any) => role.$oid);
+        const userFields = { ...userData, roles, _id: id };
+        await User.create(userFields);
+      }
+    }
+
+    console.log('[DATABASE]: Database populated with default data');
+  } catch (error) {
+    // Handle the error here
+    console.error('An error occurred:', error);
   }
-
-  const parsedPermissions = JSON.parse(permissionData);
-  const parsedRoles = JSON.parse(roleData);
-
-  for (const permissionData of parsedPermissions) {
-    // Extract and convert the $oid value to a proper ObjectId
-    const id = new mongoose.Types.ObjectId(permissionData._id.$oid);
-    const permissionFields = { ...permissionData, _id: id };
-    await Permission.create(permissionFields);
-  }
-
-  for (const roleData of parsedRoles) {
-    // Extract and convert the $oid value to a proper ObjectId
-    const id = new mongoose.Types.ObjectId(roleData._id.$oid);
-    const permissions = roleData.permissions.map(
-      (permission: any) => permission.$oid
-    );
-    const assignables = roleData.assignables.map(
-      (assignable: any) => assignable.$oid
-    );
-    const roleFields = { ...roleData, permissions, assignables, _id: id };
-    await Role.create(roleFields);
-  }
-
-  const parsedUsers = JSON.parse(userData);
-
-  for (const userData of parsedUsers) {
-    // Extract and convert the $oid value to a proper ObjectId
-    const id = new mongoose.Types.ObjectId(userData._id.$oid);
-    const roles = userData.roles?.map((role: any) => role.$oid);
-    const userFields = { ...userData, roles, _id: id };
-    await User.create(userFields);
-  }
-
-  await fs.writeFile(`${path}/json/initialised.json`, 'true');
 }
