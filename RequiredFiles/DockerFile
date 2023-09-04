@@ -44,6 +44,9 @@ COPY --from=build /app/backend/dist ./dist
 # Copy package.json and package-lock.json from the "backend" directory
 COPY --from=build /app/backend/package*.json ./
 
+# Copy JSON files from the "backend" directory
+COPY --from=build /app/backend/src/utils/json ./dist/utils/json
+
 # Install production dependencies
 RUN npm install
 

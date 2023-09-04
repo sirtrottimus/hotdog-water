@@ -30,7 +30,7 @@ if (NODE_ENV === 'production') {
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     secure: false,
-    domain: '.hat-films.com',
+    domain: '.hatfilms.co.uk',
   };
 } else {
   if (!DEV_DISCORD_CLIENT_URL) {
