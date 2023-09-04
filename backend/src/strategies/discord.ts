@@ -79,7 +79,7 @@ passport.use(
         });
       }
     } catch (error) {
-      // Call the 'done' function with the error
+      console.log(error);
       done(error);
     }
   })
