@@ -99,9 +99,7 @@ export async function populateDatabase(): Promise<void> {
       console.log(
         '[DATABASE]: Database already populated with default permission data'
       );
-      return;
-    }
-    if (!permissionsExist) {
+    } else {
       const permissionData = await fs.readFile(
         `${path}/json/permissions.json`,
         'utf-8'
@@ -123,9 +121,7 @@ export async function populateDatabase(): Promise<void> {
       console.log(
         '[DATABASE]: Database already populated with default role data'
       );
-      return;
-    }
-    if (!rolesExist) {
+    } else {
       const roleData = await fs.readFile(`${path}/json/roles.json`, 'utf-8');
 
       const parsedRoles = JSON.parse(roleData);
@@ -150,9 +146,7 @@ export async function populateDatabase(): Promise<void> {
       console.log(
         '[DATABASE]: Database already populated with default user data'
       );
-      return;
-    }
-    if (!usersExist) {
+    } else {
       const userData = await fs.readFile(`${path}/json/users.json`, 'utf-8');
 
       const parsedUsers = JSON.parse(userData);
