@@ -21,11 +21,11 @@ export default function Home({
         </Title>
       </Center>
 
-      <ActivityViewer />
-
       <SimpleGrid mt={30} cols={2}>
         <AnnouncementSelector user={user} />
         <AnnouncementsViewer isBlurred={isBlurred} />
+        <div />
+        <ActivityViewer />
       </SimpleGrid>
     </>
   );

@@ -69,10 +69,8 @@ passport.use(
             upsert: true,
           }
         );
-        console.log('User already exists, updating tokens');
         done(null, existingUser);
       } else {
-        console.log('User does not exist, creating new user');
         // Call the 'done' function with the error and additional info
         done(null, undefined, {
           message: 'No user found with that Discord ID, No Access Granted',
@@ -87,14 +85,12 @@ passport.use(
 );
 
 passport.serializeUser((user: any, done) => {
-  console.log('Serializing user');
   return done(null, user._id);
 });
 
 passport.deserializeUser(async (id: string, done) => {
   try {
     const user = await User.findById(id).select('-refreshToken').lean().exec();
-    console.log('Deserializing user');
     return user ? done(null, user) : done(null, null);
   } catch (error) {
     console.log(error);

@@ -59,11 +59,9 @@ const LandingPageTemplate = () => {
   const handleLogin = () => {
     if (process.env.NODE_ENV === 'development') {
       window.location.href = `${process.env.DEV_API_URL}/api/auth/discord`;
-      console.log('DEV_API_URL', process.env.DEV_API_URL);
       return;
     }
     window.location.href = `${process.env.PROD_API_URL}/api/auth/discord`;
-    console.log('PROD_API_URL', process.env.PROD_API_URL);
   };
 
   return (
