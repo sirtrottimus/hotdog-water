@@ -25,7 +25,7 @@ export async function handleRequest(
     // Check if the current function should be logged
     if (functionsToLog.includes(serviceFunction.name) || !response.success) {
       // Determine the success status and error message
-      const success = response.success ? true : false;
+      const success = !!response.success;
       const errorMessage = response.error || (response.msg ? response.msg : '');
       // Log the function call to the database
       await logToDatabase(

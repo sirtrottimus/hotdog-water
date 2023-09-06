@@ -103,7 +103,10 @@ export class UserService {
     const {
       userId,
       id: extId,
-      body: { roles: roleIds, action },
+      body: {
+        roles: { roles: roleIds },
+        action,
+      },
     } = options;
 
     if (!userId) {
