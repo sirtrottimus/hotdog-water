@@ -38,7 +38,7 @@ router.post('/', isAuthenticated, userController.create);
 router.put('/:id', isAuthenticated, userController.update);
 
 // Route for removing a role from a user
-router.put('/:id/roles/', isAuthenticated, userController.updateRoles);
+router.put('/:id/roles', isAuthenticated, userController.updateRoles);
 
 // Route for logging out
 router.post('/logout', (req, res, next) => {
