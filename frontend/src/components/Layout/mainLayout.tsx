@@ -22,6 +22,7 @@ import {
   IconBrandDiscordFilled,
   IconBrandTwitch,
   IconBrandTwitterFilled,
+  IconBrandYoutube,
   IconHexagonLetterM,
   IconHome,
   IconListDetails,
@@ -31,7 +32,7 @@ import {
 } from '@tabler/icons-react';
 
 import Head from 'next/head';
-import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { useMediaQuery } from '@mantine/hooks';
 import { useRouter } from 'next/router';
 
 import { capitalizeFirstLetter, checkTwitchStatus } from '../../utils/helpers';
@@ -61,7 +62,6 @@ export function MainLayout({ children }: { children: ReactNode }) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const router = useRouter();
   const userQuery = useUsers();
-  const [opened, { close, open }] = useDisclosure(false);
   const smallScreen = useMediaQuery('(max-width: 768px)');
   const { users: user } = userQuery;
 
@@ -143,6 +143,12 @@ export function MainLayout({ children }: { children: ReactNode }) {
           label: 'Stream Elements',
           path: '/socials/streamElements',
           icon: <IconHexagonLetterM size={16} />,
+        },
+        {
+          color: 'red',
+          label: 'YouTube',
+          path: '/socials/youtube',
+          icon: <IconBrandYoutube size={16} />,
         },
       ],
     },

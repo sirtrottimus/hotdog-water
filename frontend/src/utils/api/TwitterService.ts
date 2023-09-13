@@ -78,7 +78,6 @@ class TwitterService extends BaseApiService {
 
   /**
    * Update twitter settings.
-   * @param {string} id
    * @param {FormTwitterSettingsInput} twitterSettings
    * @returns {Promise<TwitterSettingsInt>}
    * @memberof TwitterService

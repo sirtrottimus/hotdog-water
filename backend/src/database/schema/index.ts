@@ -6,6 +6,7 @@ import TwitchSettings from './TwitchSetting';
 import TwitterSettings from './TwitterSetting';
 import Announcement from './Announcement';
 import StreamElementsSettings from './StreamElementsSetting';
+import YoutubeSettings from './YoutubeSettings';
 
 export {
   User,
@@ -16,4 +17,5 @@ export {
   TwitterSettings,
   Announcement,
   StreamElementsSettings,
+  YoutubeSettings,
 };
