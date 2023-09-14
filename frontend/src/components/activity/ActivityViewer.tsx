@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Badge,
   Button,
-  Container,
   Flex,
   Group,
   Paper,
@@ -11,10 +10,8 @@ import {
 import ConnectionState from './ConnectionState';
 import useSocket from '../../hooks/useStreamSocket';
 
-function ActivityViewer() {
-  const { socket, isConnected } = useSocket(
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjaXRhZGVsIiwiZXhwIjoxNjk0MTYzOTYzLCJqdGkiOiIzYTczZTBjYi03MzYxLTQwYzctYmM0YS1hOTMyOTlmNGE5OTMiLCJjaGFubmVsIjoiNjRkMzU2ZmFhZTE4OGY3ODAyNDQ2ODZiIiwicm9sZSI6Im93bmVyIiwiYXV0aFRva2VuIjoiSjlubGVrT3ItQXJTSnY1TmZsUXlHUmlvQ0lSN0c2VkVpYzRlWnlXd2JRYUJyOHFLIiwidXNlciI6IjY0ZDM1NmZhYWUxODhmNzgwMjQ0Njg2YSIsInVzZXJfaWQiOiI2NjM0MDA2Zi00ZTA2LTQzYzQtOTYzZC0yYTJkYzAxODdhMTQiLCJ1c2VyX3JvbGUiOiJjcmVhdG9yIiwicHJvdmlkZXIiOiJ0d2l0Y2giLCJwcm92aWRlcl9pZCI6Ijc0MjM1NjE5IiwiY2hhbm5lbF9pZCI6ImZkYzhhY2UzLWMzMTAtNDA5Zi1iNzJjLTNkYjYxZTgxZDE1NyIsImNyZWF0b3JfaWQiOiI5OThiMzgyMy0wZjY3LTQzNmUtODg0YS0yODAzZWU0ZTkxNGMifQ.I9m8rFijnQmh9jBabVVZTTPEQhtF8kzEz5dQFNvid9w'
-  );
+function ActivityViewer({ JWT }: { JWT: string }) {
+  const { socket, isConnected } = useSocket(JWT);
   const theme = useMantineTheme();
   return (
     <>
@@ -50,6 +47,32 @@ function ActivityViewer() {
             Emit Test Event
           </Button>
         </Group>
+        <div>
+          {
+            // @ts-ignore
+            socket?.connected ? (
+              <div>
+                <p>Connected</p>
+                <p>Socket ID: {socket.id}</p>
+              </div>
+            ) : (
+              <div>
+                <p>Not Connected</p>
+              </div>
+            )
+          }
+          {socket.receiveBuffer.map((event: any, index: number) => (
+            <div key={index}>
+              <p>Event: {event.event}</p>
+              <p>Data: {JSON.stringify(event.data)}</p>
+            </div>
+          ))}
+          {socket.listeners('test').map((listener: any, index: number) => (
+            <div key={index}>
+              <p>Listener: {listener.name}</p>
+            </div>
+          ))}
+        </div>
       </Paper>
     </>
   );

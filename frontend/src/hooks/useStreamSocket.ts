@@ -25,14 +25,11 @@ const useSocket = (jwtToken: string) => {
 
     socket.on('connect', onConnect);
     socket.on('authenticated', onAuthenticated);
+    socket.on('unauthorized', console.error);
     socket.on('disconnect', onDisconnect);
-
-    return () => {
-      socket.disconnect();
-      socket.off('connect', onConnect);
-      socket.off('authenticated', onAuthenticated);
-      socket.off('disconnect', onDisconnect);
-    };
+    socket.on('event:test', (data: any) => {
+      console.log(data);
+    });
   }, [jwtToken]);
 
   return { socket, isConnected };

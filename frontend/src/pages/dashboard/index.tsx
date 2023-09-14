@@ -1,10 +1,12 @@
-import { Center, SimpleGrid, Title } from '@mantine/core';
+import { Alert, Center, SimpleGrid, Title } from '@mantine/core';
 import { ReactElement } from 'react';
 import { MainLayout } from '../../components/Layout/mainLayout';
 import AnnouncementSelector from '../../components/announcements/announcementSelector';
 import AnnouncementsViewer from '../../components/announcements/announcementsViewer';
 import { UserInt as User } from '../../utils/types';
 import ActivityViewer from '../../components/activity/ActivityViewer';
+import { useQuery } from '@tanstack/react-query';
+import StreamElementsService from '../../utils/api/StreamElementsService';
 
 export default function Home({
   user,
@@ -13,6 +15,26 @@ export default function Home({
   user: User;
   isBlurred: boolean;
 }) {
+  const { data: JWT, isLoading } = useQuery(['Stream_elem_JWT'], async () => {
+    const response = await StreamElementsService.getOne();
+    if (response.success) {
+      return response.data;
+    }
+  });
+
+  if (JWT === undefined && !isLoading) {
+    return (
+      <>
+        <Alert>
+          Please set up your StreamElements JWT in the settings page to use the
+          activity viewer.
+        </Alert>
+      </>
+    );
+  }
+
+  console.log(JWT?.streamElementsToken);
+
   return (
     <>
       <Center>
@@ -25,7 +47,7 @@ export default function Home({
         <AnnouncementSelector user={user} />
         <AnnouncementsViewer isBlurred={isBlurred} />
         <div />
-        <ActivityViewer />
+        <ActivityViewer JWT={JWT?.streamElementsToken} />
       </SimpleGrid>
     </>
   );
