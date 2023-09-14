@@ -219,13 +219,25 @@ export default function Home({
                   control={control}
                   render={({ field }) => (
                     <TextInput
-                      label="StreamElements Username"
-                      placeholder="StreamElements Username"
+                      label="StreamElements token"
+                      placeholder="StreamElements token"
                       withAsterisk
                       mb={30}
                       disabled={isBlurred || !canEdit}
                       error={errors.streamElementsToken?.message}
-                      description="This is the username of the StreamElements account you want to check is live."
+                      description={
+                        <>
+                          <a
+                            href="https://streamelements.com/dashboard/account/channels"
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ color: theme.colors.blue[6] }}
+                          >
+                            Click here
+                          </a>{' '}
+                          to get your StreamElements JWT Token.
+                        </>
+                      }
                       {...field}
                     />
                   )}
