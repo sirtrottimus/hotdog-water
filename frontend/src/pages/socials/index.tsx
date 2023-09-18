@@ -28,6 +28,18 @@ export default function SocialIndex() {
       color: 'violet',
       href: '/socials/twitch',
     },
+    {
+      title: 'YouTube',
+      icon: IconBrandTwitch,
+      color: 'red',
+      href: '/socials/youtube',
+    },
+    {
+      title: 'StreamElements',
+      icon: IconBrandTwitch,
+      color: '',
+      href: '/socials/streamElements',
+    },
   ];
 
   return (

@@ -3,7 +3,10 @@
 import { Router } from 'express';
 
 import { isAuthenticated } from '../../utils/middleware';
-import streamElementsSettingsController from '../../controllers/streamElements';
+import {
+  streamElementsController,
+  streamElementsSettingsController,
+} from '../../controllers/streamElements';
 
 // Create router
 const router = Router();
@@ -16,6 +19,13 @@ router.post('/', isAuthenticated, streamElementsSettingsController.create);
 
 // Route for updating a role
 router.put('/', isAuthenticated, streamElementsSettingsController.update);
+
+//StreamElements Activity Endpoints
+router.get(
+  '/activity',
+  isAuthenticated,
+  streamElementsController.getStreamActivity
+);
 
 // Export router
 export default router;

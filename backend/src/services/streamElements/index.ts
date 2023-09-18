@@ -84,3 +84,13 @@ export class StreamElementsSettingsService {
     };
   }
 }
+
+export class StreamElementsService {
+  static async getStreamActivity() {
+    // You need to implement the logic to get the stream activity from your database here
+    // Example: const streamActivity = await Activity.find();
+    // return streamActivity;
+
+    return;
+  }
+}

@@ -14,6 +14,7 @@ import './database/index'; // Connect to MongoDB
 import { createServer as createServerDev } from 'http'; // Import from https in production
 import { join } from 'path';
 import dotenv from 'dotenv';
+import startFetchStreamActivity from './utils/tasks/fetchStreamActivity';
 
 dotenv.config({ path: join(__dirname, '.env') });
 // Destructure environment variables
@@ -58,6 +59,9 @@ const main = async () => {
     //   NODE_ENV === 'production' ? createServerProd(app) : createServerDev(app);
 
     const httpServer = createServerDev(app);
+
+    //Start any tasks that need to run in the background
+    startFetchStreamActivity();
 
     // Start server
     httpServer.listen(PORT, () => {
