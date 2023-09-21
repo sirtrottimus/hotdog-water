@@ -5,14 +5,16 @@ import {
   Flex,
   Group,
   Paper,
+  Text,
   useMantineTheme,
 } from '@mantine/core';
 import ConnectionState from './ConnectionState';
 import useSocket from '../../hooks/useStreamSocket';
 
 function ActivityViewer({ JWT }: { JWT: string }) {
-  const { socket, isConnected } = useSocket(JWT);
+  const { socket, isConnected, eventsData } = useSocket(JWT);
   const theme = useMantineTheme();
+  console.log(eventsData);
   return (
     <>
       <Paper
@@ -41,7 +43,7 @@ function ActivityViewer({ JWT }: { JWT: string }) {
 
           <Button
             onClick={() => {
-              socket.emit('test', 'test');
+              socket.emit('event:test', 'test');
             }}
           >
             Emit Test Event
@@ -70,6 +72,54 @@ function ActivityViewer({ JWT }: { JWT: string }) {
           {socket.listeners('test').map((listener: any, index: number) => (
             <div key={index}>
               <p>Listener: {listener.name}</p>
+            </div>
+          ))}
+
+          {eventsData?.map((event: any, index: number) => (
+            <div key={index}>
+              {event.eventName === 'event' && (
+                <>
+                  {event.type === 'subscriber' && (
+                    <Text>
+                      <b>{event.data.displayName}</b> Subbed for{' '}
+                      <b>
+                        {event.data.amount}{' '}
+                        {event.data.amount === 1 ? 'month' : 'months'}{' '}
+                      </b>
+                      {event.data.tier === 'prime'
+                        ? 'with Prime'
+                        : event.data.tier === '1000'
+                        ? 'at Tier 1'
+                        : event.data.tier === '2000'
+                        ? 'at Tier 2'
+                        : event.data.tier === '3000'
+                        ? 'at Tier 3'
+                        : ''}
+                    </Text>
+                  )}
+
+                  {
+                    // @ts-ignore
+                    event.type === 'communityGiftPurchase' && (
+                      <Text>
+                        <b>{event.data.displayName}</b> Gifted{' '}
+                        <b>{event.data.quantity}</b> Subs
+                      </Text>
+                    )
+                  }
+
+                  {event.type !== 'subscriber' &&
+                    event.type !== 'communityGiftPurchase' && (
+                      <Text>
+                        {event.data.displayName} {event.type}{' '}
+                        {event.data.amount}
+                      </Text>
+                    )}
+                </>
+              )}
+              {event.eventName === 'event:test' && (
+                <p>Test Event Received: {event.data}</p>
+              )}
             </div>
           ))}
         </div>

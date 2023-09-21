@@ -21,6 +21,15 @@ export default function Home({
       return response.data;
     }
   });
+  if (isLoading) {
+    return (
+      <>
+        <Center>
+          <Title>Loading...</Title>
+        </Center>
+      </>
+    );
+  }
 
   if (JWT === undefined && !isLoading) {
     return (
@@ -34,6 +43,17 @@ export default function Home({
   }
 
   console.log(JWT?.streamElementsToken);
+
+  if (!JWT) {
+    return (
+      <>
+        <Alert>
+          Please set up your StreamElements JWT in the settings page to use the
+          activity viewer.
+        </Alert>
+      </>
+    );
+  }
 
   return (
     <>

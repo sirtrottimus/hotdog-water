@@ -41,7 +41,7 @@ function AnnouncementSelector({ user }: { user: UserInt }) {
     public: {
       label: 'Public announcement',
       placeholder: 'Your witty announcement here...',
-      chips: ['discord', 'twitter'],
+      chips: ['discord', 'twitter', 'Twitch (StreamElements)'],
       id: 'public',
     },
     membersOnly: {
@@ -77,6 +77,12 @@ function AnnouncementSelector({ user }: { user: UserInt }) {
     'canPostToTwitter'
   );
 
+  const { isAuthorized: canPostToTwitch } = useAuthorization(
+    user,
+    ['SUPERADMIN', 'ADMIN', 'POST_ANNOUNCEMENT_TWITCH'],
+    'canPostToTwitch'
+  );
+
   const {
     handleSubmit,
     control,
@@ -110,10 +116,18 @@ function AnnouncementSelector({ user }: { user: UserInt }) {
     {
       onSuccess: () => {
         setSubmitting(false);
-        reset();
+        reset({
+          announcementType: canMakePublicAnnouncements
+            ? 'public'
+            : canMakeMembersOnlyAnnouncements
+            ? 'membersOnly'
+            : 'public',
+          text: '',
+          postTo: [],
+        });
         toast.success('Announcement posted!');
 
-        queryClient.invalidateQueries(['ranks']);
+        queryClient.invalidateQueries(['announcements']);
       },
       onError: (response: APIResponse<FormAnnouncement>) => {
         setSubmitting(false);
@@ -218,7 +232,8 @@ function AnnouncementSelector({ user }: { user: UserInt }) {
                       color="violet"
                       disabled={
                         (chip === 'discord' && !canPostToDiscord) ||
-                        (chip === 'twitter' && !canPostToTwitter)
+                        (chip === 'twitter' && !canPostToTwitter) ||
+                        (chip === 'Twitch (StreamElements)' && !canPostToTwitch)
                       }
                       key={forms[announcementType].id + chip}
                     >

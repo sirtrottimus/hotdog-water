@@ -11,6 +11,7 @@ const MIN_HOST = '0';
 const MIN_SUB = '0';
 const MIN_TIP = '0';
 const ACTIVITY_TYPES = [
+  'follow',
   'host',
   'raid',
   'tip',
@@ -18,6 +19,7 @@ const ACTIVITY_TYPES = [
   'subscriber',
   'redemption',
   'event',
+  'communityGiftPurchase',
 ];
 
 // Function to fetch stream activity
@@ -107,7 +109,7 @@ const fetchStreamActivity = async () => {
 
       if (!existingActivity) {
         // If the activity doesn't exist, save it to the database
-        await Activity.create({
+        const newActivity = await Activity.create({
           SE_ID: activity._id,
           type: activity.type,
           createdAt: activity.createdAt,
@@ -116,6 +118,16 @@ const fetchStreamActivity = async () => {
           flagged: activity.flagged,
           feedSource: 'schedule',
         });
+
+        if (!newActivity) {
+          // Log an error message if saving fails
+          logIfDebugging(
+            `${streamActivityLog} - Failed to save activity to database.`
+          );
+          return;
+        }
+
+        // send the activity to the frontend via ws
       }
     }
   } catch (error) {
