@@ -64,8 +64,9 @@ const main = async () => {
     const io = new ServerIO(httpServer, {
       path: '/socket.io/',
       cors: {
-        origin: '*',
+        origin: true,
         methods: ['GET', 'POST'],
+        credentials: true,
       },
     });
 
