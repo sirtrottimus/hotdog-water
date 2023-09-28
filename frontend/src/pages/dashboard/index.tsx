@@ -71,7 +71,7 @@ export default function Home({
         <AnnouncementSelector user={user} />
         <AnnouncementsViewer isBlurred={isBlurred} />
       </SimpleGrid>
-      <ActivityViewer JWT={JWT?.streamElementsToken} />
+      <ActivityViewer />
     </>
   );
 }
