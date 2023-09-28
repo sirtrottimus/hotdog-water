@@ -61,7 +61,12 @@ const main = async () => {
     //   NODE_ENV === 'production' ? createServerProd(app) : createServerDev(app);
 
     const httpServer = createServerDev(app);
-    const io = new ServerIO(httpServer);
+    const io = new ServerIO(httpServer, {
+      cors: {
+        origin: clientUrl,
+        methods: ['GET', 'POST'],
+      },
+    });
 
     //Handle Client Connections
     handleClientConnections(io);
