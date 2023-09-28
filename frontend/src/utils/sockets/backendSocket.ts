@@ -5,7 +5,7 @@ import { getAPIUrl } from '../helpers';
 
 const api = getAPIUrl();
 
-export const socket = io(api, {
+export const socket = io('http://api.hatfilms.co.uk', {
   transports: ['websocket'],
   autoConnect: false,
 });
