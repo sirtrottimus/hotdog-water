@@ -66,6 +66,7 @@ const main = async () => {
         origin: '*',
         methods: ['GET', 'POST'],
       },
+      path: '/socket.io/',
     });
 
     //Handle Client Connections
