@@ -63,6 +63,10 @@ const main = async () => {
     const httpServer = createServerDev(app);
     const io = new ServerIO(httpServer, {
       path: '/socket.io/',
+      cors: {
+        origin: '*',
+        methods: ['GET', 'POST'],
+      },
     });
 
     //Handle Client Connections
