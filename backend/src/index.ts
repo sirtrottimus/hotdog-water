@@ -62,10 +62,6 @@ const main = async () => {
 
     const httpServer = createServerDev(app);
     const io = new ServerIO(httpServer, {
-      cors: {
-        origin: '*',
-        methods: ['GET', 'POST'],
-      },
       path: '/socket.io/',
     });
 
