@@ -3,12 +3,13 @@ import React from 'react';
 
 interface Props {
   isConnected: boolean;
+  title: string;
 }
 
-export default function ConnectionState({ isConnected }: Props) {
+export default function ConnectionState({ isConnected, title }: Props) {
   return (
     <Title>
-      Activity Viewer - {isConnected ? 'Connected' : 'Disconnected'}
+      {title} Activity Viewer - {isConnected ? 'Connected' : 'Disconnected'}
     </Title>
   );
 }

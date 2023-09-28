@@ -115,7 +115,7 @@ const fetchStreamActivity = async () => {
           createdAt: activity.createdAt,
           data: activity.data,
           provider: activity.provider,
-          flagged: activity.flagged,
+          flagged: activity.flagged ?? false,
           feedSource: 'schedule',
         });
 

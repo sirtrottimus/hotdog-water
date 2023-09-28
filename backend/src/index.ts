@@ -15,8 +15,8 @@ import { createServer as createServerDev } from 'http'; // Import from https in 
 import { join } from 'path';
 import dotenv from 'dotenv';
 import startFetchStreamActivity from './utils/tasks/fetchStreamActivity';
-import { Server as WebSocketServer } from 'ws';
-import wss from './utils/sockets/seSocketHandler';
+import { Server as ServerIO } from 'socket.io';
+import handleClientConnections from './utils/sockets/clientSocketHandler';
 
 dotenv.config({ path: join(__dirname, '.env') });
 // Destructure environment variables
@@ -61,12 +61,10 @@ const main = async () => {
     //   NODE_ENV === 'production' ? createServerProd(app) : createServerDev(app);
 
     const httpServer = createServerDev(app);
+    const io = new ServerIO(httpServer);
 
-    httpServer.on('upgrade', (request, socket, head) => {
-      wss.handleUpgrade(request, socket, head, (ws) => {
-        wss.emit('connection', ws, request);
-      });
-    });
+    //Handle Client Connections
+    handleClientConnections(io);
 
     //Start any tasks that need to run in the background
     startFetchStreamActivity();

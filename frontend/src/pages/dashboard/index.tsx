@@ -30,6 +30,13 @@ export default function Home({
       </>
     );
   }
+  // TODO: Rewrite this to be more robust.
+  // Issues:
+  // 1. JWT is not defined when the user is not logged in.
+  // 2. JWT is undefined when the user is logged in but has not set up their JWT.
+  // 3. JWT is null when the user is logged in and has set up their JWT.
+  // 4. JWT is null when the user is not logged in and has not set up their JWT.
+  // 5. JWT is null when the user is not logged in and has set up their JWT.
 
   if (JWT === undefined && !isLoading) {
     return (
@@ -41,9 +48,6 @@ export default function Home({
       </>
     );
   }
-
-  console.log(JWT?.streamElementsToken);
-
   if (!JWT) {
     return (
       <>
@@ -66,9 +70,8 @@ export default function Home({
       <SimpleGrid mt={30} cols={2}>
         <AnnouncementSelector user={user} />
         <AnnouncementsViewer isBlurred={isBlurred} />
-        <div />
-        <ActivityViewer JWT={JWT?.streamElementsToken} />
       </SimpleGrid>
+      <ActivityViewer JWT={JWT?.streamElementsToken} />
     </>
   );
 }

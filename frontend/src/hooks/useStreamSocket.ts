@@ -34,7 +34,7 @@ const useSocket = (jwtToken: string) => {
         callback: (data: any) => {
           setEventsData((prevData) => [
             ...prevData,
-            { eventName: 'event:test', ...data },
+            { eventName: 'event:test', data },
           ]);
         },
       },
@@ -58,6 +58,19 @@ const useSocket = (jwtToken: string) => {
     customEvents.forEach((event) => {
       socket.on(event.name, event.callback);
     });
+
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('authenticated', onAuthenticated);
+      socket.off('unauthorized', console.error);
+      socket.off('disconnect', onDisconnect);
+
+      customEvents.forEach((event) => {
+        socket.off(event.name, event.callback);
+      });
+
+      socket.disconnect();
+    };
   }, [jwtToken]);
 
   return { socket, isConnected, eventsData };

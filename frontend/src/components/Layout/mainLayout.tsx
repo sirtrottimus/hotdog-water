@@ -139,7 +139,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
           icon: <IconBrandTwitterFilled size={16} />,
         },
         {
-          color: 'violet',
+          color: 'green',
           label: 'Stream Elements',
           path: '/socials/streamElements',
           icon: <IconHexagonLetterM size={16} />,
@@ -251,7 +251,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
                 >
                   HATBOT DASHBOARD
                 </Text>
-                <Code sx={{ fontWeight: 700 }}>v1.1.5</Code>
+                <Code sx={{ fontWeight: 700 }}>v1.2.3--dev</Code>
               </Group>
               <Group>
                 <ActionIcon
