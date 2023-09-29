@@ -62,11 +62,12 @@ const main = async () => {
 
     const httpServer = createServerDev(app);
     const io = new ServerIO(httpServer, {
-      path: '/socket.io/',
+      path: '/socket.io',
       cors: {
         origin: clientUrl,
         methods: ['GET', 'POST'],
       },
+      transports: ['websocket', 'polling'],
     });
     io.listen(3002);
 
