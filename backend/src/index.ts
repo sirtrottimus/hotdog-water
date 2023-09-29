@@ -68,7 +68,7 @@ const main = async () => {
         methods: ['GET', 'POST'],
       },
     });
-    io.listen(3001);
+    io.listen(3002);
 
     //Handle Client Connections
     handleClientConnections(io);
