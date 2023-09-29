@@ -55,7 +55,6 @@ export const createApp = (): express.Application => {
   // Create Express app
   const app = express();
 
-  app.set('host', process.env.IP ?? 'localhost');
   app.set('port', process.env.PORT ?? 3002);
 
   // Middleware
