@@ -64,11 +64,11 @@ const main = async () => {
     const io = new ServerIO(httpServer, {
       path: '/socket.io/',
       cors: {
-        origin: true,
+        origin: clientUrl,
         methods: ['GET', 'POST'],
-        credentials: true,
       },
     });
+    io.listen(3001);
 
     //Handle Client Connections
     handleClientConnections(io);
