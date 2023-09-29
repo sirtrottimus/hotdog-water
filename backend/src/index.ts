@@ -12,6 +12,7 @@
 import { createApp } from './utils/createApp';
 import './database/index'; // Connect to MongoDB
 import { createServer as createServerDev } from 'http'; // Import from https in production
+import { createServer as createServerProd } from 'https'; // Import from http in development
 import { join } from 'path';
 import dotenv from 'dotenv';
 import startFetchStreamActivity from './utils/tasks/fetchStreamActivity';
@@ -60,7 +61,7 @@ const main = async () => {
     // const httpServer =
     //   NODE_ENV === 'production' ? createServerProd(app) : createServerDev(app);
 
-    const httpServer = createServerDev(app);
+    const httpServer = createServerProd(app);
     const io = new ServerIO(httpServer, {
       path: '/socket.io',
       cors: {
@@ -69,7 +70,7 @@ const main = async () => {
       },
       transports: ['websocket', 'polling'],
     });
-    io.listen(3002);
+    io.listen(httpServer);
 
     //Handle Client Connections
     handleClientConnections(io);
