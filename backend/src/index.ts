@@ -59,28 +59,18 @@ const main = async () => {
     const app = createApp();
 
     // Create HTTP server
-    const httpServer =
-      NODE_ENV === 'production' ? createServerProd(app) : createServerDev(app);
+    // const httpServer =
+    //   NODE_ENV === 'production' ? createServerProd(app) : createServerDev(app);
 
+    const httpServer = createServerDev(app);
     const io = new ServerIO(httpServer, {
       path: '/socket.io',
       transports: ['websocket', 'polling'],
+      cors: {
+        origin: clientUrl,
+        methods: ['GET', 'POST'],
+      },
     });
-
-    io.engine.use(
-      session({
-        secret: process.env.SESSION_SECRET!,
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-          sameSite: 'strict',
-          httpOnly: true,
-          maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-          secure: false,
-          domain: '.hatfilms.co.uk',
-        },
-      })
-    );
 
     //Handle Client Connections
     handleClientConnections(io);
