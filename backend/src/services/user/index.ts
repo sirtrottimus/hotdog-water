@@ -1,5 +1,9 @@
-import { Permission, User as UserSchema } from '../../database/schema';
-import { Role as RoleSchema } from '../../database/schema';
+import {
+  Permission,
+  User as UserSchema,
+  Role as RoleSchema,
+} from '../../database/schema';
+
 import { validateUserPerms } from '../../utils/helpers';
 import { Options } from '../helpers';
 

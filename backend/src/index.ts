@@ -12,8 +12,13 @@
 import { createApp } from './utils/createApp';
 import './database/index'; // Connect to MongoDB
 import { createServer as createServerDev } from 'http'; // Import from https in production
+import { createServer as createServerProd } from 'https'; // Import from http in development
 import { join } from 'path';
 import dotenv from 'dotenv';
+import startFetchStreamActivity from './utils/tasks/fetchStreamActivity';
+import { Server as ServerIO } from 'socket.io';
+import handleClientConnections from './utils/sockets/clientSocketHandler';
+import session from 'express-session';
 
 dotenv.config({ path: join(__dirname, '.env') });
 // Destructure environment variables
@@ -54,15 +59,41 @@ const main = async () => {
     const app = createApp();
 
     // Create HTTP server
-    // const httpServer =
-    //   NODE_ENV === 'production' ? createServerProd(app) : createServerDev(app);
+    const httpServer =
+      NODE_ENV === 'production' ? createServerProd(app) : createServerDev(app);
 
-    const httpServer = createServerDev(app);
+    const io = new ServerIO(httpServer, {
+      path: '/socket.io',
+      transports: ['websocket', 'polling'],
+    });
+
+    io.engine.use(
+      session({
+        secret: process.env.SESSION_SECRET!,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+          sameSite: 'strict',
+          httpOnly: true,
+          maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+          secure: false,
+          domain: '.hatfilms.co.uk',
+        },
+      })
+    );
+
+    //Handle Client Connections
+    handleClientConnections(io);
+
+    //Start any tasks that need to run in the background
+    startFetchStreamActivity();
 
     // Start server
-    httpServer.listen(PORT, () => {
+    httpServer.listen(app.get('port'), () => {
       // TODO: Add logging library
       console.log(`[SERVER]: Server running at ${serverUrl}`);
+      console.log(`[SERVER]: Client running at ${clientUrl}`);
+      console.log(`[SERVER]: Port: ${PORT}`);
       console.log(`[SERVER]: Environment: ${NODE_ENV}`);
       console.log(
         `[SERVER]: ${DEBUG ? 'Debugging enabled' : 'Debugging disabled'}`

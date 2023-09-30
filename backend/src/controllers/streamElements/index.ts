@@ -16,7 +16,10 @@ import { Request, Response } from 'express';
 
 import { UserInt } from '../../database/schema/User';
 import { handleRequest } from '../helpers';
-import { StreamElementsSettingsService } from '../../services/streamElements';
+import {
+  StreamElementsService,
+  StreamElementsSettingsService,
+} from '../../services/streamElements';
 import { validateUserPerms } from '../../utils/helpers';
 
 const streamElementsSettingsController = {
@@ -92,4 +95,29 @@ const streamElementsSettingsController = {
   },
 };
 
-export default streamElementsSettingsController;
+const streamElementsController = {
+  async getStreamActivity(req: Request, res: Response) {
+    const user = req.user as UserInt;
+
+    const validationResult = await validateUserPerms(user._id, [
+      'SUPERADMIN',
+      'VIEW_STREAMELEMENTS_ACTIVITY',
+    ]);
+
+    if (!validationResult.success) {
+      return validationResult;
+    }
+
+    await handleRequest(
+      res,
+      StreamElementsService.getStreamActivity,
+      user,
+      {
+        body: req.body,
+      },
+      'streamElementsSettings'
+    );
+  },
+};
+
+export { streamElementsSettingsController, streamElementsController };

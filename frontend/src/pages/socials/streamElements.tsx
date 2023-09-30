@@ -33,12 +33,14 @@ import { useRouter } from 'next/router';
 
 type FormStreamElementsSettingsInput = {
   streamElementsToken: string;
+  streamElementsChannelID: string;
 };
 
 const schema = z.object({
   streamElementsToken: z
     .string()
     .min(1, { message: 'StreamElements JWT Token is Required' }),
+  streamElementsChannelID: z.string(),
 });
 
 export default function Home({
@@ -73,6 +75,7 @@ export default function Home({
 
   const defaultValues = {
     streamElementsToken: '',
+    streamElementsChannelID: '',
   };
 
   const {
@@ -236,6 +239,35 @@ export default function Home({
                             Click here
                           </a>{' '}
                           to get your StreamElements JWT Token.
+                        </>
+                      }
+                      {...field}
+                    />
+                  )}
+                />
+
+                <Controller
+                  name="streamElementsChannelID"
+                  control={control}
+                  render={({ field }) => (
+                    <TextInput
+                      label="StreamElements Channel ID"
+                      placeholder="StreamElements Channel ID"
+                      withAsterisk
+                      mb={30}
+                      disabled={isBlurred || !canEdit}
+                      error={errors.streamElementsChannelID?.message}
+                      description={
+                        <>
+                          <a
+                            href="https://streamelements.com/dashboard/account/channels"
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ color: theme.colors.blue[6] }}
+                          >
+                            Click here
+                          </a>{' '}
+                          to get your StreamElements Channel ID.
                         </>
                       }
                       {...field}

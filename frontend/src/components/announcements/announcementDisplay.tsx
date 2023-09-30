@@ -13,6 +13,7 @@ import {
 } from '@mantine/core';
 import {
   IconBrandDiscordFilled,
+  IconBrandTwitch,
   IconBrandTwitterFilled,
 } from '@tabler/icons-react';
 import React from 'react';
@@ -107,6 +108,21 @@ export default function AnnouncementDisplay({
               }}
             >
               Posted to Twitter
+            </Badge>
+          )}
+
+          {announcement.postTo.includes('Twitch (StreamElements)') && (
+            <Badge
+              size="sm"
+              radius={'xs'}
+              variant="outline"
+              leftSection={<IconBrandTwitch size={10} />}
+              sx={{
+                borderColor: '#9146FF',
+                color: '#9146FF',
+              }}
+            >
+              Posted to Twitch (StreamElements)
             </Badge>
           )}
         </Group>

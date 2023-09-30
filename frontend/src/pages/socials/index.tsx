@@ -5,6 +5,8 @@ import {
   IconBrandTwitch,
   IconBrandTwitter,
   IconBrandDiscord,
+  IconBrandYoutube,
+  IconHexagonLetterM,
 } from '@tabler/icons-react';
 import { Alert, Center } from '@mantine/core';
 
@@ -27,6 +29,18 @@ export default function SocialIndex() {
       icon: IconBrandTwitch,
       color: 'violet',
       href: '/socials/twitch',
+    },
+    {
+      title: 'YouTube',
+      icon: IconBrandYoutube,
+      color: 'red',
+      href: '/socials/youtube',
+    },
+    {
+      title: 'StreamElements',
+      icon: IconHexagonLetterM,
+      color: 'green',
+      href: '/socials/streamElements',
     },
   ];
 

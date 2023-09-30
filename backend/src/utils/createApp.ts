@@ -55,8 +55,8 @@ export const createApp = (): express.Application => {
   // Create Express app
   const app = express();
 
-  app.set('host', process.env.IP ?? '127.0.0.1');
   app.set('port', process.env.PORT ?? 3002);
+  app.set('trust proxy', 1);
 
   // Middleware
   app.use(express.json());

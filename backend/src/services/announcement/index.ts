@@ -3,79 +3,67 @@ import { Options, createTwitterClient } from '../helpers';
 import {
   Announcement as AnnouncementsSchema,
   DiscordSettings,
+  StreamElementsSettings as StreamElementsSettingsSchema,
   TwitterSettings as TwitterSettingsSchema,
 } from '../../database/schema';
 import { AnnouncementType } from '../../database/schema/Announcement';
 import axios from 'axios';
 
+type Announcement = {
+  text: string;
+  postTo: string[];
+};
+
+type Error = {
+  code: string;
+};
+
 export class AnnouncementsService {
   static async post(options: Options) {
     const { userId, body: announcement } = options;
 
-    let condition;
-    if (announcement.announcementType === 'public') {
-      condition = { isAnnouncementWebhook: true };
-    }
-    if (announcement.announcementType === 'membersOnly') {
-      condition = { isMemberOnlyWebhook: true };
-    }
-
-    if (announcement.postTo.includes('discord')) {
-      try {
-        const discordSettings = await DiscordSettings.findOne(condition);
-
-        if (!discordSettings) {
-          return {
-            success: false,
-            data: null,
-            error: null,
-            msg: 'No Discord Settings Found',
-          };
-        }
-        const params = {
-          content: announcement.text,
+    const handleAxiosError = (error: any) => {
+      if (error.code === 'ERR_NETWORK') {
+        return {
+          success: false,
+          data: null,
+          error: error,
         };
-        try {
-          await axios.post(discordSettings.webhookURL, {
-            ...params,
-            username: discordSettings.botName,
-          });
-        } catch (error) {
-          if (axios.isAxiosError(error)) {
-            if (error.code === 'ERR_NETWORK') {
-              return Promise.resolve({
-                data: {
-                  success: false,
-                  data: null,
-                  error: error,
-                },
-                success: false,
-                error: null,
-              });
-            }
+      }
 
-            return Promise.resolve({
-              data: {
-                success: false,
-                data: null,
-                error: error,
-              },
-              success: false,
-              error: null,
-            });
-          }
-        }
-      } catch (error) {
+      return {
+        success: false,
+        data: null,
+        error: error,
+      };
+    };
+
+    async function postToDiscord(announcement: Announcement) {
+      const discordSettings = await DiscordSettings.findOne({
+        isAnnouncementWebhook: true,
+      });
+
+      if (!discordSettings) {
         return {
           success: false,
           data: null,
           error: null,
-          msg: 'Error Posting to Discord',
+          msg: 'No Discord Settings Found',
         };
+      }
+
+      try {
+        const params = {
+          content: announcement.text,
+          username: discordSettings.botName,
+        };
+        await axios.post(discordSettings.webhookURL, params);
+      } catch (error) {
+        return handleAxiosError(error);
       }
     }
 
-    if (announcement.postTo.includes('twitter')) {
+    async function postToTwitter(announcement: Announcement) {
       const twitterSettings = await TwitterSettingsSchema.findOne({});
 
       if (!twitterSettings?.consumerKey) {
@@ -86,14 +74,60 @@ export class AnnouncementsService {
           msg: 'Error Testing Twitter Settings',
         };
       }
+
       const client = createTwitterClient(twitterSettings);
       await client.v2.tweet(announcement.text);
+    }
+
+    async function postToTwitch(announcement: Announcement) {
+      const streamElementsSettings = await StreamElementsSettingsSchema.findOne(
+        {}
+      );
+
+      if (!streamElementsSettings) {
+        return {
+          success: false,
+          data: null,
+          error: null,
+          msg: 'No StreamElements Settings Found',
+        };
+      }
+
+      try {
+        await axios.post(
+          `https://api.streamelements.com/kappa/v2/bot/${streamElementsSettings.streamElementsChannelID}/say`,
+          {
+            message: announcement.text,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${streamElementsSettings.streamElementsToken}`,
+              Accept: 'application/json; charset=utf-8, application/json',
+            },
+          }
+        );
+      } catch (error) {
+        return handleAxiosError(error);
+      }
+    }
+
+    if (announcement.postTo.includes('discord')) {
+      await postToDiscord(announcement);
+    }
+
+    if (announcement.postTo.includes('twitter')) {
+      await postToTwitter(announcement);
+    }
+
+    if (announcement.postTo.includes('Twitch (StreamElements)')) {
+      await postToTwitch(announcement);
     }
 
     const announcements = await AnnouncementsSchema.create<AnnouncementType>({
       ...announcement,
       postedBy: userId,
     });
+
     if (!announcements) {
       return {
         success: false,
@@ -102,6 +136,7 @@ export class AnnouncementsService {
         msg: 'Error Creating Announcement',
       };
     }
+
     return { success: true, data: announcements, error: null, msg: null };
   }
 

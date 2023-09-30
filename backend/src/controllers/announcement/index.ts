@@ -54,6 +54,18 @@ const announcementController = {
         return res;
       }
     }
+
+    if (postTo === 'Twitch (StreamElements)') {
+      const res = await validateUserPerms(user._id, [
+        'SUPERADMIN',
+        'POST_ANNOUNCEMENT_TWITCH',
+      ]);
+
+      if (!res.success) {
+        return res;
+      }
+    }
+
     await handleRequest(
       res,
       AnnouncementsService.post,
