@@ -42,6 +42,7 @@ export function User({
     const result = await UserService.logout();
     if (result.success) {
       deleteCookie('connect.sid', { path: '/' });
+      router.push('/');
     }
   };
 
