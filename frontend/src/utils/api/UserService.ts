@@ -116,7 +116,7 @@ class UserService extends BaseApiService {
    * @see User
    */
   async logout(): Promise<APIResponse<UserInt>> {
-    return await this.get(`${this.url}/logout`);
+    return await this.post(`${this.url}/logout`, {});
   }
 
   /**
