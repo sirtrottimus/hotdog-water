@@ -1,9 +1,8 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { socket } from '../utils/sockets/backendSocket';
 import { getCookie } from 'cookies-next';
-import { set } from 'react-hook-form';
 
-interface EventData<T = any> {
+interface EventData<T = []> {
   eventName: string;
   data: T;
   [key: string]: any;
@@ -72,7 +71,7 @@ const useBackendSocket = () => {
         name: 'event',
         callback: (data: any) => {
           setEventsData((prevData) => [
-            ...prevData.toSorted((a, b) => b.createdAt - a.createdAt),
+            ...prevData.sort((a, b) => b.createdAt - a.createdAt),
             { eventName: 'event', ...data },
           ]);
         },
