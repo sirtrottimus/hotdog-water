@@ -108,17 +108,17 @@ const handleAuthenticationSuccess = async (
     return;
   }
 
-  // // Check if user is already connected
-  // if (
-  //   activeSockets.find(
-  //     (s) => s.userId === decoded.id && s.socketId !== socket.id
-  //   )
-  // ) {
-  //   socket.emit('unauthorized', { message: 'Already connected' });
-  //   console.log('Already connected');
-  //   socket.disconnect();
-  //   return;
-  // }
+  // Check if user is already connected
+  if (
+    activeSockets.find(
+      (s) => s.userId === decoded.id && s.socketId !== socket.id
+    )
+  ) {
+    socket.emit('unauthorized', { message: 'Already connected' });
+    console.log('Already connected');
+    socket.disconnect();
+    return;
+  }
 
   // Let the client know that they are authenticated
   socket.emit('authenticated', { message: 'Authenticated' });
@@ -139,7 +139,9 @@ const handleAuthenticationSuccess = async (
   socket.emit('active-sockets', activeSockets);
 
   // Send Initial Data from DB
-  const initialData = await Activity.find({ read: false });
+  const initialData = await Activity.find({ read: false }).sort({
+    createdAt: 1,
+  });
 
   socket.emit('event:initial', initialData);
 

@@ -72,7 +72,7 @@ const useBackendSocket = () => {
         name: 'event',
         callback: (data: any) => {
           setEventsData((prevData) => [
-            ...prevData,
+            ...prevData.toSorted((a, b) => b.createdAt - a.createdAt),
             { eventName: 'event', ...data },
           ]);
         },
