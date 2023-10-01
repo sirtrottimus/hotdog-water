@@ -4,10 +4,12 @@ import {
   Badge,
   Box,
   Button,
+  Center,
   Divider,
   Flex,
   Group,
   Paper,
+  Text,
   createStyles,
   useMantineTheme,
 } from '@mantine/core';
@@ -53,9 +55,10 @@ const useStyles = createStyles((theme, { color, depth }: ColorProps) => {
       }`,
       borderRadius: theme.radius.sm,
       padding: theme.spacing.md,
+
       maxHeight: '75vh',
       scrollbarWidth: 'thin',
-      overflowY: 'scroll',
+      overflowY: 'auto',
     },
   };
 });
@@ -143,17 +146,27 @@ function ActivityViewer() {
         </Group>
 
         {isBackendConnected && (
-          <Box className={`${classes.activityContainer}`}>
-            {backendEventsData?.map((event: any, index: number) => (
-              <div key={index}>
-                <Activity
-                  eventName={event.eventName}
-                  type={event.type}
-                  data={event}
-                />
-              </div>
-            ))}
-          </Box>
+          <>
+            {backendEventsData?.length > 300 ? (
+              <Box className={`${classes.activityContainer}`}>
+                {backendEventsData?.map((event: any, index: number) => (
+                  <div key={index}>
+                    <Activity
+                      eventName={event.eventName}
+                      type={event.type}
+                      data={event}
+                    />
+                  </div>
+                ))}
+              </Box>
+            ) : (
+              <Box className={`${classes.activityContainer}`}>
+                <Center>
+                  <Text c="dimmed">No events to display yet.</Text>
+                </Center>
+              </Box>
+            )}
+          </>
         )}
       </Paper>
     </>
