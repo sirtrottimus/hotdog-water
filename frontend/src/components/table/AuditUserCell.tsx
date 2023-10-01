@@ -16,7 +16,7 @@ const UserCell = ({
     >
       <Avatar
         radius="xl"
-        // src={`https://cdn.discordapp.com/avatars/${cell.row.original.user.discordId}/${cell.row.original.user.avatar}.png`}
+        src={`https://cdn.discordapp.com/avatars/${cell.row.original.user.discordId}/${cell.row.original.user.avatar}.webp`}
         alt={cell.row.original.user.username}
         mr={10}
       />

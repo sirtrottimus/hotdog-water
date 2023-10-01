@@ -55,7 +55,7 @@ export default function AnnouncementDisplay({
     <Card my={15} mx={4} className={classes.card}>
       <Group>
         <Avatar
-          src={`https://cdn.discordapp.com/avatars/${announcement.postedBy._id}/${announcement.postedBy.avatar}.png`}
+          src={`https://cdn.discordapp.com/avatars/${announcement.postedBy._id}/${announcement.postedBy.avatar}.webp`}
           alt={announcement.postedBy.username}
           radius="xl"
           color="violet"
