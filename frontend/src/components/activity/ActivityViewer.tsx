@@ -147,7 +147,7 @@ function ActivityViewer() {
 
         {isBackendConnected && (
           <>
-            {backendEventsData?.length > 300 ? (
+            {backendEventsData?.length > 0 ? (
               <Box className={`${classes.activityContainer}`}>
                 {backendEventsData?.map((event: any, index: number) => (
                   <div key={index}>
