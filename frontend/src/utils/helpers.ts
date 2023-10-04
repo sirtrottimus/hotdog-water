@@ -178,3 +178,21 @@ export async function checkTwitchStatus({
     streamData: streamData,
   };
 }
+
+export function decodeHtmlEntities(message: string): string {
+  return message.replace(/&(#?[\w\d]+);/g, (match, entity) => {
+    if (entity.startsWith('#')) {
+      const code = entity.substr(1);
+      return String.fromCharCode(parseInt(code, 10));
+    } else {
+      const entities: Record<string, string> = {
+        quot: '"',
+        lt: '<',
+        gt: '>',
+        amp: '&',
+        // Add more named entities as needed
+      };
+      return entities[entity] || match;
+    }
+  });
+}
