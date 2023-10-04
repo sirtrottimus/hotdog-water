@@ -70,23 +70,23 @@ const useBackendSocket = () => {
       {
         name: 'event',
         callback: (data: any) => {
-          setEventsData((prevData) => [
-            ...prevData.sort((a, b) => b.createdAt - a.createdAt),
-            { eventName: 'event', ...data },
-          ]);
+          setEventsData((prevData) => {
+            const sortedData = [...prevData].sort(
+              (a, b) => b.createdAt - a.createdAt
+            );
+            return [...sortedData, { eventName: 'event', ...data }];
+          });
         },
       },
       {
         name: 'active-sockets',
         callback: (data: any) => {
-          console.log('Data:', data);
           setActiveSockets(data);
         },
       },
       {
         name: 'event:initial',
         callback: (data: any) => {
-          console.log('Data:', data);
           setEventsData(
             data
               .filter((event: any) => !event.type.includes('follow'))
