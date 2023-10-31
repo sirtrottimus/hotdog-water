@@ -19,6 +19,8 @@ const createSocket = async (backendSocket: ServerSocket): Promise<Socket> => {
   socket.connect();
 
   socket.on('connect', () => {
+    logIfDebugging('[WEBSOCKET/SE]: Connected to StreamElements');
+    logIfDebugging('[WEBSOCKET/SE]: Authenticating with StreamElements');
     socket.emit('authenticate', {
       method: 'jwt',
       token: jwtToken,
@@ -26,6 +28,7 @@ const createSocket = async (backendSocket: ServerSocket): Promise<Socket> => {
   });
 
   socket.on('disconnect', () => {
+    logIfDebugging('[WEBSOCKET/SE]: Disconnected from StreamElements');
     handleDisconnect(socket);
   });
 

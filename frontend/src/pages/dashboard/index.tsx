@@ -7,6 +7,7 @@ import { UserInt as User } from '../../utils/types';
 import ActivityViewer from '../../components/activity/ActivityViewer';
 import { useQuery } from '@tanstack/react-query';
 import StreamElementsService from '../../utils/api/StreamElementsService';
+import NewWindow from 'react-new-window';
 
 export default function Home({
   user,
@@ -71,7 +72,9 @@ export default function Home({
         <AnnouncementSelector user={user} />
         <AnnouncementsViewer isBlurred={isBlurred} />
       </SimpleGrid>
-      <ActivityViewer />
+      <NewWindow>
+        <ActivityViewer />
+      </NewWindow>
     </>
   );
 }
