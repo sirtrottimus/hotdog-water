@@ -109,9 +109,7 @@ const handleEventData = async (data: any, backendSocket: ServerSocket) => {
 const getStreamElementsSocket = async (
   backendSocket: ServerSocket
 ): Promise<Socket> => {
-  if (!singletonInstance) {
-    singletonInstance = await createSocket(backendSocket);
-  }
+  singletonInstance = await createSocket(backendSocket);
 
   return singletonInstance;
 };
