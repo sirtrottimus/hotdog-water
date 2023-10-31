@@ -16,6 +16,8 @@ const createSocket = async (backendSocket: ServerSocket): Promise<Socket> => {
     autoConnect: false,
   });
 
+  logIfDebugging('[WEBSOCKET/SE]: Connecting to StreamElements');
+
   socket.connect();
 
   socket.on('connect', () => {
