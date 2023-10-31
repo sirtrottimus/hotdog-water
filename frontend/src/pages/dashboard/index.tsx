@@ -72,9 +72,7 @@ export default function Home({
         <AnnouncementSelector user={user} />
         <AnnouncementsViewer isBlurred={isBlurred} />
       </SimpleGrid>
-      <NewWindow>
-        <ActivityViewer />
-      </NewWindow>
+      <ActivityViewer />
     </>
   );
 }
