@@ -51,6 +51,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.0",
+    "react-new-window": "^1.0.1",
     "react-select": "^5.7.0",
     "react-spinners": "^0.13.7",
     "react-toastify": "^9.1.1",

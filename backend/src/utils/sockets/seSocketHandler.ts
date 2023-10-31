@@ -16,9 +16,13 @@ const createSocket = async (backendSocket: ServerSocket): Promise<Socket> => {
     autoConnect: false,
   });
 
+  logIfDebugging('[WEBSOCKET/SE]: Connecting to StreamElements');
+
   socket.connect();
 
   socket.on('connect', () => {
+    logIfDebugging('[WEBSOCKET/SE]: Connected to StreamElements');
+    logIfDebugging('[WEBSOCKET/SE]: Authenticating with StreamElements');
     socket.emit('authenticate', {
       method: 'jwt',
       token: jwtToken,
@@ -26,6 +30,7 @@ const createSocket = async (backendSocket: ServerSocket): Promise<Socket> => {
   });
 
   socket.on('disconnect', () => {
+    logIfDebugging('[WEBSOCKET/SE]: Disconnected from StreamElements');
     handleDisconnect(socket);
   });
 
@@ -104,9 +109,7 @@ const handleEventData = async (data: any, backendSocket: ServerSocket) => {
 const getStreamElementsSocket = async (
   backendSocket: ServerSocket
 ): Promise<Socket> => {
-  if (!singletonInstance) {
-    singletonInstance = await createSocket(backendSocket);
-  }
+  singletonInstance = await createSocket(backendSocket);
 
   return singletonInstance;
 };
