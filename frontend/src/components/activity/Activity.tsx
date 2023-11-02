@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Paper, Text, createStyles } from '@mantine/core';
+import { Box, Flex, Paper, Text, createStyles } from '@mantine/core';
 import React from 'react';
 import socket from '../../utils/sockets/backendSocket';
 import dayjs from 'dayjs';
@@ -87,6 +87,10 @@ function RenderSubscriberEvent(
     ) : (
       ''
     );
+
+  if (result.data.message.includes('gifted')) {
+    return <></>;
+  }
 
   return (
     <Paper mb={10}>
@@ -281,13 +285,49 @@ function RenderCheerEvent(
   );
 }
 
+function RenderTipEvent(
+  result: any,
+  handleMarkAsRead: (id: string) => void
+): JSX.Element {
+  const { classes } = useStyles(); // Add the useStyles hook here.
+  const { username, amount } = result.data;
+
+  return (
+    <Paper mb={10}>
+      {' '}
+      {/* Add the Paper component */}
+      <Flex align={'stretch'} justify={'space-between'}>
+        <Box
+          style={{
+            padding: '10px 20px 10px 20px',
+            borderLeft: '3px solid #6f48b6',
+          }}
+        >
+          <Text size={'sm'} c={'dimmed'}>
+            {dayjs(result.createdAt).calendar()}
+          </Text>
+          <Text>
+            <b>{username}</b> Tipped <b>{amount}</b>
+          </Text>
+        </Box>
+        <Box
+          onClick={() => handleMarkAsRead(result._id)}
+          className={`${classes.markAsRead}`}
+        >
+          <IconCheck size={20} />
+        </Box>
+      </Flex>
+    </Paper>
+  );
+}
+
 function RenderDefaultEvent(
   result: any,
   type: string,
   handleMarkAsRead: (id: string) => void
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
-  const { displayName, amount } = result.data;
+  const { displayName, amount, username } = result.data;
   const tierText = ''; // You can customize this if needed for this specific event type.
 
   return (
@@ -306,7 +346,7 @@ function RenderDefaultEvent(
           </Text>
           <Text>
             <b>
-              {displayName} {type} {amount}
+              {displayName} {username} {type} {amount}
             </b>{' '}
             {tierText}
           </Text>
@@ -356,6 +396,8 @@ export default function Activity(event: EventInt): JSX.Element | null {
         return RenderRaidEvent(activity, handleMarkAsRead);
       case 'cheer':
         return RenderCheerEvent(activity, handleMarkAsRead);
+      case 'tip':
+        return RenderDefaultEvent(activity, type, handleMarkAsRead);
       default:
         return RenderDefaultEvent(activity, type, handleMarkAsRead);
     }

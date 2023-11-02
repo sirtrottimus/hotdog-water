@@ -10,7 +10,6 @@ import {
   Group,
   LoadingOverlay,
   Paper,
-  PasswordInput,
   TextInput,
   Title,
   useMantineTheme,
@@ -32,15 +31,21 @@ import useAuthorization from '../../hooks/useAuthorization';
 import { useRouter } from 'next/router';
 
 type FormStreamElementsSettingsInput = {
-  streamElementsToken: string;
-  streamElementsChannelID: string;
+  streamElementsYTToken: string;
+  streamElementsYTChannelID: string;
+  streamElementsTwitchToken: string;
+  streamElementsTwitchChannelID: string;
 };
 
 const schema = z.object({
-  streamElementsToken: z
+  streamElementsYTToken: z
     .string()
-    .min(1, { message: 'StreamElements JWT Token is Required' }),
-  streamElementsChannelID: z.string(),
+    .min(1, { message: 'StreamElements Youtube JWT Token is Required' }),
+  streamElementsYTChannelID: z.string(),
+  streamElementsTwitchToken: z
+    .string()
+    .min(1, { message: 'StreamElements Twitch JWT Token is Required' }),
+  streamElementsTwitchChannelID: z.string(),
 });
 
 export default function Home({
@@ -74,8 +79,10 @@ export default function Home({
   );
 
   const defaultValues = {
-    streamElementsToken: '',
-    streamElementsChannelID: '',
+    streamElementsYTToken: '',
+    streamElementsYTChannelID: '',
+    streamElementsTwitchToken: '',
+    streamElementsTwitchChannelID: '',
   };
 
   const {
@@ -218,16 +225,16 @@ export default function Home({
                 )}
               >
                 <Controller
-                  name="streamElementsToken"
+                  name="streamElementsYTToken"
                   control={control}
                   render={({ field }) => (
                     <TextInput
-                      label="StreamElements token"
-                      placeholder="StreamElements token"
+                      label="StreamElements Youtube token"
+                      placeholder="StreamElements Youtube token"
                       withAsterisk
                       mb={30}
                       disabled={isBlurred || !canEdit}
-                      error={errors.streamElementsToken?.message}
+                      error={errors.streamElementsYTToken?.message}
                       description={
                         <>
                           <a
@@ -247,16 +254,16 @@ export default function Home({
                 />
 
                 <Controller
-                  name="streamElementsChannelID"
+                  name="streamElementsYTChannelID"
                   control={control}
                   render={({ field }) => (
                     <TextInput
-                      label="StreamElements Channel ID"
-                      placeholder="StreamElements Channel ID"
+                      label="StreamElements Youtube Channel ID"
+                      placeholder="StreamElements Youtube Channel ID"
                       withAsterisk
                       mb={30}
                       disabled={isBlurred || !canEdit}
-                      error={errors.streamElementsChannelID?.message}
+                      error={errors.streamElementsYTChannelID?.message}
                       description={
                         <>
                           <a

@@ -12,11 +12,17 @@ import BaseApiService from './BaseApiService';
 
 // ------ Types ------ //
 type FormStreamElementsSettingsInput = {
-  streamElementsToken: string;
+  streamElementsYTToken: string;
+  streamElementsYTChannelID: string;
+  streamElementsTwitchToken: string;
+  streamElementsTwitchChannelID: string;
 };
 
 export type StreamElementsSettingsInt = {
-  streamElementsToken: string;
+  streamElementsYTToken: string;
+  streamElementsYTChannelID: string;
+  streamElementsTwitchToken: string;
+  streamElementsTwitchChannelID: string;
   _id?: string;
 };
 
