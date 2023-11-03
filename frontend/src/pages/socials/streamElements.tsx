@@ -282,6 +282,64 @@ export default function Home({
                   )}
                 />
 
+                <Controller
+                  name="streamElementsTwitchToken"
+                  control={control}
+                  render={({ field }) => (
+                    <TextInput
+                      label="StreamElements Twitch token"
+                      placeholder="StreamElements Twitch token"
+                      withAsterisk
+                      mb={30}
+                      disabled={isBlurred || !canEdit}
+                      error={errors.streamElementsTwitchToken?.message}
+                      description={
+                        <>
+                          <a
+                            href="https://streamelements.com/dashboard/account/channels"
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ color: theme.colors.blue[6] }}
+                          >
+                            Click here
+                          </a>{' '}
+                          to get your StreamElements JWT Token.
+                        </>
+                      }
+                      {...field}
+                    />
+                  )}
+                />
+
+                <Controller
+                  name="streamElementsTwitchChannelID"
+                  control={control}
+                  render={({ field }) => (
+                    <TextInput
+                      label="StreamElements Twitch Channel ID"
+                      placeholder="StreamElements Twitch Channel ID"
+                      withAsterisk
+                      mb={30}
+                      disabled={isBlurred || !canEdit}
+                      error={errors.streamElementsTwitchChannelID?.message}
+                      description={
+                        <>
+                          <a
+                            href="https://streamelements.com/dashboard/account/channels"
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ color: theme.colors.blue[6] }}
+                          >
+                            Click here
+                          </a>{' '}
+                          to get your StreamElements Channel ID.
+                        </>
+                      }
+                      {...field}
+                    />
+                  )}
+                />
+
                 <Group position="center">
                   <Button
                     variant="gradient"
