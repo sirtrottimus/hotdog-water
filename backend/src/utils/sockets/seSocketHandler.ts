@@ -6,12 +6,17 @@ import { logIfDebugging } from '../helpers';
 
 const STREAM_ELEMENTS_URL = 'https://realtime.streamelements.com';
 
-let singletonInstance: Socket | null = null;
+let singletonInstanceYT: Socket | null = null;
+let singletonInstanceTwitch: Socket | null = null;
 
-const createSocket = async (backendSocket: ServerSocket): Promise<Socket> => {
-  const jwtToken = await fetchStreamElementsToken();
+const createSocket = async (
+  backendSocket: ServerSocket,
+  URL: string,
+  type: 'yt' | 'twitch'
+): Promise<Socket> => {
+  const jwtToken = await fetchStreamElementsToken(type);
 
-  const socket = io(STREAM_ELEMENTS_URL, {
+  const socket = io(URL, {
     transports: ['websocket'],
     autoConnect: false,
   });
@@ -45,20 +50,25 @@ const createSocket = async (backendSocket: ServerSocket): Promise<Socket> => {
   return socket;
 };
 
-const fetchStreamElementsToken = async (): Promise<string> => {
+const fetchStreamElementsToken = async (
+  type: 'yt' | 'twitch'
+): Promise<string> => {
   const StreamElementsSettings = await StreamElementsSettingsService.get();
 
   if (!StreamElementsSettings.success) {
     throw new Error('Error Fetching StreamElements Settings');
   }
 
-  return StreamElementsSettings.data?.streamElementsToken ?? '';
+  return type === 'yt'
+    ? StreamElementsSettings.data?.streamElementsYTToken ?? ''
+    : StreamElementsSettings.data?.streamElementsTwitchToken ?? '';
 };
 
 const handleDisconnect = (socket: Socket) => {
   socket.disconnect();
   logIfDebugging('[WEBSOCKET/SE]: Disconnected from StreamElements');
-  singletonInstance = null;
+  singletonInstanceYT = null;
+  singletonInstanceTwitch = null;
 };
 
 const handleEventData = async (data: any, backendSocket: ServerSocket) => {
@@ -70,7 +80,7 @@ const handleEventData = async (data: any, backendSocket: ServerSocket) => {
     `[WEBSOCKET/SE]: Received event: ${data.type} with ID ${data._id}`
   );
 
-  console.log(data);
+  logIfDebugging(data);
 
   if (!existingActivity) {
     const newActivity = await Activity.create({
@@ -106,14 +116,30 @@ const handleEventData = async (data: any, backendSocket: ServerSocket) => {
   }
 };
 
-const getStreamElementsSocket = async (
+export const getStreamElementsYTSocket = async (
   backendSocket: ServerSocket
 ): Promise<Socket> => {
-  if (!singletonInstance) {
-    singletonInstance = await createSocket(backendSocket);
+  if (!singletonInstanceYT) {
+    singletonInstanceYT = await createSocket(
+      backendSocket,
+      STREAM_ELEMENTS_URL,
+      'yt'
+    );
   }
 
-  return singletonInstance;
+  return singletonInstanceYT;
 };
 
-export default getStreamElementsSocket;
+export const getStreamElementsTwitchSocket = async (
+  backendSocket: ServerSocket
+): Promise<Socket> => {
+  if (!singletonInstanceTwitch) {
+    singletonInstanceTwitch = await createSocket(
+      backendSocket,
+      STREAM_ELEMENTS_URL,
+      'twitch'
+    );
+  }
+
+  return singletonInstanceTwitch;
+};

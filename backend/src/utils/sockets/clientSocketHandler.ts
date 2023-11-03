@@ -1,6 +1,9 @@
 import { Server as ServerIO, Socket } from 'socket.io';
 import jwt from 'jsonwebtoken';
-import handleStreamElementsConnection from './seSocketHandler';
+import {
+  getStreamElementsTwitchSocket,
+  getStreamElementsYTSocket,
+} from './seSocketHandler';
 import { logIfDebugging } from '../helpers';
 import Activity from '../../database/schema/Activity';
 
@@ -130,7 +133,8 @@ const handleAuthenticationSuccess = async (
     username: decoded.username,
   });
 
-  const SESocket = await handleStreamElementsConnection(socket);
+  const SEYTSocket = await getStreamElementsYTSocket(socket);
+  const SETwitchSocket = await getStreamElementsTwitchSocket(socket);
 
   // Let the other clients know that a new client has connected
   socket.to(EVENTS.STREAM_ACTIVITY).emit('active-sockets', activeSockets);
@@ -147,16 +151,21 @@ const handleAuthenticationSuccess = async (
 
   // Handle client disconnect
   socket.on(EVENTS.DISCONNECT, () => {
-    handleClientDisconnect(socket, SESocket);
+    handleClientDisconnect(socket, SEYTSocket, SETwitchSocket);
   });
 };
 
-const handleClientDisconnect = (socket: Socket, SESocket: any) => {
+const handleClientDisconnect = (
+  socket: Socket,
+  SEYTSocket: any,
+  SETwitchSocket: any
+) => {
   activeSockets = activeSockets.filter((s) => s.socketId !== socket.id);
   socket.to(EVENTS.STREAM_ACTIVITY).emit('active-sockets', activeSockets);
 
   if (activeSockets.length === 0) {
-    SESocket?.disconnect();
+    SEYTSocket?.disconnect();
+    SETwitchSocket?.disconnect();
   }
 
   logIfDebugging(

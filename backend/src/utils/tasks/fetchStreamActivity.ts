@@ -22,13 +22,13 @@ const ACTIVITY_TYPES = [
   'communityGiftPurchase',
 ];
 
+// Get the current time
+const currentTime = new Date().toLocaleTimeString();
+// Create a log message for fetching stream activity
+const streamActivityLog = `[SCHEDULE/SE]: ${currentTime} - Fetching stream activity...`;
+
 // Function to fetch stream activity
 const fetchStreamActivity = async () => {
-  // Get the current time
-  const currentTime = new Date().toLocaleTimeString();
-  // Create a log message for fetching stream activity
-  const streamActivityLog = `[SCHEDULE/SE]: ${currentTime} - Fetching stream activity...`;
-
   // Log the activity if debugging is enabled
   logIfDebugging(streamActivityLog);
 
@@ -45,10 +45,14 @@ const fetchStreamActivity = async () => {
     }
 
     // Extract channel ID and JWT from the settings
-    const { streamElementsChannelID: channelID, streamElementsToken: jwt } =
-      streamElementsSettings;
+    const {
+      streamElementsYTChannelID: YTchannelID,
+      streamElementsYTToken: YTjwt,
+      streamElementsTwitchChannelID: TwitchChannelID,
+      streamElementsTwitchToken: TwitchToken,
+    } = streamElementsSettings;
 
-    if (!channelID || !jwt) {
+    if (!YTchannelID || !YTjwt || !TwitchChannelID || !TwitchToken) {
       // Log an error message if channel ID or JWT is missing
       logIfDebugging(
         `${streamActivityLog} - Stream Elements settings not found. Please set them up for this feature to work.`
@@ -69,30 +73,15 @@ const fetchStreamActivity = async () => {
       after = lastActivity.createdAt;
     }
 
-    // Construct the Stream Elements API URL
-    const streamElementsApiUrl = `https://api.streamelements.com/kappa/v2/activities/${channelID}`;
+    // Retrieve the fetched activity data
+    const YTActivity = await fetchActivity(YTchannelID, YTjwt, after);
+    const TwitchActivity = await fetchActivity(
+      TwitchChannelID,
+      TwitchToken,
+      after
+    );
 
-    // Fetch stream activity data from the API
-    const response = await axios.get(streamElementsApiUrl, {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-        Accept: 'application/json; charset=utf-8, application/json',
-      },
-      params: {
-        after: after.toISOString(),
-        before: new Date().toISOString(),
-        limit: ACTIVITY_LIMIT,
-        mincheer: MIN_CHEER,
-        minhost: MIN_HOST,
-        minsub: MIN_SUB,
-        mintip: MIN_TIP,
-        origin: 'feed',
-        offset: '0',
-        types: ACTIVITY_TYPES,
-      },
-    });
-
-    if (!response) {
+    if (!YTActivity || !TwitchActivity) {
       // Log an error message if fetching fails
       logIfDebugging(
         `${streamActivityLog} - Failed to fetch stream activity from Stream Elements API.`
@@ -100,8 +89,8 @@ const fetchStreamActivity = async () => {
       return;
     }
 
-    // Retrieve the fetched activity data
-    const activityData = await response.data;
+    // Combine the fetched activity data
+    const activityData = [...YTActivity, ...TwitchActivity];
 
     for (const activity of activityData) {
       // Check if the activity already exists in the database
@@ -153,5 +142,41 @@ const startFetchStreamActivity = () => {
       });
   });
 };
+
+async function fetchActivity(channelID: string, jwt: string, after: Date) {
+  // Construct the Stream Elements API URL
+  const streamElementsApiUrl = `https://api.streamelements.com/kappa/v2/activities/${channelID}`;
+
+  // Fetch stream activity data from the API
+  const response = await axios.get(streamElementsApiUrl, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+      Accept: 'application/json; charset=utf-8, application/json',
+    },
+    params: {
+      after: after.toISOString(),
+      before: new Date().toISOString(),
+      limit: ACTIVITY_LIMIT,
+      mincheer: MIN_CHEER,
+      minhost: MIN_HOST,
+      minsub: MIN_SUB,
+      mintip: MIN_TIP,
+      origin: 'feed',
+      offset: '0',
+      types: ACTIVITY_TYPES,
+    },
+  });
+
+  if (!response) {
+    // Log an error message if fetching fails
+    logIfDebugging(
+      `${streamActivityLog} - Failed to fetch stream activity from Stream Elements API.`
+    );
+    return;
+  }
+
+  // Return the fetched activity data
+  return response.data;
+}
 
 export default startFetchStreamActivity;
