@@ -88,45 +88,87 @@ function RenderSubscriberEvent(
       ''
     );
 
-  if (result.data.message.includes('gifted')) {
-    return <></>;
+  if (result.data.provider === 'twitch') {
+    if (result.data.message.includes('gifted')) {
+      return <></>;
+    }
+
+    return (
+      <Paper mb={10}>
+        <Flex align={'stretch'} justify={'space-between'}>
+          <Box
+            style={{
+              padding: '10px 20px 10px 20px',
+              borderLeft: '3px solid #6f48b6',
+            }}
+          >
+            <Text size={'sm'} c={'dimmed'}>
+              {dayjs(result.createdAt).calendar()}
+            </Text>
+
+            <Text>
+              <b>{displayName}</b> Subbed for{' '}
+              <b>
+                {amount} {amount === 1 ? 'month' : 'months'}
+              </b>{' '}
+              {tierText}
+            </Text>
+            {result.data.message && (
+              <Text mt={10}>
+                Saying: <b>{decodeHtmlEntities(result.data.message)}</b>
+              </Text>
+            )}
+          </Box>
+          <Box
+            onClick={() => handleMarkAsRead(result._id)}
+            className={`${classes.markAsRead}`}
+          >
+            <IconCheck size={20} />
+          </Box>
+        </Flex>
+      </Paper>
+    );
   }
 
-  return (
-    <Paper mb={10}>
-      <Flex align={'stretch'} justify={'space-between'}>
-        <Box
-          style={{
-            padding: '10px 20px 10px 20px',
-            borderLeft: '3px solid #6f48b6',
-          }}
-        >
-          <Text size={'sm'} c={'dimmed'}>
-            {dayjs(result.createdAt).calendar()}
-          </Text>
-
-          <Text>
-            <b>{displayName}</b> Subbed for{' '}
-            <b>
-              {amount} {amount === 1 ? 'month' : 'months'}
-            </b>{' '}
-            {tierText}
-          </Text>
-          {result.data.message && (
-            <Text mt={10}>
-              Saying: <b>{decodeHtmlEntities(result.data.message)}</b>
+  if (result.data.provider === 'youtube') {
+    return (
+      <Paper mb={10}>
+        <Flex align={'stretch'} justify={'space-between'}>
+          <Box
+            style={{
+              padding: '10px 20px 10px 20px',
+              borderLeft: '3px solid #6f48b6',
+            }}
+          >
+            <Text size={'sm'} c={'dimmed'}>
+              {dayjs(result.createdAt).calendar()}
             </Text>
-          )}
-        </Box>
-        <Box
-          onClick={() => handleMarkAsRead(result._id)}
-          className={`${classes.markAsRead}`}
-        >
-          <IconCheck size={20} />
-        </Box>
-      </Flex>
-    </Paper>
-  );
+
+            <Text>
+              <b>{displayName}</b> Subbed for{' '}
+              <b>
+                {amount} {amount === 1 ? 'month' : 'months'}
+              </b>{' '}
+              {tierText}
+            </Text>
+            {result.data.message && (
+              <Text mt={10}>
+                Saying: <b>{decodeHtmlEntities(result.data.message)}</b>
+              </Text>
+            )}
+          </Box>
+          <Box
+            onClick={() => handleMarkAsRead(result._id)}
+            className={`${classes.markAsRead}`}
+          >
+            <IconCheck size={20} />
+          </Box>
+        </Flex>
+      </Paper>
+    );
+  }
+
+  return <> </>;
 }
 
 function RenderCommunityGiftPurchaseEvent(
@@ -397,7 +439,7 @@ export default function Activity(event: EventInt): JSX.Element | null {
       case 'cheer':
         return RenderCheerEvent(activity, handleMarkAsRead);
       case 'tip':
-        return RenderDefaultEvent(activity, type, handleMarkAsRead);
+        return RenderTipEvent(activity, handleMarkAsRead);
       default:
         return RenderDefaultEvent(activity, type, handleMarkAsRead);
     }
