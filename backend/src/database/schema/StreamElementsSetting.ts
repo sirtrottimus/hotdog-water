@@ -9,8 +9,8 @@ interface StreamElementsSettingsInt extends Document {
 }
 
 const streamElementsSettingsSchema: Schema = new Schema({
-  streamElementsToken: { type: String, required: true },
-  streamElementsChannelID: { type: String, required: true },
+  streamElementsYTToken: { type: String, required: true },
+  streamElementsYTChannelID: { type: String, required: true },
   streamElementsTwitchToken: { type: String, required: true },
   streamElementsTwitchChannelID: { type: String, required: true },
 });
