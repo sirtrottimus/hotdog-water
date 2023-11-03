@@ -95,13 +95,45 @@ export class AnnouncementsService {
 
       try {
         await axios.post(
-          `https://api.streamelements.com/kappa/v2/bot/${streamElementsSettings.streamElementsChannelID}/say`,
+          `https://api.streamelements.com/kappa/v2/bot/${streamElementsSettings.streamElementsTwitchChannelID}/say`,
           {
             message: announcement.text,
           },
           {
             headers: {
-              Authorization: `Bearer ${streamElementsSettings.streamElementsToken}`,
+              Authorization: `Bearer ${streamElementsSettings.streamElementsTwitchToken}`,
+              Accept: 'application/json; charset=utf-8, application/json',
+            },
+          }
+        );
+      } catch (error) {
+        return handleAxiosError(error);
+      }
+    }
+
+    async function postToYouTube(announcement: Announcement) {
+      const streamElementsSettings = await StreamElementsSettingsSchema.findOne(
+        {}
+      );
+
+      if (!streamElementsSettings) {
+        return {
+          success: false,
+          data: null,
+          error: null,
+          msg: 'No StreamElements Settings Found',
+        };
+      }
+
+      try {
+        await axios.post(
+          `https://api.streamelements.com/kappa/v2/bot/${streamElementsSettings.streamElementsYTChannelID}/say`,
+          {
+            message: announcement.text,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${streamElementsSettings.streamElementsYTToken}`,
               Accept: 'application/json; charset=utf-8, application/json',
             },
           }
@@ -121,6 +153,9 @@ export class AnnouncementsService {
 
     if (announcement.postTo.includes('Twitch (StreamElements)')) {
       await postToTwitch(announcement);
+    }
+    if (announcement.postTo.includes('YouTube (StreamElements)')) {
+      await postToYouTube(announcement);
     }
 
     const announcements = await AnnouncementsSchema.create<AnnouncementType>({
