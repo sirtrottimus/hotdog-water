@@ -77,6 +77,8 @@ function ActivityViewer() {
     activeSockets,
   } = useBackendSocket();
   const theme = useMantineTheme();
+
+  console.log('backendEventsData', backendEventsData);
   return (
     <>
       <Paper

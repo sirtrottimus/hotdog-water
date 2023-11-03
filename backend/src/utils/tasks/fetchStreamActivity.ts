@@ -3,6 +3,7 @@ import Activity from '../../database/schema/Activity';
 import { StreamElementsSettings } from '../../database/schema';
 import { logIfDebugging } from '../helpers';
 import axios from 'axios';
+import { type } from 'os';
 
 // Define constants for configuration options
 const ACTIVITY_LIMIT = '100';
@@ -170,7 +171,7 @@ async function fetchActivity(channelID: string, jwt: string, after: Date) {
   if (!response) {
     // Log an error message if fetching fails
     logIfDebugging(
-      `${streamActivityLog} - Failed to fetch stream activity from Stream Elements API.`
+      `${streamActivityLog} - ${type} Failed to fetch stream activity from Stream Elements API.`
     );
     return;
   }
