@@ -72,17 +72,8 @@ export default function Home({
         <AnnouncementSelector user={user} />
         <AnnouncementsViewer isBlurred={isBlurred} />
       </SimpleGrid>
-      <NewWindow
-        copyStyles
-        center="parent"
-        title="Activity Viewer"
-        features={{ width: 800, height: 600 }}
-        onBlock={() => {
-          alert('Please allow popups for this site');
-        }}
-      >
-        <ActivityViewer />
-      </NewWindow>
+
+      <ActivityViewer />
     </>
   );
 }
