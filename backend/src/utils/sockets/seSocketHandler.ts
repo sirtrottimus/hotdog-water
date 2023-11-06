@@ -44,7 +44,7 @@ const createSocket = async (
   });
 
   socket.on('event', async (data) => {
-    data.provider = type;
+    data.provider = type === 'yt' ? 'youtube' : 'twitch';
     await handleEventData(data, backendSocket);
   });
 
