@@ -349,7 +349,7 @@ function RenderSponsorEvent(
             {dayjs(result.createdAt).calendar()}
           </Text>
           <Text>
-            <b>{displayName} </b>Became a{' '}
+            <b>{username} </b>Became a{' '}
             <b
               style={{
                 color: '#ff0000',
