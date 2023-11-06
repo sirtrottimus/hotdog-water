@@ -165,7 +165,7 @@ function AnnouncementSelector({ user }: { user: UserInt }) {
             ? theme.colors.dark[9]
             : theme.colors.gray[2]
         }`,
-        height: '500px',
+        minHeight: '500px',
       }}
     >
       <form

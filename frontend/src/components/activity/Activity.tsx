@@ -92,7 +92,7 @@ function RenderSubscriberEvent(
     return <></>;
   }
 
-  if (result.provider === 'twitch' || 1 + 1 === 2) {
+  if (result.provider === 'twitch') {
     return (
       <Paper mb={10}>
         <Flex align={'stretch'} justify={'space-between'}>
@@ -311,7 +311,52 @@ function RenderTipEvent(
             {dayjs(result.createdAt).calendar()}
           </Text>
           <Text>
-            <b>{username}</b> Tipped <b>{amount}</b>
+            <b>{username}</b> Tipped <b>£{amount}</b>
+          </Text>
+        </Box>
+        <Box
+          onClick={() => handleMarkAsRead(result._id)}
+          className={`${classes.markAsRead}`}
+        >
+          <IconCheck size={20} />
+        </Box>
+      </Flex>
+    </Paper>
+  );
+}
+
+function RenderSponsorEvent(
+  result: any,
+  type: string,
+  handleMarkAsRead: (id: string) => void
+): JSX.Element {
+  const { classes } = useStyles(); // Add the useStyles hook here.
+  const { displayName, amount, username, tier } = result.data;
+  const tierText = ''; // You can customize this if needed for this specific event type.
+
+  return (
+    <Paper mb={10}>
+      {' '}
+      {/* Add the Paper component */}
+      <Flex align={'stretch'} justify={'space-between'}>
+        <Box
+          style={{
+            padding: '10px 20px 10px 20px',
+            borderLeft: '3px solid red',
+          }}
+        >
+          <Text size={'sm'} c={'dimmed'}>
+            {dayjs(result.createdAt).calendar()}
+          </Text>
+          <Text>
+            <b>{displayName} </b>Became a{' '}
+            <b
+              style={{
+                color: '#ff0000',
+              }}
+            >
+              {tier}
+            </b>
           </Text>
         </Box>
         <Box
@@ -402,6 +447,8 @@ export default function Activity(event: EventInt): JSX.Element | null {
         return RenderCheerEvent(activity, handleMarkAsRead);
       case 'tip':
         return RenderTipEvent(activity, handleMarkAsRead);
+      case 'sponsor':
+        return RenderSponsorEvent(activity, type, handleMarkAsRead);
       default:
         return RenderDefaultEvent(activity, type, handleMarkAsRead);
     }
