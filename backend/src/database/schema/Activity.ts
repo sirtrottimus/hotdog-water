@@ -28,6 +28,7 @@ interface ActivityInt extends Document {
   flagged: boolean;
   read: boolean;
   feedSource: 'schedule' | 'websocket' | 'manual';
+  provider: 'twitch' | 'youtube';
 }
 
 const activitySchema: Schema = new Schema({
@@ -38,6 +39,7 @@ const activitySchema: Schema = new Schema({
   createdAt: { type: Date, required: true },
   flagged: { type: Boolean, required: true },
   read: { type: Boolean, required: true, default: false },
+  provider: { type: String, required: true },
 });
 
 const Activity = mongoose.model<ActivityInt>('activities', activitySchema);

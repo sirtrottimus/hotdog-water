@@ -92,7 +92,7 @@ function RenderSubscriberEvent(
     return <></>;
   }
 
-  if (result.data.provider === 'twitch') {
+  if (result.provider === 'twitch' || 1 + 1 === 2) {
     return (
       <Paper mb={10}>
         <Flex align={'stretch'} justify={'space-between'}>
