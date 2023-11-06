@@ -74,6 +74,11 @@ const useBackendSocket = () => {
             const sortedData = [...prevData].sort(
               (a, b) => b.createdAt - a.createdAt
             );
+            sortedData.filter(
+              (event) =>
+                event.data.provider === 'youtube' &&
+                event.data.type === 'subscriber'
+            );
             return [...sortedData, { eventName: 'event', ...data }];
           });
         },
