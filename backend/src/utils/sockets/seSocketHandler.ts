@@ -44,6 +44,7 @@ const createSocket = async (
   });
 
   socket.on('event', async (data) => {
+    data.provider = type;
     await handleEventData(data, backendSocket);
   });
 

@@ -82,6 +82,9 @@ const fetchStreamActivity = async () => {
       after
     );
 
+    YTActivity.provider = 'youtube';
+    TwitchActivity.provider = 'twitch';
+
     if (!YTActivity || !TwitchActivity) {
       // Log an error message if fetching fails
       logIfDebugging(
