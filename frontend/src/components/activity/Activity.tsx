@@ -311,7 +311,14 @@ function RenderTipEvent(
             {dayjs(result.createdAt).calendar()}
           </Text>
           <Text>
-            <b>{username}</b> Tipped <b>£{amount}</b>
+            <b>{username}</b> Tipped{' '}
+            <b
+              style={{
+                color: 'green',
+              }}
+            >
+              £{amount}
+            </b>
           </Text>
         </Box>
         <Box
