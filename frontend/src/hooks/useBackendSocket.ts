@@ -2,9 +2,15 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { socket } from '../utils/sockets/backendSocket';
 import { getCookie } from 'cookies-next';
 
-interface EventData<T = []> {
+interface EventData<T = Data> {
   eventName: string;
   data: T;
+  [key: string]: any;
+}
+
+interface Data {
+  provider: string;
+  type: string;
   [key: string]: any;
 }
 
