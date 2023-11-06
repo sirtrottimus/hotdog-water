@@ -21,6 +21,8 @@ const ACTIVITY_TYPES = [
   'redemption',
   'event',
   'communityGiftPurchase',
+  'membership',
+  'member',
 ];
 
 // Get the current time
