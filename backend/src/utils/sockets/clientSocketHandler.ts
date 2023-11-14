@@ -58,11 +58,12 @@ const handleClientConnections = (io: ServerIO) => {
       logIfDebugging('[WEBSOCKET/BACKEND]: Received read event:');
       logIfDebugging(data);
       const { _id } = data;
-      const readEvent = await Activity.findByIdAndUpdate(
-        { SE_ID: _id },
-        { read: true },
-        { new: true }
-      );
+      const readEvent = await Activity.find({ SE_ID: _id });
+
+      for (const element of readEvent) {
+        element.read = true;
+        await element.save();
+      }
 
       if (!readEvent) {
         logIfDebugging(
