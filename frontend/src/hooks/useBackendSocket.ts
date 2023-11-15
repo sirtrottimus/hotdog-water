@@ -85,7 +85,8 @@ const useBackendSocket = () => {
                 (event.data.provider &&
                   event.data.provider === 'youtube' &&
                   event.data.type !== 'subscriber') ||
-                (event.data.provider === 'twitch' &&
+                (event.data.provider &&
+                  event.data.provider === 'twitch' &&
                   event.data.type !== 'follow')
             );
             return [...sortedData, { eventName: 'event', ...data }];
