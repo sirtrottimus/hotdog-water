@@ -102,7 +102,7 @@ function ActivityViewer() {
           {activeSockets?.map((socket: any, index: number) => (
             <Avatar
               key={index}
-              src=""
+              src={socket.avatar}
               alt={socket.username}
               size="md"
               radius={'xl'}
