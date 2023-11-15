@@ -370,9 +370,7 @@ function RenderSponsorEvent(
   handleMarkAsRead: (id: string) => void
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
-  const { displayName, amount, username, tier } = result.data;
-  const tierText = ''; // You can customize this if needed for this specific event type.
-
+  const { username, tier } = result.data;
   return (
     <Paper mb={10}>
       {' '}
@@ -437,7 +435,7 @@ function RenderSuperChatEvent(
             <b>{username} </b> Superchatted{' '}
             <b
               style={{
-                color: '#ff0000',
+                color: 'green',
               }}
             >
               {currencySymbol}
