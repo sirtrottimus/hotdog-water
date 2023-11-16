@@ -84,6 +84,8 @@ const useBackendSocket = () => {
             const newData = sortedData.filter((event) => {
               const { provider, type, message } = event.data;
 
+              if (!provider || !type) return false; // Remove the event
+
               if (
                 (provider === 'youtube' && type !== 'subscriber') ||
                 (provider === 'twitch' && type !== 'follow') ||
