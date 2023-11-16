@@ -80,7 +80,7 @@ const useBackendSocket = () => {
             const sortedData = [...prevData].sort(
               (a, b) => b.createdAt - a.createdAt
             );
-            sortedData.filter(
+            const newData = sortedData.filter(
               (event) =>
                 (event.data.provider &&
                   event.data.provider === 'youtube' &&
@@ -89,7 +89,7 @@ const useBackendSocket = () => {
                   event.data.provider === 'twitch' &&
                   event.data.type !== 'follow')
             );
-            return [...sortedData, { eventName: 'event', ...data }];
+            return [...newData, { eventName: 'event', ...data }];
           });
         },
       },
