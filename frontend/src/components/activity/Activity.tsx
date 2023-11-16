@@ -8,6 +8,38 @@ import { decodeHtmlEntities } from '../../utils/helpers';
 
 dayjs.extend(calendar);
 
+const symbolMap: { [key: string]: string } = {
+  USD: '$',
+  GBP: '£',
+  EUR: '€',
+  CAD: '$',
+  AUD: '$',
+  NZD: '$',
+  CHF: 'Fr',
+  SEK: 'kr',
+  DKK: 'kr',
+  ISK: 'kr',
+  NOK: 'kr',
+  JPY: '¥',
+  KRW: '₩',
+  CNY: '¥',
+  INR: '₹',
+  RUB: '₽',
+  TRY: '₺',
+  BRL: 'R$',
+  IDR: 'Rp',
+  MYR: 'RM',
+  PHP: '₱',
+  SGD: '$',
+  THB: '฿',
+  VND: '₫',
+  ZAR: 'R',
+  HKD: '$',
+  TWD: 'NT$',
+  PLN: 'zł',
+  ILS: '₪',
+};
+
 export interface EventInt {
   eventName: string;
   [key: string]: any;
@@ -338,9 +370,7 @@ function RenderSponsorEvent(
   handleMarkAsRead: (id: string) => void
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
-  const { displayName, amount, username, tier } = result.data;
-  const tierText = ''; // You can customize this if needed for this specific event type.
-
+  const { username, tier } = result.data;
   return (
     <Paper mb={10}>
       {' '}
@@ -363,6 +393,53 @@ function RenderSponsorEvent(
               }}
             >
               {tier}
+            </b>
+          </Text>
+        </Box>
+        <Box
+          onClick={() => handleMarkAsRead(result._id)}
+          className={`${classes.markAsRead}`}
+        >
+          <IconCheck size={20} />
+        </Box>
+      </Flex>
+    </Paper>
+  );
+}
+
+function RenderSuperChatEvent(
+  result: any,
+  type: string,
+  handleMarkAsRead: (id: string) => void
+): JSX.Element {
+  const { classes } = useStyles(); // Add the useStyles hook here.
+  const { amount, username, currency } = result.data;
+
+  const currencySymbol = symbolMap[currency] || currency;
+
+  return (
+    <Paper mb={10}>
+      {' '}
+      {/* Add the Paper component */}
+      <Flex align={'stretch'} justify={'space-between'}>
+        <Box
+          style={{
+            padding: '10px 20px 10px 20px',
+            borderLeft: '3px solid red',
+          }}
+        >
+          <Text size={'sm'} c={'dimmed'}>
+            {dayjs(result.createdAt).calendar()}
+          </Text>
+          <Text>
+            <b>{username} </b> Superchatted{' '}
+            <b
+              style={{
+                color: 'green',
+              }}
+            >
+              {currencySymbol}
+              {amount}
             </b>
           </Text>
         </Box>
@@ -456,6 +533,8 @@ export default function Activity(event: EventInt): JSX.Element | null {
         return RenderTipEvent(activity, handleMarkAsRead);
       case 'sponsor':
         return RenderSponsorEvent(activity, type, handleMarkAsRead);
+      case 'superchat':
+        return RenderSuperChatEvent(activity, type, handleMarkAsRead);
       default:
         return RenderDefaultEvent(activity, type, handleMarkAsRead);
     }

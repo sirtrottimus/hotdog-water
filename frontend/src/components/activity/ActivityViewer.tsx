@@ -46,7 +46,7 @@ const useStyles = createStyles((theme, { color, depth }: ColorProps) => {
       backgroundColor:
         theme.colorScheme === 'dark'
           ? theme.colors.dark[8]
-          : theme.colors.gray[0],
+          : theme.colors.gray[1],
       color: theme.colorScheme === 'dark' ? theme.white : theme.black,
       border: `2px solid ${
         theme.colorScheme === 'dark'
@@ -102,7 +102,7 @@ function ActivityViewer() {
           {activeSockets?.map((socket: any, index: number) => (
             <Avatar
               key={index}
-              src=""
+              src={socket.avatar}
               alt={socket.username}
               size="md"
               radius={'xl'}
