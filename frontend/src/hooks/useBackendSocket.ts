@@ -80,15 +80,22 @@ const useBackendSocket = () => {
             const sortedData = [...prevData].sort(
               (a, b) => b.createdAt - a.createdAt
             );
-            const newData = sortedData.filter(
-              (event) =>
-                (event.data.provider &&
-                  event.data.provider === 'youtube' &&
-                  event.data.type !== 'subscriber') ||
-                (event.data.provider &&
-                  event.data.provider === 'twitch' &&
-                  event.data.type !== 'follow')
-            );
+            const newData = sortedData.filter((event) => {
+              const { provider, type, message } = event.data;
+
+              if (
+                (provider === 'youtube' && type !== 'subscriber') ||
+                (provider === 'twitch' && type !== 'follow') ||
+                (provider === 'twitch' &&
+                  type === 'subscriber' &&
+                  message.includes('gifted'))
+              ) {
+                return true; // Keep the event
+              }
+
+              return false; // Remove the event
+            });
+
             return [...newData, { eventName: 'event', ...data }];
           });
         },
