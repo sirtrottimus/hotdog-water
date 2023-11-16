@@ -90,10 +90,10 @@ const useBackendSocket = () => {
                   type === 'subscriber' &&
                   message.includes('gifted'))
               ) {
-                return true; // Keep the event
+                return false; // Remove the event
               }
 
-              return false; // Remove the event
+              return true; // Keep the event
             });
 
             return [...newData, { eventName: 'event', ...data }];
