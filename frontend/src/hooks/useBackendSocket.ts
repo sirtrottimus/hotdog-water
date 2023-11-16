@@ -84,7 +84,10 @@ const useBackendSocket = () => {
             const newData = sortedData.filter((event) => {
               const { provider, type, message } = event.data;
 
-              if (!provider || !type) return true; // Remove the event
+              if (!provider || !type) {
+                console.log('Removed event: ', event);
+                return false; // Remove the event
+              } // Remove the event
 
               if (
                 (provider === 'youtube' && type !== 'subscriber') ||
@@ -93,11 +96,11 @@ const useBackendSocket = () => {
                   type === 'subscriber' &&
                   message.includes('gifted'))
               ) {
-                return true; // Remove the event
+                console.log('Removed event: ', event);
+                return false; // Remove the event
               }
-
+              console.log('Kept event: ', event);
               return true; // Keep the event
-              return false; // Keep the event
             });
             return newData;
           });
@@ -114,7 +117,24 @@ const useBackendSocket = () => {
         callback: (data: any) => {
           setEventsData(
             data
-              .filter((event: any) => !event.type.includes('follow'))
+              .filter((event: any) => {
+                const { provider, type, message } = event.data;
+
+                if (!provider || !type) {
+                  return false; // Remove the event
+                } // Remove the event
+
+                if (
+                  (provider === 'youtube' && type !== 'subscriber') ||
+                  (provider === 'twitch' && type !== 'follow') ||
+                  (provider === 'twitch' &&
+                    type === 'subscriber' &&
+                    message.includes('gifted'))
+                ) {
+                  return false; // Remove the event
+                }
+                return true; // Keep the event
+              })
               .map((event: any) => ({
                 eventName: 'event:initial',
                 ...event,
