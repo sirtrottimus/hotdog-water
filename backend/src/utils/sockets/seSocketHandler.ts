@@ -21,13 +21,15 @@ const createSocket = async (
     autoConnect: false,
   });
 
-  logIfDebugging('[WEBSOCKET/SE]: Connecting to StreamElements');
+  logIfDebugging(`[WEBSOCKET/SE]: Connecting to StreamElements - ${type}`);
 
   socket.connect();
 
   socket.on('connect', () => {
-    logIfDebugging('[WEBSOCKET/SE]: Connected to StreamElements');
-    logIfDebugging('[WEBSOCKET/SE]: Authenticating with StreamElements');
+    logIfDebugging(`[WEBSOCKET/SE]: Connected to StreamElements - ${type}`);
+    logIfDebugging(
+      `[WEBSOCKET/SE]: Authenticating with StreamElements - ${type}`
+    );
     socket.emit('authenticate', {
       method: 'jwt',
       token: jwtToken,
@@ -35,12 +37,16 @@ const createSocket = async (
   });
 
   socket.on('disconnect', () => {
-    logIfDebugging('[WEBSOCKET/SE]: Disconnected from StreamElements');
+    logIfDebugging(
+      `[WEBSOCKET/SE]: Disconnected from StreamElements - ${type}`
+    );
     handleDisconnect(socket);
   });
 
   socket.on('authenticated', () => {
-    logIfDebugging('[WEBSOCKET/SE]: Authenticated');
+    logIfDebugging(
+      `[WEBSOCKET/SE]: Authenticated with StreamElements - ${type}`
+    );
   });
 
   socket.on('event', async (data) => {
@@ -67,7 +73,7 @@ const fetchStreamElementsToken = async (
 
 const handleDisconnect = (socket: Socket) => {
   socket.disconnect();
-  logIfDebugging('[WEBSOCKET/SE]: Disconnected from StreamElements');
+  logIfDebugging('[WEBSOCKET/SE]: Disconnected from StreamElements ');
   singletonInstanceYT = null;
   singletonInstanceTwitch = null;
 };
