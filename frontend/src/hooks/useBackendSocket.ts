@@ -84,7 +84,7 @@ const useBackendSocket = () => {
             const newData = sortedData.filter((event) => {
               const { provider, type, message } = event.data;
 
-              if (!provider || !type) return false; // Remove the event
+              if (!provider || !type) return true; // Remove the event
 
               if (
                 (provider === 'youtube' && type !== 'subscriber') ||
@@ -93,12 +93,13 @@ const useBackendSocket = () => {
                   type === 'subscriber' &&
                   message.includes('gifted'))
               ) {
-                return false; // Remove the event
+                return true; // Remove the event
               }
 
               return true; // Keep the event
+              return false; // Keep the event
             });
-            return [...newData, { eventName: 'event', ...data }];
+            return newData;
           });
         },
       },
@@ -124,7 +125,11 @@ const useBackendSocket = () => {
       },
       // Add other custom events here
     ];
-  }, []); // Empty dependency array, memoizes the customEvents array
+  }, [
+    setEventsData,
+    setActiveSockets,
+    // Add other dependencies here
+  ]); // Empty dependency array, memoizes the customEvents array
 
   useEffect(() => {
     socket.connect();
