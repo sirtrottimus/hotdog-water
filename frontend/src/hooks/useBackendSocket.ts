@@ -77,7 +77,8 @@ const useBackendSocket = () => {
         name: 'event',
         callback: (data: any) => {
           setEventsData((prevData) => {
-            const sortedData = [...prevData].sort(
+            const newArray = [...prevData, { eventName: 'event', ...data }];
+            const sortedData = [...newArray].sort(
               (a, b) => b.createdAt - a.createdAt
             );
             const newData = sortedData.filter((event) => {
@@ -95,7 +96,6 @@ const useBackendSocket = () => {
 
               return true; // Keep the event
             });
-
             return [...newData, { eventName: 'event', ...data }];
           });
         },
