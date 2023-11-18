@@ -86,9 +86,8 @@ const useBackendSocket = () => {
               const { type, provider } = event;
 
               if (!provider || !type) {
-                console.log('Removed event: ', event);
-                return true; // Remove the event
-              } // Remove the event
+                return false;
+              }
 
               if (
                 (provider === 'youtube' && type !== 'subscriber') ||
@@ -97,11 +96,10 @@ const useBackendSocket = () => {
                   type === 'subscriber' &&
                   message.includes('gifted'))
               ) {
-                console.log('Removed event: ', event);
-                return true; // Remove the event
+                return true;
               }
-              console.log('Kept event: ', event);
-              return false; // Keep the event
+
+              return true;
             });
             return newData;
           });
@@ -123,9 +121,8 @@ const useBackendSocket = () => {
                 const { type, provider } = event;
 
                 if (!provider || !type) {
-                  console.log('Removed event: ', event, 'because of no type');
-                  return false; // Remove the event
-                } // Remove the event
+                  return false;
+                }
 
                 if (
                   (provider === 'youtube' && type !== 'subscriber') ||
@@ -134,11 +131,10 @@ const useBackendSocket = () => {
                     type === 'subscriber' &&
                     message.includes('gifted'))
                 ) {
-                  console.log('Removed event: ', event, 'because of type');
-                  return true; // Remove the event
+                  return true;
                 }
 
-                return false; // Keep the event
+                return true;
               })
               .map((event: any) => ({
                 eventName: 'event:initial',
