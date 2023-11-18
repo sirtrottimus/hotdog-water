@@ -99,7 +99,7 @@ const useBackendSocket = () => {
                 return true;
               }
 
-              return true;
+              return false;
             });
             return newData;
           });
@@ -134,7 +134,7 @@ const useBackendSocket = () => {
                   return true;
                 }
 
-                return true;
+                return false;
               })
               .map((event: any) => ({
                 eventName: 'event:initial',
