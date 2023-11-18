@@ -124,7 +124,7 @@ const useBackendSocket = () => {
 
                 if (!provider || !type) {
                   console.log('Removed event: ', event, 'because of no type');
-                  return true; // Remove the event
+                  return false; // Remove the event
                 } // Remove the event
 
                 if (
