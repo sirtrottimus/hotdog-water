@@ -82,8 +82,8 @@ const useBackendSocket = () => {
               (a, b) => b.createdAt - a.createdAt
             );
             const newData = sortedData.filter((event) => {
-              const { type, message } = event.data;
-              const { provider } = event;
+              const { message } = event.data;
+              const { type, provider } = event;
 
               if (!provider || !type) {
                 console.log('Removed event: ', event);
@@ -119,8 +119,8 @@ const useBackendSocket = () => {
           setEventsData(
             data
               .filter((event: any) => {
-                const { type, message } = event.data;
-                const { provider } = event;
+                const { message } = event.data;
+                const { type, provider } = event;
 
                 if (!provider || !type) {
                   console.log('Removed event: ', event, 'because of no type');
