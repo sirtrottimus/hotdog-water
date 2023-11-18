@@ -87,7 +87,7 @@ const useBackendSocket = () => {
 
               if (!provider || !type) {
                 console.log('Removed event: ', event);
-                return false; // Remove the event
+                return true; // Remove the event
               } // Remove the event
 
               if (
@@ -98,10 +98,10 @@ const useBackendSocket = () => {
                   message.includes('gifted'))
               ) {
                 console.log('Removed event: ', event);
-                return false; // Remove the event
+                return true; // Remove the event
               }
               console.log('Kept event: ', event);
-              return true; // Keep the event
+              return false; // Keep the event
             });
             return newData;
           });
@@ -124,7 +124,7 @@ const useBackendSocket = () => {
 
                 if (!provider || !type) {
                   console.log('Removed event: ', event, 'because of no type');
-                  return true; // Remove the event
+                  return false; // Remove the event
                 } // Remove the event
 
                 if (
@@ -135,10 +135,10 @@ const useBackendSocket = () => {
                     message.includes('gifted'))
                 ) {
                   console.log('Removed event: ', event, 'because of type');
-                  return true; // Remove the event
+                  return false; // Remove the event
                 }
 
-                return true; // Keep the event
+                return false; // Keep the event
               })
               .map((event: any) => ({
                 eventName: 'event:initial',
