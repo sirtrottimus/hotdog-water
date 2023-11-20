@@ -76,13 +76,13 @@ const fetchStreamActivity = async () => {
       after = lastActivity.createdAt;
     }
 
-    // Retrieve the fetched activity data
-    const YTActivity = await fetchActivity(
-      YTchannelID,
-      YTToken,
-      after,
-      'youtube'
-    );
+    // // Retrieve the fetched activity data
+    // const YTActivity = await fetchActivity(
+    //   YTchannelID,
+    //   YTToken,
+    //   after,
+    //   'youtube'
+    // );
     const TwitchActivity = await fetchActivity(
       TwitchChannelID,
       TwitchToken,
@@ -90,10 +90,9 @@ const fetchStreamActivity = async () => {
       'twitch'
     );
 
-    YTActivity.provider = 'youtube';
     TwitchActivity.provider = 'twitch';
 
-    if (!YTActivity || !TwitchActivity) {
+    if (!TwitchActivity) {
       // Log an error message if fetching fails
       logIfDebugging(
         `${streamActivityLog} - Failed to fetch stream activity from Stream Elements API.`
@@ -102,7 +101,7 @@ const fetchStreamActivity = async () => {
     }
 
     // Combine the fetched activity data
-    const activityData = [...YTActivity, ...TwitchActivity];
+    const activityData = [...TwitchActivity];
 
     for (const activity of activityData) {
       // Check if the activity already exists in the database
