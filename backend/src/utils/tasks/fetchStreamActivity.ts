@@ -76,13 +76,13 @@ const fetchStreamActivity = async () => {
       after = lastActivity.createdAt;
     }
 
-    // // Retrieve the fetched activity data
-    // const YTActivity = await fetchActivity(
-    //   YTchannelID,
-    //   YTToken,
-    //   after,
-    //   'youtube'
-    // );
+    // Retrieve the fetched activity data
+    const YTActivity = await fetchActivity(
+      YTchannelID,
+      YTToken,
+      after,
+      'youtube'
+    );
     const TwitchActivity = await fetchActivity(
       TwitchChannelID,
       TwitchToken,
@@ -90,7 +90,10 @@ const fetchStreamActivity = async () => {
       'twitch'
     );
 
-    if (!TwitchActivity) {
+    YTActivity.provider = 'youtube';
+    TwitchActivity.provider = 'twitch';
+
+    if (!YTActivity || !TwitchActivity) {
       // Log an error message if fetching fails
       logIfDebugging(
         `${streamActivityLog} - Failed to fetch stream activity from Stream Elements API.`
@@ -99,7 +102,7 @@ const fetchStreamActivity = async () => {
     }
 
     // Combine the fetched activity data
-    const activityData = [...TwitchActivity];
+    const activityData = [...YTActivity, ...TwitchActivity];
 
     for (const activity of activityData) {
       // Check if the activity already exists in the database
@@ -112,7 +115,7 @@ const fetchStreamActivity = async () => {
           type: activity.type,
           createdAt: activity.createdAt,
           data: activity.data,
-          provider: 'twitch',
+          provider: activity.provider,
           flagged: activity.flagged ?? false,
           feedSource: 'schedule',
         });
@@ -138,16 +141,19 @@ const fetchStreamActivity = async () => {
 
 // Function to start fetching stream activity on a schedule
 const startFetchStreamActivity = () => {
+  logIfDebugging(
+    '[SCHEDULE/SE]: Scheduling - Fetching stream activity every 10 minutes...'
+  );
   // Schedule a cron job to run the fetchStreamActivity function every 10 minutes
   cron.schedule('*/10 * * * *', () => {
     fetchStreamActivity()
       .then(() => {
         // Optional: You can add a success log here if needed
-        console.log('Stream activity fetch scheduled successfully.');
+        console.log('Stream activity fetched successfully.');
       })
       .catch((error) => {
         // Handle any errors that occur during fetchStreamActivity
-        console.error('Error scheduling stream activity fetch:', error);
+        console.error('Error fetching stream activity :', error);
       });
   });
 };
