@@ -17,6 +17,7 @@ import ConnectionState from './ConnectionState';
 
 import Activity from './Activity';
 import useBackendSocket from '../../hooks/useBackendSocket';
+import { IconExternalLink } from '@tabler/icons-react';
 
 const colorIndex = [
   'blue',
@@ -63,7 +64,13 @@ const useStyles = createStyles((theme, { color, depth }: ColorProps) => {
   };
 });
 
-function ActivityViewer() {
+function ActivityViewer({
+  activityWindowed,
+  setActivityWindowed,
+}: {
+  activityWindowed: boolean;
+  setActivityWindowed: (activityWindowed: boolean) => void;
+}) {
   const { classes } = useStyles({
     color: 'blue',
     depth: 0,
@@ -115,16 +122,21 @@ function ActivityViewer() {
 
         <Divider my={20} />
         <Group my={20}>
+          {!activityWindowed && (
+            <Button
+              size="sm"
+              onClick={() => {
+                setActivityWindowed(true);
+              }}
+              leftIcon={<IconExternalLink />}
+            >
+              Open Activity in New Window
+            </Button>
+          )}
           <Button
             size="sm"
-            onClick={() => {
-              backendSocket.emit('event:test', 'test');
-            }}
-          >
-            Emit Test Event
-          </Button>
-          <Button
-            size="sm"
+            variant="outline"
+            color="gray"
             onClick={() => {
               backendSocket.emit(
                 'event:test_room',
@@ -137,6 +149,8 @@ function ActivityViewer() {
           </Button>
           <Button
             size="sm"
+            variant="outline"
+            color="gray"
             onClick={() => {
               isBackendConnected
                 ? backendSocket.disconnect()

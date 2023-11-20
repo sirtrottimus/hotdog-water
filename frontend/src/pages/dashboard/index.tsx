@@ -1,5 +1,5 @@
 import { Alert, Center, SimpleGrid, Title } from '@mantine/core';
-import { ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 import { MainLayout } from '../../components/Layout/mainLayout';
 import AnnouncementSelector from '../../components/announcements/announcementSelector';
 import AnnouncementsViewer from '../../components/announcements/announcementsViewer';
@@ -16,6 +16,7 @@ export default function Home({
   user: User;
   isBlurred: boolean;
 }) {
+  const [activityWindowed, setActivityWindowed] = React.useState(false);
   const { data: JWT, isLoading } = useQuery(['Stream_elem_JWT'], async () => {
     const response = await StreamElementsService.getOne();
     if (response.success) {
@@ -73,7 +74,22 @@ export default function Home({
         <AnnouncementsViewer isBlurred={isBlurred} />
       </SimpleGrid>
 
-      <ActivityViewer />
+      {activityWindowed ? (
+        <NewWindow
+          title="Activity Viewer"
+          onUnload={() => setActivityWindowed(false)}
+        >
+          <ActivityViewer
+            activityWindowed={activityWindowed}
+            setActivityWindowed={setActivityWindowed}
+          />
+        </NewWindow>
+      ) : (
+        <ActivityViewer
+          activityWindowed={activityWindowed}
+          setActivityWindowed={setActivityWindowed}
+        />
+      )}
     </>
   );
 }

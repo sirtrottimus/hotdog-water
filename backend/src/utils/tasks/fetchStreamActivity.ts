@@ -141,16 +141,19 @@ const fetchStreamActivity = async () => {
 
 // Function to start fetching stream activity on a schedule
 const startFetchStreamActivity = () => {
+  logIfDebugging(
+    '[SCHEDULE/SE]: Scheduling - Fetching stream activity every 10 minutes...'
+  );
   // Schedule a cron job to run the fetchStreamActivity function every 10 minutes
   cron.schedule('*/10 * * * *', () => {
     fetchStreamActivity()
       .then(() => {
         // Optional: You can add a success log here if needed
-        console.log('Stream activity fetch scheduled successfully.');
+        console.log('Stream activity fetched successfully.');
       })
       .catch((error) => {
         // Handle any errors that occur during fetchStreamActivity
-        console.error('Error scheduling stream activity fetch:', error);
+        console.error('Error fetching stream activity :', error);
       });
   });
 };
