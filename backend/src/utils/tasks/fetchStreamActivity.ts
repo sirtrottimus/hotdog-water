@@ -90,8 +90,6 @@ const fetchStreamActivity = async () => {
       'twitch'
     );
 
-    TwitchActivity.provider = 'twitch';
-
     if (!TwitchActivity) {
       // Log an error message if fetching fails
       logIfDebugging(
@@ -114,7 +112,7 @@ const fetchStreamActivity = async () => {
           type: activity.type,
           createdAt: activity.createdAt,
           data: activity.data,
-          provider: activity.provider,
+          provider: 'twitch',
           flagged: activity.flagged ?? false,
           feedSource: 'schedule',
         });
