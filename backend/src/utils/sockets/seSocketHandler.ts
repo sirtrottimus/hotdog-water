@@ -89,6 +89,14 @@ const handleEventData = async (data: any, backendSocket: ServerSocket) => {
 
   logIfDebugging(data);
 
+  if (data.provider === 'youtube' && data.type === 'subscriber') {
+    return;
+  }
+
+  if (data.provider === 'twitch' && data.type === 'follow') {
+    return;
+  }
+
   if (!existingActivity) {
     const newActivity = await Activity.create({
       SE_ID: data._id,
@@ -110,10 +118,6 @@ const handleEventData = async (data: any, backendSocket: ServerSocket) => {
     logIfDebugging(
       `[WEBSOCKET/SE]: Saved activity to the database with ID ${data._id}`
     );
-
-    if (data.type === 'follow') {
-      return;
-    }
 
     backendSocket.to('stream-activity').emit('event', data);
 

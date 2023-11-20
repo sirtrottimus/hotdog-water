@@ -50,12 +50,12 @@ const fetchStreamActivity = async () => {
     // Extract channel ID and JWT from the settings
     const {
       streamElementsYTChannelID: YTchannelID,
-      streamElementsYTToken: YTjwt,
+      streamElementsYTToken: YTToken,
       streamElementsTwitchChannelID: TwitchChannelID,
       streamElementsTwitchToken: TwitchToken,
     } = streamElementsSettings;
 
-    if (!YTchannelID || !YTjwt || !TwitchChannelID || !TwitchToken) {
+    if (!YTchannelID || !YTToken || !TwitchChannelID || !TwitchToken) {
       // Log an error message if channel ID or JWT is missing
       logIfDebugging(
         `${streamActivityLog} - Stream Elements settings not found. Please set them up for this feature to work.`
@@ -77,11 +77,17 @@ const fetchStreamActivity = async () => {
     }
 
     // Retrieve the fetched activity data
-    const YTActivity = await fetchActivity(YTchannelID, YTjwt, after);
+    const YTActivity = await fetchActivity(
+      YTchannelID,
+      YTToken,
+      after,
+      'youtube'
+    );
     const TwitchActivity = await fetchActivity(
       TwitchChannelID,
       TwitchToken,
-      after
+      after,
+      'twitch'
     );
 
     YTActivity.provider = 'youtube';
@@ -128,7 +134,7 @@ const fetchStreamActivity = async () => {
   } catch (error) {
     // Log an error if there's an exception
     logIfDebugging(
-      `${streamActivityLog} - Error in fetchStreamActivity: ${error}`
+      `${streamActivityLog} - Error in fetchStreamActivity: ${error} - `
     );
   }
 };
@@ -149,40 +155,52 @@ const startFetchStreamActivity = () => {
   });
 };
 
-async function fetchActivity(channelID: string, jwt: string, after: Date) {
-  // Construct the Stream Elements API URL
-  const streamElementsApiUrl = `https://api.streamelements.com/kappa/v2/activities/${channelID}`;
+async function fetchActivity(
+  channelID: string,
+  jwt: string,
+  after: Date,
+  type: string
+) {
+  try {
+    // Construct the Stream Elements API URL
+    const streamElementsApiUrl = `https://api.streamelements.com/kappa/v2/activities/${channelID}`;
 
-  // Fetch stream activity data from the API
-  const response = await axios.get(streamElementsApiUrl, {
-    headers: {
-      Authorization: `Bearer ${jwt}`,
-      Accept: 'application/json; charset=utf-8, application/json',
-    },
-    params: {
-      after: after.toISOString(),
-      before: new Date().toISOString(),
-      limit: ACTIVITY_LIMIT,
-      mincheer: MIN_CHEER,
-      minhost: MIN_HOST,
-      minsub: MIN_SUB,
-      mintip: MIN_TIP,
-      origin: 'feed',
-      offset: '0',
-      types: ACTIVITY_TYPES,
-    },
-  });
+    // Fetch stream activity data from the API
+    const response = await axios.get(streamElementsApiUrl, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+        Accept: 'application/json; charset=utf-8, application/json',
+      },
+      params: {
+        after: after.toISOString(),
+        before: new Date().toISOString(),
+        limit: ACTIVITY_LIMIT,
+        mincheer: MIN_CHEER,
+        minhost: MIN_HOST,
+        minsub: MIN_SUB,
+        mintip: MIN_TIP,
+        origin: 'feed',
+        offset: '0',
+        types: ACTIVITY_TYPES,
+      },
+    });
 
-  if (!response) {
-    // Log an error message if fetching fails
+    if (!response) {
+      // Log an error message if fetching fails
+      logIfDebugging(
+        `${streamActivityLog} - ${type} Failed to fetch stream activity from Stream Elements API.`
+      );
+      return;
+    }
+
+    // Return the fetched activity data
+    return response.data;
+  } catch (error) {
+    // Log an error if there's an exception
     logIfDebugging(
-      `${streamActivityLog} - ${type} Failed to fetch stream activity from Stream Elements API.`
+      `${streamActivityLog} - Error in fetchStreamActivity: ${error} - ${type}`
     );
-    return;
   }
-
-  // Return the fetched activity data
-  return response.data;
 }
 
 export default startFetchStreamActivity;
