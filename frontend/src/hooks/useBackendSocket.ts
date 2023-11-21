@@ -82,7 +82,6 @@ const useBackendSocket = () => {
               (a, b) => b.createdAt - a.createdAt
             );
             const newData = sortedData.filter((event) => {
-              const { message } = event.data;
               const { type, provider } = event;
 
               if (!provider || !type) {
@@ -94,7 +93,7 @@ const useBackendSocket = () => {
                 (provider === 'twitch' && type !== 'follow') ||
                 (provider === 'twitch' &&
                   type === 'subscriber' &&
-                  message.includes('gifted'))
+                  event.data.message?.includes('gifted'))
               ) {
                 return true;
               }
@@ -117,7 +116,6 @@ const useBackendSocket = () => {
           setEventsData(
             data
               .filter((event: any) => {
-                const { message } = event.data;
                 const { type, provider } = event;
 
                 if (!provider || !type) {
@@ -129,7 +127,7 @@ const useBackendSocket = () => {
                   (provider === 'twitch' && type !== 'follow') ||
                   (provider === 'twitch' &&
                     type === 'subscriber' &&
-                    message.includes('gifted'))
+                    event.data.message?.includes('gifted'))
                 ) {
                   return true;
                 }
