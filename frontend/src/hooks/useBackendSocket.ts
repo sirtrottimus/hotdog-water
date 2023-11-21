@@ -88,6 +88,10 @@ const useBackendSocket = () => {
                 return false;
               }
 
+              if (event.data.gifted) {
+                return false;
+              }
+
               if (
                 (provider === 'youtube' && type !== 'subscriber') ||
                 (provider === 'twitch' && type !== 'follow') ||
