@@ -145,9 +145,13 @@ function RenderSubscriberEvent(
               </b>{' '}
               {tierText}
             </Text>
-            {result.data.message && (
+            {result.data.message ? (
               <Text mt={10}>
                 Saying: <b>{decodeHtmlEntities(result.data.message)}</b>
+              </Text>
+            ) : (
+              <Text mt={10} c={'dimmed'}>
+                They left no message
               </Text>
             )}
           </Box>

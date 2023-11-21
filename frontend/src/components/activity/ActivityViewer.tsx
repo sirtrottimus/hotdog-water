@@ -138,6 +138,17 @@ function ActivityViewer({
             variant="outline"
             color="gray"
             onClick={() => {
+              backendSocket.disconnect();
+              backendSocket.connect();
+            }}
+          >
+            Refresh From Schedule
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            color="gray"
+            onClick={() => {
               backendSocket.emit(
                 'event:test_room',
                 activeSockets.find((s: any) => s.socketId === backendSocket.id)

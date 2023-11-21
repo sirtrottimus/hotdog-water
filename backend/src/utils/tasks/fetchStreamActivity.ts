@@ -3,7 +3,6 @@ import Activity from '../../database/schema/Activity';
 import { StreamElementsSettings } from '../../database/schema';
 import { logIfDebugging } from '../helpers';
 import axios from 'axios';
-import { type } from 'os';
 
 // Define constants for configuration options
 const ACTIVITY_LIMIT = '100';
