@@ -356,6 +356,17 @@ function RenderTipEvent(
               £{amount}
             </b>
           </Text>
+          {
+            result.data.message ? (
+              <Text mt={10}>
+                Saying: <b>{decodeHtmlEntities(result.data.message)}</b>
+              </Text>
+            ) : (
+              <Text mt={10} c={'dimmed'}>
+                They left no message
+              </Text>
+            ) // You can customize this if needed for this specific event type.
+          }
         </Box>
         <Box
           onClick={() => handleMarkAsRead(result._id)}
