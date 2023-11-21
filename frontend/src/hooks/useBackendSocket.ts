@@ -94,10 +94,7 @@ const useBackendSocket = () => {
 
               if (
                 (provider === 'youtube' && type !== 'subscriber') ||
-                (provider === 'twitch' && type !== 'follow') ||
-                (provider === 'twitch' &&
-                  type === 'subscriber' &&
-                  event.data.message?.includes('gifted'))
+                (provider === 'twitch' && type !== 'follow')
               ) {
                 return true;
               }
@@ -123,6 +120,10 @@ const useBackendSocket = () => {
                 const { type, provider } = event;
 
                 if (!provider || !type) {
+                  return false;
+                }
+
+                if (event.data.gifted) {
                   return false;
                 }
 
