@@ -25,7 +25,7 @@ const ACTIVITY_TYPES = [
 ];
 
 // Get the current time
-const currentTime = new Date().toLocaleTimeString();
+const currentTime = new Date().toTimeString();
 // Create a log message for fetching stream activity
 const streamActivityLog = `[SCHEDULE/SE]: ${currentTime} - Fetching stream activity...`;
 
@@ -146,9 +146,10 @@ const startFetchStreamActivity = () => {
   // Schedule a cron job to run the fetchStreamActivity function every 10 minutes
   cron.schedule('*/10 * * * *', () => {
     fetchStreamActivity()
-      .then(() => {
+      .then((response) => {
         // Optional: You can add a success log here if needed
         console.log('Stream activity fetched successfully.');
+        console.log(response);
       })
       .catch((error) => {
         // Handle any errors that occur during fetchStreamActivity
