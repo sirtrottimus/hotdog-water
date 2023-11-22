@@ -428,7 +428,7 @@ function RenderSuperChatEvent(
   handleMarkAsRead: (id: string) => void
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
-  const { amount, username, currency } = result.data;
+  const { amount, username, currency, message } = result.data;
 
   const currencySymbol = symbolMap[currency] || currency;
 
@@ -457,6 +457,17 @@ function RenderSuperChatEvent(
               {amount}
             </b>
           </Text>
+          {
+            message ? (
+              <Text mt={10}>
+                Saying: <b>{decodeHtmlEntities(message)}</b>
+              </Text>
+            ) : (
+              <Text mt={10} c={'dimmed'}>
+                They left no message
+              </Text>
+            ) // You can customize this if needed for this specific event type.
+          }
         </Box>
         <Box
           onClick={() => handleMarkAsRead(result._id)}
