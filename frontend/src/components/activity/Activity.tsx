@@ -120,8 +120,34 @@ function RenderSubscriberEvent(
       ''
     );
 
-  if (result.data.message?.includes('gifted')) {
-    return <></>;
+  if (result.data.gifted) {
+    return (
+      <Paper mb={10}>
+        <Flex align={'stretch'} justify={'space-between'}>
+          <Box
+            style={{
+              padding: '10px 20px 10px 20px',
+              borderLeft: '3px solid #6f48b6',
+            }}
+          >
+            <Text size={'sm'} c={'dimmed'}>
+              {dayjs(result.createdAt).calendar()}
+            </Text>
+            <Text>
+              <b>{result.data.sender}</b> Gifted <b> a sub</b> to {displayName}{' '}
+              at {tierText}
+              What a nice person!
+            </Text>
+          </Box>
+          <Box
+            onClick={() => handleMarkAsRead(result._id)}
+            className={`${classes.markAsRead}`}
+          >
+            <IconCheck size={20} />
+          </Box>
+        </Flex>
+      </Paper>
+    );
   }
 
   if (result.provider && result.provider === 'twitch') {
