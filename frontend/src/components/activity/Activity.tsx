@@ -135,8 +135,7 @@ function RenderSubscriberEvent(
             </Text>
             <Text>
               <b>{result.data.sender}</b> Gifted <b> a sub</b> to {displayName}{' '}
-              at {tierText}
-              What a nice person!
+              at {tierText} What a nice person!
             </Text>
           </Box>
           <Box
