@@ -88,7 +88,7 @@ const useBackendSocket = () => {
                 return false;
               }
 
-              if (event.data.gifted) {
+              if (event.data.gifted && event.data.amount > 1) {
                 return false;
               }
 
@@ -123,7 +123,7 @@ const useBackendSocket = () => {
                   return false;
                 }
 
-                if (event.data.gifted) {
+                if (event.data.gifted && event.data.amount > 1) {
                   return false;
                 }
 
