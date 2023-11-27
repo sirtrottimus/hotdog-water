@@ -57,7 +57,6 @@ const useStyles = createStyles((theme, { color, depth }: ColorProps) => {
       borderRadius: theme.radius.sm,
       padding: theme.spacing.md,
 
-      maxHeight: '75vh',
       scrollbarWidth: 'thin',
       overflowY: 'auto',
     },
@@ -184,7 +183,10 @@ function ActivityViewer({
         {isBackendConnected && (
           <>
             {backendEventsData?.length > 0 ? (
-              <Box className={`${classes.activityContainer}`}>
+              <Box
+                className={`${classes.activityContainer}`}
+                mah={activityWindowed ? '75vh' : '100%'}
+              >
                 {backendEventsData?.map((event: any, index: number) => (
                   <div key={index}>
                     <Activity
