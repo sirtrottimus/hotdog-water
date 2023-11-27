@@ -90,7 +90,7 @@ function ActivityViewer({
     <>
       <Paper
         mt={30}
-        p={'xl'}
+        p={activityWindowed ? 0 : 20}
         sx={{
           border: `3px solid ${
             theme.colorScheme === 'dark'
@@ -98,8 +98,8 @@ function ActivityViewer({
               : theme.colors.gray[2]
           }`,
         }}
-        w={'75%'}
-        mx={'auto'}
+        w={activityWindowed ? '100%' : '75%'}
+        mx={activityWindowed ? 0 : 'auto'}
       >
         <Flex justify={'space-between'} align={'center'}>
           <ConnectionState isConnected={isBackendConnected} title={'Backend'} />
@@ -123,53 +123,57 @@ function ActivityViewer({
         <Divider my={20} />
         <Group my={20}>
           {!activityWindowed && (
-            <Button
-              size="sm"
-              onClick={() => {
-                setActivityWindowed(true);
-              }}
-              leftIcon={<IconExternalLink />}
-            >
-              Open Activity in New Window
-            </Button>
+            <>
+              <Button
+                size="sm"
+                onClick={() => {
+                  setActivityWindowed(true);
+                }}
+                leftIcon={<IconExternalLink />}
+              >
+                Open Activity in New Window
+              </Button>
+
+              <Button
+                size="sm"
+                variant="outline"
+                color="gray"
+                onClick={() => {
+                  backendSocket.disconnect();
+                  backendSocket.connect();
+                }}
+              >
+                Refresh From Schedule
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                color="gray"
+                onClick={() => {
+                  backendSocket.emit(
+                    'event:test_room',
+                    activeSockets.find(
+                      (s: any) => s.socketId === backendSocket.id
+                    )?.username ?? 'unknown'
+                  );
+                }}
+              >
+                Emit Test Room Event
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                color="gray"
+                onClick={() => {
+                  isBackendConnected
+                    ? backendSocket.disconnect()
+                    : backendSocket.connect();
+                }}
+              >
+                {isBackendConnected ? 'Disconnect Backend' : 'Connect Backend'}
+              </Button>
+            </>
           )}
-          <Button
-            size="sm"
-            variant="outline"
-            color="gray"
-            onClick={() => {
-              backendSocket.disconnect();
-              backendSocket.connect();
-            }}
-          >
-            Refresh From Schedule
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            color="gray"
-            onClick={() => {
-              backendSocket.emit(
-                'event:test_room',
-                activeSockets.find((s: any) => s.socketId === backendSocket.id)
-                  ?.username ?? 'unknown'
-              );
-            }}
-          >
-            Emit Test Room Event
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            color="gray"
-            onClick={() => {
-              isBackendConnected
-                ? backendSocket.disconnect()
-                : backendSocket.connect();
-            }}
-          >
-            {isBackendConnected ? 'Disconnect Backend' : 'Connect Backend'}
-          </Button>
         </Group>
 
         {isBackendConnected && (
