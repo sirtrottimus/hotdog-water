@@ -11,7 +11,7 @@ const Usercell = ({ cell }: { cell: MRT_Cell<any> }): React.ReactElement => {
     >
       <Avatar
         radius="xl"
-        src={`https://cdn.discordapp.com/avatars/${cell.row.original.createdBy.discordId}/${cell.row.original.createdBy.avatar}.webp`}
+        src={`https://cdn.discordapp.com/avatars/${cell.row.original.createdBy.discordId}/${cell.row.original.createdBy.avatar}.png`}
         alt={cell.row.original.createdBy.username}
         mr={10}
       />

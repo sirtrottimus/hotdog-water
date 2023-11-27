@@ -85,7 +85,6 @@ function ActivityViewer({
   } = useBackendSocket();
   const theme = useMantineTheme();
 
-  console.log('backendEventsData', backendEventsData);
   return (
     <>
       <Paper
@@ -101,25 +100,31 @@ function ActivityViewer({
         w={activityWindowed ? '100%' : '75%'}
         mx={activityWindowed ? 0 : 'auto'}
       >
-        <Flex justify={'space-between'} align={'center'}>
-          <ConnectionState isConnected={isBackendConnected} title={'Backend'} />
-          <Badge size="lg">Alpha</Badge>
-        </Flex>
-        <Avatar.Group>
-          {activeSockets?.map((socket: any, index: number) => (
-            <Avatar
-              key={index}
-              src={socket.avatar}
-              alt={socket.username}
-              size="md"
-              radius={'xl'}
-              color={colorIndex[index % colorIndex.length]}
-            >
-              {socket.username[0].toUpperCase()}
-            </Avatar>
-          ))}
-        </Avatar.Group>
-
+        {!activityWindowed && (
+          <>
+            <Flex justify={'space-between'} align={'center'}>
+              <ConnectionState
+                isConnected={isBackendConnected}
+                title={'Backend'}
+              />
+              <Badge size="lg">Alpha</Badge>
+            </Flex>
+            <Avatar.Group>
+              {activeSockets?.map((socket: any, index: number) => (
+                <Avatar
+                  key={index}
+                  src={socket.avatar}
+                  alt={socket.username}
+                  size="md"
+                  radius={'xl'}
+                  color={colorIndex[index % colorIndex.length]}
+                >
+                  {socket.username[0].toUpperCase()}
+                </Avatar>
+              ))}
+            </Avatar.Group>
+          </>
+        )}
         <Divider my={20} />
         <Group my={20}>
           {!activityWindowed && (
