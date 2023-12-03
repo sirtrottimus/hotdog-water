@@ -34,7 +34,6 @@ import {
 import Head from 'next/head';
 import { useMediaQuery } from '@mantine/hooks';
 import { useRouter } from 'next/router';
-
 import { capitalizeFirstLetter, checkTwitchStatus } from '../../utils/helpers';
 import CenteredLoader from '../misc/CenteredLoader';
 import { User } from '../misc/User';
@@ -43,6 +42,9 @@ import FormModal from '../modals/form';
 import { useMachine } from '@xstate/react';
 import formMachine from '../../utils/machines/modalFormMachine';
 import TwitchService from '../../utils/api/TwitchService';
+
+
+
 
 const useStyles = createStyles((theme) => ({
   links: {
@@ -195,7 +197,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
     <>
       <Head>
         <title>
-          HATBOT DASHBOARD{' '}
+          {process.env.NEXT_PUBLIC_NAME} v{process.env.NEXT_PUBLIC_VERSION} |{' '}
           {capitalizeFirstLetter(router.asPath.split('/').slice(1)[0])}
         </title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
@@ -249,9 +251,9 @@ export function MainLayout({ children }: { children: ReactNode }) {
                   }
                   className={'textGradient'}
                 >
-                  HATBOT DASHBOARD
+                  {process.env.NEXT_PUBLIC_NAME?.toUpperCase()} DASHBOARD
                 </Text>
-                <Code sx={{ fontWeight: 700 }}>v1.2.3--dev</Code>
+                <Code sx={{ fontWeight: 700 }}>{process.env.NEXT_PUBLIC_VERSION}</Code>
               </Group>
               <Group>
                 <ActionIcon
@@ -370,3 +372,4 @@ export function MainLayout({ children }: { children: ReactNode }) {
     </>
   );
 }
+

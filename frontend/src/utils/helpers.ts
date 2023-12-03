@@ -96,12 +96,12 @@ export function getAPIUrl() {
     if (!process.env.DEV_API_URL) {
       throw new Error('Missing DEV_API_URL environment variable');
     }
-    API_URL = 'http://localhost:6969';
+    API_URL = process.env.DEV_API_URL;
   } else {
     if (!process.env.PROD_API_URL) {
       throw new Error('Missing PROD_API_URL environment variable');
     }
-    API_URL = 'https://api.hatfilms.co.uk';
+    API_URL = process.env.PROD_API_URL;
   }
   return API_URL;
 }
