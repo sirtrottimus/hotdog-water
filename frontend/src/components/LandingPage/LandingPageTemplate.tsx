@@ -100,9 +100,9 @@ const LandingPageTemplate = () => {
         <Section>
           <Container center className={styles.headerSection}>
             <H1>
-              <span className={styles.textGradient}>Hat Bot Dashboard</span>
+              <span className={styles.textGradient}>{process.env.NEXT_PUBLIC_NAME} Dashboard</span>
             </H1>
-            <Subtitle>Home of the bot, the hat bot.</Subtitle>
+            <Subtitle>Access is restricted.</Subtitle>
           </Container>
           <Container>
             <Button
