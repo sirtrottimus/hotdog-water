@@ -58,10 +58,10 @@ const LandingPageTemplate = () => {
 
   const handleLogin = () => {
     if (process.env.NODE_ENV === 'development') {
-      window.location.href = `${process.env.DEV_API_URL}/api/auth/discord`;
+      window.location.href = `${process.env.NEXT_PUBLIC_DEV_API_URL}/api/auth/discord`;
       return;
     }
-    window.location.href = `${process.env.PROD_API_URL}/api/auth/discord`;
+    window.location.href = `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/auth/discord`;
   };
 
   return (
@@ -100,7 +100,9 @@ const LandingPageTemplate = () => {
         <Section>
           <Container center className={styles.headerSection}>
             <H1>
-              <span className={styles.textGradient}>{process.env.NEXT_PUBLIC_NAME} Dashboard</span>
+              <span className={styles.textGradient}>
+                {process.env.NEXT_PUBLIC_NAME} Dashboard
+              </span>
             </H1>
             <Subtitle>Access is restricted.</Subtitle>
           </Container>

@@ -93,15 +93,15 @@ export function capitalizeFirstLetter(input: string) {
 export function getAPIUrl() {
   let API_URL = '';
   if (process.env.NODE_ENV === 'development') {
-    if (!process.env.DEV_API_URL) {
+    if (!process.env.NEXT_PUBLIC_DEV_API_URL) {
       throw new Error('Missing DEV_API_URL environment variable');
     }
-    API_URL = process.env.DEV_API_URL;
+    API_URL = process.env.NEXT_PUBLIC_DEV_API_URL;
   } else {
-    if (!process.env.PROD_API_URL) {
+    if (!process.env.NEXT_PUBLIC_PROD_API_URL) {
       throw new Error('Missing PROD_API_URL environment variable');
     }
-    API_URL = process.env.PROD_API_URL;
+    API_URL = process.env.NEXT_PUBLIC_PROD_API_URL;
   }
   return API_URL;
 }
