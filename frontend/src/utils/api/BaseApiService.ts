@@ -21,7 +21,7 @@ interface Options {
 
 class BaseApiService {
   // The base URL for the API
-  baseURL = `${getAPIUrl()}/api`;
+  baseURL = `${getAPIUrl()}api`;
 
   /**
    * Performs a POST request to the API.
