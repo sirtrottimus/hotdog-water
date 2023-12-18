@@ -122,19 +122,16 @@ const useBackendSocket = () => {
       {
         name: 'event:initial',
         callback: (data: any) => {
+          //Filter for duplicate events
+          const uniqueArray = data.filter(
+            (obj, index, self) =>
+              index === self.findIndex((o) => o.SE_ID === obj.SE_ID)
+          );
+
           setEventsData(
             data
               .filter((event: any) => {
                 const { type, provider } = event;
-
-                //Filter for duplicate events
-                const isDuplicate = eventsData.some(
-                  (event) => event._id === data._id
-                );
-
-                if (isDuplicate) {
-                  return false;
-                }
 
                 if (!provider || !type) {
                   return false;
