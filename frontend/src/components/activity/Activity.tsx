@@ -274,7 +274,7 @@ function RenderCheerEvent(
   handleMarkAsRead: (id: string) => void
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
-  const { displayName, amount } = result.data;
+  const { displayName, amount, message } = result.data;
   let tierText = <></>; // You can customize this if needed for this specific event type.
   switch (true) {
     case amount < 100:
@@ -338,6 +338,17 @@ function RenderCheerEvent(
           <Text>
             <b>{displayName}</b> Cheered <b>{tierText}</b> Bits
           </Text>
+          {
+            result.data.message ? (
+              <Text mt={10}>
+                Saying: <b>{decodeHtmlEntities(result.data.message)}</b>
+              </Text>
+            ) : (
+              <Text mt={10} c={'dimmed'}>
+                They left no message
+              </Text>
+            ) // You can customize this if needed for this specific event type.
+          }
         </Box>
         <Box
           onClick={() => handleMarkAsRead(result._id)}
