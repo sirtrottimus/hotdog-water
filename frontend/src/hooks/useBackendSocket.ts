@@ -124,8 +124,8 @@ const useBackendSocket = () => {
         callback: (data: any) => {
           //Filter for duplicate events
           const uniqueArray = data.filter(
-            (obj, index, self) =>
-              index === self.findIndex((o) => o.SE_ID === obj.SE_ID)
+            (obj: any, index: any, self: any) =>
+              index === self.findIndex((o: any) => o.SE_ID === obj.SE_ID)
           );
 
           setEventsData(
