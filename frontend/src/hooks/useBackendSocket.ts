@@ -122,13 +122,19 @@ const useBackendSocket = () => {
       {
         name: 'event:initial',
         callback: (data: any) => {
-          //Filter for duplicate events
-          console.log('initial', data);
-
           setEventsData(
             data
               .filter((event: any) => {
                 const { type, provider } = event;
+
+                //Filter for duplicate events
+                const isDuplicate = eventsData.some(
+                  (event) => event._id === data._id
+                );
+
+                if (isDuplicate) {
+                  return false;
+                }
 
                 if (!provider || !type) {
                   return false;
@@ -163,6 +169,7 @@ const useBackendSocket = () => {
   }, [
     setEventsData,
     setActiveSockets,
+    eventsData,
     // Add other dependencies here
   ]); // Empty dependency array, memoizes the customEvents array
 
