@@ -129,7 +129,7 @@ const useBackendSocket = () => {
           );
 
           setEventsData(
-            data
+            uniqueArray
               .filter((event: any) => {
                 const { type, provider } = event;
 
@@ -166,7 +166,6 @@ const useBackendSocket = () => {
   }, [
     setEventsData,
     setActiveSockets,
-    eventsData,
     // Add other dependencies here
   ]); // Empty dependency array, memoizes the customEvents array
 

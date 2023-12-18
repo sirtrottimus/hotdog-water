@@ -148,7 +148,13 @@ const handleAuthenticationSuccess = async (
     createdAt: 1,
   });
 
-  socket.emit('event:initial', initialData);
+  //Filter out duplicate events
+  const uniqueEvents = initialData.filter(
+    (event, index, self) =>
+      index === self.findIndex((e) => e.SE_ID === event.SE_ID)
+  );
+
+  socket.emit('event:initial', uniqueEvents);
 
   // Handle client disconnect
   socket.on(EVENTS.DISCONNECT, () => {
