@@ -77,6 +77,14 @@ const useBackendSocket = () => {
         name: 'event',
         callback: (data: any) => {
           setEventsData((prevData) => {
+            //Filter for duplicate events
+            const isDuplicate = prevData.some(
+              (event) => event._id === data._id
+            );
+            if (isDuplicate) {
+              return prevData;
+            }
+
             const newArray = [...prevData, { eventName: 'event', ...data }];
             const sortedData = [...newArray].sort(
               (a, b) => b.createdAt - a.createdAt
