@@ -122,15 +122,17 @@ const useBackendSocket = () => {
       {
         name: 'event:initial',
         callback: (data: any) => {
-          //Filter for duplicate events
-          const uniqueData = [
-            new Set(data.map((event: any) => JSON.stringify(event))),
-          ];
+          // Filter for duplicate events
+          const uniqueData = Array.from(
+            new Set(data.map((event: any) => JSON.stringify(event)))
+          );
+
+          console.log(uniqueData);
 
           setEventsData(
             uniqueData
               .filter((event: any) => {
-                const { type, provider } = event;
+                const { type, provider } = JSON.parse(event);
 
                 if (!provider || !type) {
                   return false;
@@ -154,8 +156,8 @@ const useBackendSocket = () => {
               })
               .map((event: any) => ({
                 eventName: 'event:initial',
-                ...event,
-                _id: event.SE_ID,
+                ...JSON.parse(event),
+                _id: JSON.parse(event).SE_ID,
               }))
           );
         },
