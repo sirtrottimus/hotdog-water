@@ -121,12 +121,11 @@ const useBackendSocket = () => {
       },
       {
         name: 'event:initial',
-        callback: (data: EventData) => {
-          const uniqueData = [
-            ...new Set<EventData<Data>[]>(
-              data.map((event: any) => event.SE_ID)
-            ),
-          ];
+        callback: (data: any) => {
+          const uniqueData = data.filter(
+            (event: any, index: number, self: any) =>
+              index === self.findIndex((e: any) => e._id === event._id)
+          );
           setEventsData(
             uniqueData
               .filter((event: any) => {
