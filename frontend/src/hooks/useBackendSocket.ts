@@ -121,9 +121,14 @@ const useBackendSocket = () => {
       },
       {
         name: 'event:initial',
-        callback: (data: any) => {
+        callback: (data: EventData) => {
+          const uniqueData = [
+            ...new Set<EventData<Data>[]>(
+              data.map((event: any) => event.SE_ID)
+            ),
+          ];
           setEventsData(
-            data
+            uniqueData
               .filter((event: any) => {
                 const { type, provider } = event;
 
