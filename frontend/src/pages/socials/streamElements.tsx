@@ -9,7 +9,9 @@ import {
   Divider,
   Group,
   LoadingOverlay,
+  MultiSelect,
   Paper,
+  Text,
   TextInput,
   Title,
   useMantineTheme,
@@ -35,7 +37,31 @@ type FormStreamElementsSettingsInput = {
   streamElementsYTChannelID: string;
   streamElementsTwitchToken: string;
   streamElementsTwitchChannelID: string;
+  streamElementsTwitchFilters: string[];
+  streamElementsYTFilters: string[];
 };
+
+const possibleTwitchFilters = [
+  { value: 'follow', label: 'Followers' },
+  { value: 'subscriber', label: 'Subscriptions' },
+  { value: 'cheer', label: 'Cheers' },
+  { value: 'raid', label: 'Raids' },
+  { value: 'host', label: 'Hosts' },
+  { value: 'cheer', label: 'Bits' },
+  { value: 'tip', label: 'Tips' },
+  { value: 'communityGiftPurchase', label: 'Gifted Subscriptions' },
+];
+
+const possibleYTFilters = [
+  { value: 'subscriber', label: 'Subscriptions' },
+  { value: 'superChat', label: 'Super Chats' },
+  { value: 'member', label: 'Memberships' },
+  { value: 'cheer', label: 'Cheers' },
+  { value: 'raid', label: 'Raids' },
+  { value: 'host', label: 'Hosts' },
+  { value: 'tip', label: 'Tips' },
+  { value: 'communityGiftPurchase', label: 'Gifted Subscriptions' },
+];
 
 const schema = z.object({
   streamElementsYTToken: z
@@ -46,6 +72,8 @@ const schema = z.object({
     .string()
     .min(1, { message: 'StreamElements Twitch JWT Token is Required' }),
   streamElementsTwitchChannelID: z.string(),
+  streamElementsTwitchFilters: z.array(z.string()),
+  streamElementsYTFilters: z.array(z.string()),
 });
 
 export default function Home({
@@ -83,6 +111,8 @@ export default function Home({
     streamElementsYTChannelID: '',
     streamElementsTwitchToken: '',
     streamElementsTwitchChannelID: '',
+    streamElementsTwitchFilters: [],
+    streamElementsYTFilters: [],
   };
 
   const {
@@ -335,6 +365,59 @@ export default function Home({
                           to get your StreamElements Channel ID.
                         </>
                       }
+                      {...field}
+                    />
+                  )}
+                />
+
+                <Divider mb={30} />
+                <Title order={3}>Filters</Title>
+                <Text>
+                  Filters allow you to select the types of activity you want to
+                  see in the Activity Monitor. For example, if you only want to
+                  see new followers, you can select the &quot;Followers&quot;
+                  filter.
+                </Text>
+
+                <Text my={30} size={'sm'} c={'dimmed'}>
+                  <b>Note:</b> Choosing no filters will show all activity.
+                </Text>
+
+                <Controller
+                  name="streamElementsTwitchFilters"
+                  control={control}
+                  render={({ field }) => (
+                    <MultiSelect
+                      label="StreamElements Twitch Filters"
+                      placeholder="StreamElements Twitch Filters"
+                      mb={30}
+                      disabled={isBlurred || !canEdit}
+                      error={errors.streamElementsTwitchFilters?.message}
+                      description="
+                          Select the types of activity you want to see in the
+                          Twitch Activity Monitor.
+                        "
+                      data={possibleTwitchFilters}
+                      {...field}
+                    />
+                  )}
+                />
+
+                <Controller
+                  name="streamElementsYTFilters"
+                  control={control}
+                  render={({ field }) => (
+                    <MultiSelect
+                      label="StreamElements Youtube Filters"
+                      placeholder="StreamElements Youtube Filters"
+                      mb={30}
+                      disabled={isBlurred || !canEdit}
+                      error={errors.streamElementsYTFilters?.message}
+                      description="
+                          Select the types of activity you want to see in the
+                          Youtube Activity Monitor.
+                        "
+                      data={possibleYTFilters}
                       {...field}
                     />
                   )}

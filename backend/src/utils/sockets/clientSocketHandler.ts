@@ -6,6 +6,7 @@ import {
 } from './seSocketHandler';
 import { logIfDebugging } from '../helpers';
 import Activity from '../../database/schema/Activity';
+import { StreamElementsSettingsService } from '../../services/streamElements';
 
 type SocketConnection = {
   socketId: string;
@@ -24,6 +25,7 @@ const EVENTS = {
   READ: 'event:read',
   TEST_ROOM: 'event:test_room',
   EVENT: 'event',
+  PING: 'PING',
 };
 
 let activeSockets: SocketConnection[] = [];
@@ -76,6 +78,10 @@ const handleClientConnections = (io: ServerIO) => {
       socket.to(EVENTS.STREAM_ACTIVITY).emit('event:read', { _id });
       socket.emit('event:read', { _id });
     });
+
+    socket.on(EVENTS.PING, () => {
+      socket.to(EVENTS.STREAM_ACTIVITY).emit('PONG');
+    });
   });
 };
 
@@ -113,21 +119,24 @@ const handleAuthenticationSuccess = async (
   }
 
   // Check if user is already connected
-  if (
-    activeSockets.find(
-      (s) => s.userId === decoded.id && s.socketId !== socket.id
-    )
-  ) {
-    socket.emit('unauthorized', { message: 'Already connected' });
-    console.log('Already connected');
-    socket.disconnect();
-    return;
-  }
+  // if (
+  //   activeSockets.find(
+  //     (s) => s.userId === decoded.id && s.socketId !== socket.id
+  //   )
+  // ) {
+  //   socket.emit('unauthorized', { message: 'Already connected' });
+  //   console.log('Already connected');
+  //   socket.disconnect();
+  //   return;
+  // }
 
   // Let the client know that they are authenticated
   socket.emit('authenticated', { message: 'Authenticated' });
 
-  await socket.join(EVENTS.STREAM_ACTIVITY);
+  const joined = await socket.join(EVENTS.STREAM_ACTIVITY);
+
+  console.log(joined);
+
   activeSockets.push({
     socketId: socket.id,
     userId: decoded.id,
@@ -154,7 +163,36 @@ const handleAuthenticationSuccess = async (
       index === self.findIndex((e) => e.SE_ID === event.SE_ID)
   );
 
-  socket.emit('event:initial', uniqueEvents);
+  // Get StreamElements Settings
+  const streamElementsSettings = await StreamElementsSettingsService.get();
+
+  if (!streamElementsSettings.success) {
+    throw new Error('Error Fetching StreamElements Settings');
+  }
+
+  const filteredEvents = uniqueEvents.filter((event) => {
+    const { type, provider } = event;
+
+    if (!provider || !type) {
+      return false;
+    }
+
+    const filters =
+      provider === 'youtube'
+        ? streamElementsSettings.data?.streamElementsYTFilters
+        : streamElementsSettings.data?.streamElementsTwitchFilters;
+
+    if (!filters) {
+      return true;
+    }
+
+    if (filters.includes(type) || filters.length === 0) {
+      return true;
+    }
+    return false;
+  });
+
+  socket.emit('event:initial', filteredEvents);
 
   // Handle client disconnect
   socket.on(EVENTS.DISCONNECT, () => {

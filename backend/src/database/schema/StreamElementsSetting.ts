@@ -6,6 +6,8 @@ interface StreamElementsSettingsInt extends Document {
   streamElementsYTChannelID: string;
   streamElementsTwitchToken: string;
   streamElementsTwitchChannelID: string;
+  streamElementsTwitchFilters: string[];
+  streamElementsYTFilters: string[];
 }
 
 const streamElementsSettingsSchema: Schema = new Schema({
@@ -13,6 +15,8 @@ const streamElementsSettingsSchema: Schema = new Schema({
   streamElementsYTChannelID: { type: String, required: true },
   streamElementsTwitchToken: { type: String, required: true },
   streamElementsTwitchChannelID: { type: String, required: true },
+  streamElementsTwitchFilters: { type: [String], required: true },
+  streamElementsYTFilters: { type: [String], required: true },
 });
 
 const StreamElementsSettings = mongoose.model<StreamElementsSettingsInt>(

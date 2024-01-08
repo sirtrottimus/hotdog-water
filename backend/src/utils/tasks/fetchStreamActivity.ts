@@ -3,6 +3,15 @@ import Activity from '../../database/schema/Activity';
 import { StreamElementsSettings } from '../../database/schema';
 import { logIfDebugging } from '../helpers';
 import axios from 'axios';
+import { Server as ServerIO, Socket } from 'socket.io';
+
+type SocketConnection = {
+  socketId: string;
+  userId: string;
+  username: string;
+};
+
+const activeSockets: SocketConnection[] = [];
 
 // Define constants for configuration options
 const ACTIVITY_LIMIT = '100';
@@ -30,7 +39,7 @@ const currentTime = new Date().toTimeString();
 const streamActivityLog = `[SCHEDULE/SE]: ${currentTime} - Fetching stream activity...`;
 
 // Function to fetch stream activity
-const fetchStreamActivity = async () => {
+const fetchStreamActivity = async (socket: Socket) => {
   // Log the activity if debugging is enabled
   logIfDebugging(streamActivityLog);
 
@@ -128,6 +137,7 @@ const fetchStreamActivity = async () => {
         }
 
         // send the activity to the frontend via ws
+        socket.emit('event', activity);
       }
     }
   } catch (error) {
@@ -139,23 +149,40 @@ const fetchStreamActivity = async () => {
 };
 
 // Function to start fetching stream activity on a schedule
-const startFetchStreamActivity = () => {
+const startFetchStreamActivity = (io: ServerIO) => {
   logIfDebugging(
     '[SCHEDULE/SE]: Scheduling - Fetching stream activity every 10 minutes...'
   );
-  // Schedule a cron job to run the fetchStreamActivity function every 10 minutes
-  cron.schedule('*/10 * * * *', () => {
-    fetchStreamActivity()
-      .then((response) => {
-        // Optional: You can add a success log here if needed
-        console.log('Stream activity fetched successfully.');
-        console.log(response);
-      })
-      .catch((error) => {
-        // Handle any errors that occur during fetchStreamActivity
-        console.error('Error fetching stream activity :', error);
-      });
+
+  //Join the stream-activity room
+  io.on('connection', (socket: Socket) => {
+    logIfDebugging(
+      `[WEBSOCKET/BACKEND]: Backend Client connected with ID ${socket.id}`
+    );
+
+    activeSockets.push({
+      socketId: socket.id,
+      userId: '123',
+      username: 'Backend',
+    });
+
+    socket.emit('activeSockets', activeSockets);
+
+    cron.schedule('*/10 * * * *', () => {
+      fetchStreamActivity(socket)
+        .then((response) => {
+          // Optional: You can add a success log here if needed
+          console.log('Stream activity fetched successfully.');
+          console.log(response);
+        })
+        .catch((error) => {
+          // Handle any errors that occur during fetchStreamActivity
+          console.error('Error fetching stream activity :', error);
+        });
+    });
   });
+
+  // Schedule a cron job to run the fetchStreamActivity function every 10 minutes
 };
 
 async function fetchActivity(

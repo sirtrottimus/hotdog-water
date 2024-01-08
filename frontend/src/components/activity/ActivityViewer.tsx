@@ -84,6 +84,8 @@ function ActivityViewer({
   } = useBackendSocket();
   const theme = useMantineTheme();
 
+  console.log('backendEventsData', backendEventsData);
+
   return (
     <>
       <Paper
@@ -148,33 +150,6 @@ function ActivityViewer({
                 }}
               >
                 Refresh From Schedule
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                color="gray"
-                onClick={() => {
-                  backendSocket.emit(
-                    'event:test_room',
-                    activeSockets.find(
-                      (s: any) => s.socketId === backendSocket.id
-                    )?.username ?? 'unknown'
-                  );
-                }}
-              >
-                Emit Test Room Event
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                color="gray"
-                onClick={() => {
-                  isBackendConnected
-                    ? backendSocket.disconnect()
-                    : backendSocket.connect();
-                }}
-              >
-                {isBackendConnected ? 'Disconnect Backend' : 'Connect Backend'}
               </Button>
             </>
           )}

@@ -1,6 +1,7 @@
 // Services for handling streamElements settings
 import { Options } from '../helpers';
 import { StreamElementsSettings as StreamElementsSettingsSchema } from '../../database/schema';
+import { io } from '../../utils/sockets/socket';
 
 export class StreamElementsSettingsService {
   static async get() {
@@ -75,6 +76,8 @@ export class StreamElementsSettingsService {
         msg: 'Error Updating StreamElements Settings',
       };
     }
+
+    io.emit('refresh');
 
     return {
       success: true,

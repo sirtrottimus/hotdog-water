@@ -51,6 +51,7 @@ const createSocket = async (
 
   socket.on('event', async (data) => {
     data.provider = type === 'yt' ? 'youtube' : 'twitch';
+
     await handleEventData(data, backendSocket);
   });
 
@@ -83,19 +84,24 @@ const handleEventData = async (data: any, backendSocket: ServerSocket) => {
     SE_ID: data._id,
   });
 
+  const filters =
+    data.provider === 'youtube'
+      ? 'streamElementsYTFilters'
+      : 'streamElementsTwitchFilters';
+
+  const streamElementsSettings = await StreamElementsSettingsService.get();
+
+  if (!streamElementsSettings.success) {
+    throw new Error('Error Fetching StreamElements Settings');
+  }
+
+  const streamElementsFilters = streamElementsSettings.data?.[filters] ?? [];
+
   logIfDebugging(
     `[WEBSOCKET/SE]: Received event: ${data.type} with ID ${data._id}`
   );
 
   logIfDebugging(data);
-
-  if (data.provider === 'youtube' && data.type === 'subscriber') {
-    return;
-  }
-
-  if (data.provider === 'twitch' && data.type === 'follow') {
-    return;
-  }
 
   if (!existingActivity) {
     const newActivity = await Activity.create({
@@ -119,7 +125,11 @@ const handleEventData = async (data: any, backendSocket: ServerSocket) => {
       `[WEBSOCKET/SE]: Saved activity to the database with ID ${data._id}`
     );
 
-    backendSocket.to('stream-activity').emit('event', data);
+    if (!streamElementsFilters.includes(data.type)) {
+      return;
+    }
+
+    backendSocket.timeout(1000).emit('event', data);
 
     logIfDebugging(
       `[WEBSOCKET/SE]: Sent activity to the frontend with ID ${data._id}`

@@ -86,7 +86,7 @@ function RenderSubscriberEvent(
   handleMarkAsRead: (id: string) => void
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
-  const { tier, displayName, amount } = result.data;
+  const { tier, displayName, amount, username } = result.data;
   const tierText =
     tier === 'prime' ? (
       <>
@@ -191,6 +191,34 @@ function RenderSubscriberEvent(
     );
   }
 
+  if (result.provider && result.provider === 'youtube') {
+    return (
+      <Paper mb={10}>
+        <Flex align={'stretch'} justify={'space-between'}>
+          <Box
+            style={{
+              padding: '10px 20px 10px 20px',
+              borderLeft: '3px solid red',
+            }}
+          >
+            <Text size={'sm'} c={'dimmed'}>
+              {dayjs(result.createdAt).calendar()}
+            </Text>
+
+            <Text>
+              <b>{username}</b> subscribed on YouTube
+            </Text>
+          </Box>
+          <Box
+            onClick={() => handleMarkAsRead(result._id)}
+            className={`${classes.markAsRead}`}
+          >
+            <IconCheck size={20} />
+          </Box>
+        </Flex>
+      </Paper>
+    );
+  }
   return <></>;
 }
 

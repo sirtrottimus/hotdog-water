@@ -85,6 +85,8 @@ const useBackendSocket = () => {
               return prevData;
             }
 
+            console.log(data);
+
             const newArray = [...prevData, { eventName: 'event', ...data }];
             const sortedData = [...newArray].sort(
               (a, b) => b.createdAt - a.createdAt
@@ -100,19 +102,14 @@ const useBackendSocket = () => {
                 return false;
               }
 
-              if (
-                (provider === 'youtube' && type !== 'subscriber') ||
-                (provider === 'twitch' && type !== 'follow')
-              ) {
-                return true;
-              }
-
-              return false;
+              return true;
             });
             return newData;
           });
+          console.log('event');
         },
       },
+
       {
         name: 'active-sockets',
         callback: (data: any) => {
@@ -140,18 +137,7 @@ const useBackendSocket = () => {
                 if (event.data.gifted && event.data.amount > 1) {
                   return false;
                 }
-
-                if (
-                  (provider === 'youtube' && type !== 'subscriber') ||
-                  (provider === 'twitch' && type !== 'follow') ||
-                  (provider === 'twitch' &&
-                    type === 'subscriber' &&
-                    event.data.message?.includes('gifted'))
-                ) {
-                  return true;
-                }
-
-                return false;
+                return true;
               })
               .map((event: any) => ({
                 eventName: 'event:initial',
@@ -162,6 +148,19 @@ const useBackendSocket = () => {
         },
       },
       // Add other custom events here
+      {
+        name: 'PONG',
+        callback: () => {
+          console.log('PONG');
+        },
+      },
+      {
+        name: 'refresh',
+        callback: () => {
+          socket.disconnect();
+          socket.connect();
+        },
+      },
     ];
   }, [
     setEventsData,
