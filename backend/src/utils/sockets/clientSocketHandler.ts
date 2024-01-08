@@ -119,16 +119,16 @@ const handleAuthenticationSuccess = async (
   }
 
   // Check if user is already connected
-  // if (
-  //   activeSockets.find(
-  //     (s) => s.userId === decoded.id && s.socketId !== socket.id
-  //   )
-  // ) {
-  //   socket.emit('unauthorized', { message: 'Already connected' });
-  //   console.log('Already connected');
-  //   socket.disconnect();
-  //   return;
-  // }
+  if (
+    activeSockets.find(
+      (s) => s.userId === decoded.id && s.socketId !== socket.id
+    )
+  ) {
+    socket.emit('unauthorized', { message: 'Already connected' });
+    console.log('Already connected');
+    socket.disconnect();
+    return;
+  }
 
   // Let the client know that they are authenticated
   socket.emit('authenticated', { message: 'Authenticated' });
