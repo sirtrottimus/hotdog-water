@@ -14,6 +14,7 @@ import {
   Container,
   Flex,
   Code,
+  Anchor,
 } from '@mantine/core';
 import React, { ReactElement, ReactNode, useEffect, useState } from 'react';
 import { useUsers } from '../../hooks/userQuery';
@@ -37,14 +38,13 @@ import { useRouter } from 'next/router';
 import { capitalizeFirstLetter, checkTwitchStatus } from '../../utils/helpers';
 import CenteredLoader from '../misc/CenteredLoader';
 import { User } from '../misc/User';
-import Sidebar, { Link } from '../misc/Sidebar';
+import Sidebar, { Link as LinkInt } from '../misc/Sidebar';
 import FormModal from '../modals/form';
 import { useMachine } from '@xstate/react';
 import formMachine from '../../utils/machines/modalFormMachine';
 import TwitchService from '../../utils/api/TwitchService';
-
-
-
+import { useJWTAuth } from '../../hooks/useGetJWTAuthStatus';
+import Link from 'next/link';
 
 const useStyles = createStyles((theme) => ({
   links: {
@@ -66,8 +66,14 @@ export function MainLayout({ children }: { children: ReactNode }) {
   const userQuery = useUsers();
   const smallScreen = useMediaQuery('(max-width: 768px)');
   const { users: user } = userQuery;
-
+  const {
+    jwtAuth,
+    isError: checkJWTAuthStatus,
+    isLoading: checkJWTAuthStatusLoading,
+  } = useJWTAuth();
   const [isBlurred, setIsBlurred] = React.useState(true);
+
+  console.log(jwtAuth);
 
   const { theme } = useStyles();
   const [mini, setMini] = useState(false);
@@ -107,6 +113,33 @@ export function MainLayout({ children }: { children: ReactNode }) {
       setIsBlurred,
     });
   });
+
+  const jwtAuthStatus = checkJWTAuthStatusLoading ? (
+    <CenteredLoader colorScheme={colorScheme} size={'xl'} />
+  ) : (
+    <Box mb={30}>
+      {jwtAuth?.map((auth) => (
+        <Alert
+          key={auth.provider}
+          color="red"
+          title={`${capitalizeFirstLetter(
+            auth.provider
+          )} JWT Token is missing or invalid.`}
+          withCloseButton={false}
+          mt="md"
+        >
+          <Text>
+            {capitalizeFirstLetter(auth.provider)} JWT Token is missing or
+            invalid. Please head over to the{' '}
+            <Link href="/socials/streamElements">
+              <Anchor color="red">Stream Elements</Anchor>
+            </Link>{' '}
+            page and re-authenticate {auth.provider}.
+          </Text>
+        </Alert>
+      ))}
+    </Box>
+  );
 
   const data = [
     {
@@ -220,7 +253,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
               <Box py="md">
                 <div className={classes.linksInner}>
                   <Sidebar
-                    links={data as Link[]}
+                    links={data as LinkInt[]}
                     mini={mini}
                     setMini={setMini}
                     user={user}
@@ -253,7 +286,9 @@ export function MainLayout({ children }: { children: ReactNode }) {
                 >
                   {process.env.NEXT_PUBLIC_NAME?.toUpperCase()} DASHBOARD
                 </Text>
-                <Code sx={{ fontWeight: 700 }}>{process.env.NEXT_PUBLIC_VERSION}</Code>
+                <Code sx={{ fontWeight: 700 }}>
+                  {process.env.NEXT_PUBLIC_VERSION}
+                </Code>
               </Group>
               <Group>
                 <ActionIcon
@@ -366,10 +401,10 @@ export function MainLayout({ children }: { children: ReactNode }) {
             </Alert>
           </Container>
         )}
+        {jwtAuthStatus}
         {children}
       </AppShell>
       <FormModal state={state} send={send} />
     </>
   );
 }
-

@@ -7,6 +7,7 @@ import TwitterSettings from './TwitterSetting';
 import Announcement from './Announcement';
 import StreamElementsSettings from './StreamElementsSetting';
 import YoutubeSettings from './YoutubeSettings';
+import JWTAuth from './JWTAuth';
 
 export {
   User,
@@ -18,4 +19,5 @@ export {
   Announcement,
   StreamElementsSettings,
   YoutubeSettings,
+  JWTAuth,
 };

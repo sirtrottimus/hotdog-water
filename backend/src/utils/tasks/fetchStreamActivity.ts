@@ -2,8 +2,9 @@ import cron from 'node-cron';
 import Activity from '../../database/schema/Activity';
 import { StreamElementsSettings } from '../../database/schema';
 import { logIfDebugging } from '../helpers';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import { Server as ServerIO, Socket } from 'socket.io';
+import { JWTAuthService } from '../../services/JWTAuth';
 
 type SocketConnection = {
   socketId: string;
@@ -32,14 +33,13 @@ const ACTIVITY_TYPES = [
   'membership',
   'member',
 ];
+const CRON_SCHEDULE = 5;
 
-// Get the current time
-const currentTime = new Date().toTimeString();
 // Create a log message for fetching stream activity
-const streamActivityLog = `[SCHEDULE/SE]: ${currentTime} - Fetching stream activity...`;
+const streamActivityLog = '[SCHEDULE/SE]:';
 
 // Function to fetch stream activity
-const fetchStreamActivity = async (socket: Socket) => {
+const fetchStreamActivity = async (io: ServerIO) => {
   // Log the activity if debugging is enabled
   logIfDebugging(streamActivityLog);
 
@@ -66,7 +66,7 @@ const fetchStreamActivity = async (socket: Socket) => {
     if (!YTchannelID || !YTToken || !TwitchChannelID || !TwitchToken) {
       // Log an error message if channel ID or JWT is missing
       logIfDebugging(
-        `${streamActivityLog} - Stream Elements settings not found. Please set them up for this feature to work.`
+        `${streamActivityLog} ${new Date().toTimeString()} - Stream Elements settings not found. Please set them up for this feature to work.`
       );
       return;
     }
@@ -104,7 +104,7 @@ const fetchStreamActivity = async (socket: Socket) => {
     if (!YTActivity || !TwitchActivity) {
       // Log an error message if fetching fails
       logIfDebugging(
-        `${streamActivityLog} - Failed to fetch stream activity from Stream Elements API.`
+        `${streamActivityLog} ${new Date().toTimeString()} - Failed to fetch stream activity from Stream Elements API.`
       );
       return;
     }
@@ -131,19 +131,20 @@ const fetchStreamActivity = async (socket: Socket) => {
         if (!newActivity) {
           // Log an error message if saving fails
           logIfDebugging(
-            `${streamActivityLog} - Failed to save activity to database.`
+            `${streamActivityLog} ${new Date().toTimeString()} - Failed to save activity to database.`
           );
           return;
         }
 
         // send the activity to the frontend via ws
-        socket.emit('event', activity);
+        io.emit('event', newActivity);
+        return newActivity;
       }
     }
   } catch (error) {
     // Log an error if there's an exception
     logIfDebugging(
-      `${streamActivityLog} - Error in fetchStreamActivity: ${error} - `
+      `${streamActivityLog} ${new Date().toTimeString()} - Error in fetchStreamActivity: ${error} - `
     );
   }
 };
@@ -151,38 +152,20 @@ const fetchStreamActivity = async (socket: Socket) => {
 // Function to start fetching stream activity on a schedule
 const startFetchStreamActivity = (io: ServerIO) => {
   logIfDebugging(
-    '[SCHEDULE/SE]: Scheduling - Fetching stream activity every 10 minutes...'
+    `[SCHEDULE/SE]: Scheduling - Fetching stream activity every ${CRON_SCHEDULE} minutes...`
   );
 
-  //Join the stream-activity room
-  io.on('connection', (socket: Socket) => {
-    logIfDebugging(
-      `[WEBSOCKET/BACKEND]: Backend Client connected with ID ${socket.id}`
-    );
-
-    activeSockets.push({
-      socketId: socket.id,
-      userId: '123',
-      username: 'Backend',
-    });
-
-    socket.emit('activeSockets', activeSockets);
-
-    cron.schedule('*/10 * * * *', () => {
-      fetchStreamActivity(socket)
-        .then((response) => {
-          // Optional: You can add a success log here if needed
-          console.log('Stream activity fetched successfully.');
-          console.log(response);
-        })
-        .catch((error) => {
-          // Handle any errors that occur during fetchStreamActivity
-          console.error('Error fetching stream activity :', error);
-        });
-    });
+  cron.schedule(`*/${CRON_SCHEDULE} * * * *`, () => {
+    fetchStreamActivity(io)
+      .then((res) => {
+        // Optional: You can add a success log here if needed
+        console.log('Stream activity fetched successfully.');
+      })
+      .catch((error) => {
+        // Handle any errors that occur during fetchStreamActivity
+        console.error('Error fetching stream activity :', error);
+      });
   });
-
-  // Schedule a cron job to run the fetchStreamActivity function every 10 minutes
 };
 
 async function fetchActivity(
@@ -218,7 +201,7 @@ async function fetchActivity(
     if (!response) {
       // Log an error message if fetching fails
       logIfDebugging(
-        `${streamActivityLog} - ${type} Failed to fetch stream activity from Stream Elements API.`
+        `${streamActivityLog} ${new Date().toTimeString()} - ${type} Failed to fetch stream activity from Stream Elements API.`
       );
       return;
     }
@@ -226,9 +209,55 @@ async function fetchActivity(
     // Return the fetched activity data
     return response.data;
   } catch (error) {
-    // Log an error if there's an exception
+    const res = await JWTAuthService.getActive();
+
+    if (!res.success) {
+      logIfDebugging(
+        `${streamActivityLog} ${new Date().toTimeString()} - Failed to fetch JWT Auth status from database.`
+      );
+    }
+
+    const { data: jwtAuth } = res;
+
+    if (!jwtAuth) {
+      logIfDebugging(
+        `${streamActivityLog} ${new Date().toTimeString()} - Failed to fetch JWT Auth status from database.`
+      );
+      return;
+    }
+
+    const exists = jwtAuth.some(
+      (token) => token.status === 'active' && token.provider === type
+    );
+
+    if (exists) {
+      logIfDebugging(
+        `${streamActivityLog} ${new Date().toTimeString()} - JWT Auth token notification is active.`
+      );
+      return;
+    }
+
+    if (isAxiosError(error)) {
+      if (error.response?.status === 401) {
+        logIfDebugging(`${streamActivityLog} - JWT Auth token is invalid.`);
+        const { data } = await JWTAuthService.create({
+          body: {
+            createdAt: new Date(),
+            read: false,
+            status: 'active',
+            provider: type,
+          },
+        });
+        if (!data) {
+          logIfDebugging(
+            `${streamActivityLog} ${new Date().toTimeString()} - Failed to create JWT Auth token.`
+          );
+        }
+      }
+      return;
+    }
     logIfDebugging(
-      `${streamActivityLog} - Error in fetchStreamActivity: ${error} - ${type}`
+      `${streamActivityLog} ${new Date().toTimeString()} - Error in fetchStreamActivity: ${error} - ${type}`
     );
   }
 }

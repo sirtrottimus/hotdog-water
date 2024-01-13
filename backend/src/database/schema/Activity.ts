@@ -19,6 +19,7 @@ type ActivityTypeInt =
   | 'cheer'
   | 'redemption'
   | 'merch';
+
 interface ActivityInt extends Document {
   _id: string;
   type: ActivityTypeInt;

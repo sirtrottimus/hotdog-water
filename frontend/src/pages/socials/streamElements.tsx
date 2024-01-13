@@ -160,7 +160,9 @@ export default function Home({
         queryClient
           .invalidateQueries(['streamElementsSettings'])
           .finally(() => {});
+        queryClient.invalidateQueries(['jwtAuth']).finally(() => {});
         setSubmitting(false);
+
         toast.success('StreamElements settings updated successfully!');
       },
       onError: (response: APIResponse<StreamElementsSettingsInt>) => {

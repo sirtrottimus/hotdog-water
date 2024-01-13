@@ -3,6 +3,8 @@ import { Options } from '../helpers';
 import { StreamElementsSettings as StreamElementsSettingsSchema } from '../../database/schema';
 import { io } from '../../utils/sockets/socket';
 
+import { JWTAuthService } from '../JWTAuth';
+
 export class StreamElementsSettingsService {
   static async get() {
     const streamElementsSettings = await StreamElementsSettingsSchema.findOne(
@@ -76,6 +78,8 @@ export class StreamElementsSettingsService {
         msg: 'Error Updating StreamElements Settings',
       };
     }
+
+    JWTAuthService.dismiss();
 
     io.emit('refresh');
 
