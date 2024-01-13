@@ -33,7 +33,7 @@ const ACTIVITY_TYPES = [
   'membership',
   'member',
 ];
-const CRON_SCHEDULE = 5;
+const CRON_SCHEDULE = 20;
 
 // Create a log message for fetching stream activity
 const streamActivityLog = '[SCHEDULE/SE]:';
