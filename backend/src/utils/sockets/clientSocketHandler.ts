@@ -133,9 +133,7 @@ const handleAuthenticationSuccess = async (
   // Let the client know that they are authenticated
   socket.emit('authenticated', { message: 'Authenticated' });
 
-  const joined = await socket.join(EVENTS.STREAM_ACTIVITY);
-
-  console.log(joined);
+  await socket.join(EVENTS.STREAM_ACTIVITY);
 
   activeSockets.push({
     socketId: socket.id,
@@ -206,7 +204,7 @@ const handleClientDisconnect = (
   SETwitchSocket: any
 ) => {
   activeSockets = activeSockets.filter((s) => s.socketId !== socket.id);
-  socket.to(EVENTS.STREAM_ACTIVITY).emit('active-sockets', activeSockets);
+  socket.emit('active-sockets', activeSockets);
 
   if (activeSockets.length === 0) {
     SEYTSocket?.disconnect();
