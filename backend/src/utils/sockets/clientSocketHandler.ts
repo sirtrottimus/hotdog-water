@@ -55,6 +55,45 @@ const handleClientConnections = (io: ServerIO) => {
       socket.emit('event:test_room', data);
     });
 
+    socket.on(EVENTS.EVENT, async (data) => {
+      logIfDebugging('[WEBSOCKET/BACKEND]: Received event:');
+      logIfDebugging(data);
+
+      const { provider, type, _id } = data;
+
+      if (!provider || !type) {
+        return;
+      }
+
+      const streamElementsSettings = await StreamElementsSettingsService.get();
+
+      if (!streamElementsSettings.success) {
+        throw new Error('Error Fetching StreamElements Settings');
+      }
+
+      const filters =
+        provider === 'youtube'
+          ? streamElementsSettings.data?.streamElementsYTFilters
+          : streamElementsSettings.data?.streamElementsTwitchFilters;
+
+      if (!filters) {
+        return;
+      }
+
+      if (filters.includes(type) || filters.length === 0) {
+        const newEvent = await Activity.create(data);
+
+        if (!newEvent) {
+          logIfDebugging(
+            `[WEBSOCKET/BACKEND]: Error in handleClientConnections: Error creating event: ${data}`
+          );
+        }
+
+        socket.to(EVENTS.STREAM_ACTIVITY).emit('event', newEvent);
+        socket.emit('event', newEvent);
+      }
+    });
+
     socket.on(EVENTS.READ, async (data) => {
       // Find the event in the database and mark it as read
       logIfDebugging('[WEBSOCKET/BACKEND]: Received read event:');
@@ -119,16 +158,16 @@ const handleAuthenticationSuccess = async (
   }
 
   // Check if user is already connected
-  if (
-    activeSockets.find(
-      (s) => s.userId === decoded.id && s.socketId !== socket.id
-    )
-  ) {
-    socket.emit('unauthorized', { message: 'Already connected' });
-    console.log('Already connected');
-    socket.disconnect();
-    return;
-  }
+  // if (
+  //   activeSockets.find(
+  //     (s) => s.userId === decoded.id && s.socketId !== socket.id
+  //   )
+  // ) {
+  //   socket.emit('unauthorized', { message: 'Already connected' });
+  //   console.log('Already connected');
+  //   socket.disconnect();
+  //   return;
+  // }
 
   // Let the client know that they are authenticated
   socket.emit('authenticated', { message: 'Authenticated' });
@@ -203,8 +242,10 @@ const handleClientDisconnect = (
   SEYTSocket: any,
   SETwitchSocket: any
 ) => {
+  socket.leave(EVENTS.STREAM_ACTIVITY);
   activeSockets = activeSockets.filter((s) => s.socketId !== socket.id);
   socket.emit('active-sockets', activeSockets);
+  socket.to(EVENTS.STREAM_ACTIVITY).emit('active-sockets', activeSockets);
 
   if (activeSockets.length === 0) {
     SEYTSocket?.disconnect();

@@ -189,7 +189,6 @@ const useBackendSocket = () => {
       customEvents.forEach((event) => {
         socket.off(event.name, event.callback);
       });
-
       socket.disconnect();
     };
   }, [jwtToken, onConnect, onAuthenticated, onDisconnect, customEvents]);
