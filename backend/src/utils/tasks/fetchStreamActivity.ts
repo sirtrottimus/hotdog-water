@@ -212,6 +212,7 @@ export async function fetchActivity(
     }
 
     // Return the fetched activity data
+    console.log('fetch_response', response.data);
     return response.data;
   } catch (error) {
     const res = await JWTAuthService.getActive();
