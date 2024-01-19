@@ -7,6 +7,10 @@ import {
 import { logIfDebugging } from '../helpers';
 import Activity from '../../database/schema/Activity';
 import { StreamElementsSettingsService } from '../../services/streamElements';
+import { StreamElementsSettings } from '../../database/schema';
+import { fetchActivity } from '../tasks/fetchStreamActivity';
+
+const streamActivityLog = '[SCHEDULE/SE/D_REFRESH]:';
 
 type SocketConnection = {
   socketId: string;
@@ -26,6 +30,7 @@ const EVENTS = {
   TEST_ROOM: 'event:test_room',
   EVENT: 'event',
   PING: 'PING',
+  REFRESH_DATE: 'refresh-date',
 };
 
 let activeSockets: SocketConnection[] = [];
@@ -91,6 +96,96 @@ const handleClientConnections = (io: ServerIO) => {
 
         socket.to(EVENTS.STREAM_ACTIVITY).emit('event', newEvent);
         socket.emit('event', newEvent);
+      }
+    });
+
+    socket.on(EVENTS.REFRESH_DATE, async (data) => {
+      logIfDebugging('[WEBSOCKET/BACKEND]: Received refresh date event:');
+      logIfDebugging(data);
+
+      const streamElementsSettings = await StreamElementsSettings.findOne({});
+
+      if (!streamElementsSettings) {
+        // Log an error message if settings are not found
+        logIfDebugging('Stream Elements settings not found.');
+        return;
+      }
+
+      const {
+        streamElementsYTChannelID: YTchannelID,
+        streamElementsYTToken: YTToken,
+        streamElementsTwitchChannelID: TwitchChannelID,
+        streamElementsTwitchToken: TwitchToken,
+      } = streamElementsSettings;
+      const { date } = data;
+
+      if (!YTchannelID || !YTToken || !TwitchChannelID || !TwitchToken) {
+        // Log an error message if channel ID or JWT is missing
+        logIfDebugging(
+          ` ${new Date().toTimeString()} - Stream Elements settings not found. Please set them up for this feature to work.`
+        );
+        return;
+      }
+
+      // Retrieve the fetched activity data
+      const YTActivity = await fetchActivity(
+        YTchannelID,
+        YTToken,
+        date,
+        'youtube'
+      );
+      const TwitchActivity = await fetchActivity(
+        TwitchChannelID,
+        TwitchToken,
+        date,
+        'twitch'
+      );
+
+      YTActivity.provider = 'youtube';
+      TwitchActivity.provider = 'twitch';
+
+      if (!YTActivity || !TwitchActivity) {
+        // Log an error message if fetching fails
+        logIfDebugging(
+          `${streamActivityLog} ${new Date().toTimeString()} - Failed to fetch stream activity from Stream Elements API.`
+        );
+        return;
+      }
+
+      // Combine the fetched activity data
+      const activityData = [...YTActivity, ...TwitchActivity];
+
+      for (const activity of activityData) {
+        // Check if the activity already exists in the database
+        const existingActivity = await Activity.findOne({
+          SE_ID: activity._id,
+        });
+
+        if (!existingActivity) {
+          // If the activity doesn't exist, save it to the database
+          const newActivity = await Activity.create({
+            SE_ID: activity._id,
+            type: activity.type,
+            createdAt: activity.createdAt,
+            data: activity.data,
+            provider: activity.provider,
+            flagged: activity.flagged ?? false,
+            feedSource: 'schedule',
+          });
+
+          if (!newActivity) {
+            // Log an error message if saving fails
+            logIfDebugging(
+              `${streamActivityLog} ${new Date().toTimeString()} - Failed to save activity to database.`
+            );
+            return;
+          }
+
+          // send the activity to the frontend via ws
+          io.emit('event', newActivity);
+          io.to('stream-activity').emit('event', newActivity);
+          return newActivity;
+        }
       }
     });
 

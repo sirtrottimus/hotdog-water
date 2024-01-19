@@ -138,6 +138,7 @@ const fetchStreamActivity = async (io: ServerIO) => {
 
         // send the activity to the frontend via ws
         io.emit('event', newActivity);
+        io.to('stream-activity').emit('event', newActivity);
         return newActivity;
       }
     }
@@ -168,7 +169,7 @@ const startFetchStreamActivity = (io: ServerIO) => {
   });
 };
 
-async function fetchActivity(
+export async function fetchActivity(
   channelID: string,
   jwt: string,
   after: Date,

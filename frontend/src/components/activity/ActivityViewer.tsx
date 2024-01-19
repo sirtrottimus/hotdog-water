@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Avatar,
   Badge,
@@ -9,6 +9,7 @@ import {
   Flex,
   Group,
   Paper,
+  Popover,
   Text,
   createStyles,
   useMantineTheme,
@@ -18,6 +19,7 @@ import ConnectionState from './ConnectionState';
 import Activity from './Activity';
 import useBackendSocket from '../../hooks/useBackendSocket';
 import { IconExternalLink } from '@tabler/icons-react';
+import { DateTimePicker } from '@mantine/dates';
 
 const colorIndex = [
   'blue',
@@ -83,7 +85,8 @@ function ActivityViewer({
     activeSockets,
   } = useBackendSocket();
   const theme = useMantineTheme();
-
+  const [opened, setOpened] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   console.log('backendEventsData', backendEventsData);
 
   return (
@@ -151,6 +154,38 @@ function ActivityViewer({
               >
                 Refresh From Schedule
               </Button>
+              <Popover
+                opened={opened}
+                onChange={setOpened}
+                width={300}
+                trapFocus
+              >
+                <Popover.Target>
+                  <Button onClick={() => setOpened((o) => !o)}>
+                    Toggle popover
+                  </Button>
+                </Popover.Target>
+
+                <Popover.Dropdown>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      backendSocket.emit('refresh-date', selectedDate);
+                    }}
+                  >
+                    <DateTimePicker
+                      placeholder="Pick date and time"
+                      popoverProps={{ withinPortal: false }}
+                      mb={10}
+                      value={selectedDate}
+                      onChange={setSelectedDate}
+                    />
+                    <Center>
+                      <Button type="submit">Submit</Button>
+                    </Center>
+                  </form>
+                </Popover.Dropdown>
+              </Popover>
             </>
           )}
         </Group>
