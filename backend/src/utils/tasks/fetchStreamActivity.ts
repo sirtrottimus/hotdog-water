@@ -98,10 +98,14 @@ const fetchStreamActivity = async (io: ServerIO) => {
       'twitch'
     );
 
-    YTActivity.provider = 'youtube';
-    TwitchActivity.provider = 'twitch';
+    if (YTActivity) {
+      YTActivity.provider = 'youtube';
+    }
+    if (TwitchActivity) {
+      TwitchActivity.provider = 'twitch';
+    }
 
-    if (!YTActivity || !TwitchActivity) {
+    if (!YTActivity && !TwitchActivity) {
       // Log an error message if fetching fails
       logIfDebugging(
         `${streamActivityLog} ${new Date().toTimeString()} - Failed to fetch stream activity from Stream Elements API.`
