@@ -178,7 +178,7 @@ function ActivityViewer({
                       popoverProps={{ withinPortal: false }}
                       mb={10}
                       value={selectedDate}
-                      onChange={setSelectedDate}
+                      onChange={setSelectedDate as any}
                     />
                     <Center>
                       <Button type="submit">Submit</Button>
