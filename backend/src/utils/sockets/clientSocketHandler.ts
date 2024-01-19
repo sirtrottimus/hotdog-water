@@ -117,9 +117,8 @@ const handleClientConnections = (io: ServerIO) => {
         streamElementsTwitchChannelID: TwitchChannelID,
         streamElementsTwitchToken: TwitchToken,
       } = streamElementsSettings;
-      const { dateString } = data;
 
-      const date = new Date(dateString);
+      const date = new Date(data);
 
       if (!YTchannelID || !YTToken || !TwitchChannelID || !TwitchToken) {
         // Log an error message if channel ID or JWT is missing
