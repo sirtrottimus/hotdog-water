@@ -186,9 +186,27 @@ const handleClientConnections = (io: ServerIO) => {
             return;
           }
 
-          // send the activity to the frontend via ws
-          io.emit('event', newActivity);
-          io.to('stream-activity').emit('event', newActivity);
+          const filters =
+            activity.provider === 'youtube'
+              ? streamElementsSettings.streamElementsYTFilters
+              : streamElementsSettings.streamElementsTwitchFilters;
+
+          if (!filters) {
+            return;
+          }
+
+          if (filters.includes(activity.type) || filters.length === 0) {
+            const newEvent = await Activity.create(data);
+
+            if (!newEvent) {
+              logIfDebugging(
+                `[WEBSOCKET/BACKEND]: Error in handleClientConnections: Error creating event: ${data}`
+              );
+            }
+
+            socket.to(EVENTS.STREAM_ACTIVITY).emit('event', newEvent);
+            socket.emit('event', newEvent);
+          }
           return newActivity;
         }
       }
