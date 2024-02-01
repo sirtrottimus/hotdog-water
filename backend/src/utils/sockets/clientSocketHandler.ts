@@ -165,56 +165,64 @@ const handleClientConnections = (io: ServerIO) => {
 
             for (const activity of activityData) {
                 // Check if the activity already exists in the database
-                const existingActivity = await Activity.findOne({
-                    SE_ID: activity._id,
-                });
-
-                if (!existingActivity) {
-                    // If the activity doesn't exist, save it to the database
-                    const newActivity = await Activity.create({
+                try {
+                    const existingActivity = await Activity.findOne({
                         SE_ID: activity._id,
-                        type: activity.type,
-                        createdAt: activity.createdAt,
-                        data: activity.data,
-                        provider: activity.provider,
-                        flagged: activity.flagged ?? false,
-                        feedSource: 'schedule',
                     });
 
-                    if (!newActivity) {
-                        // Log an error message if saving fails
-                        logIfDebugging(
-                            `${streamActivityLog} ${new Date().toTimeString()} - Failed to save activity to database.`
-                        );
-                        return;
-                    }
+                    if (!existingActivity) {
+                        // If the activity doesn't exist, save it to the database
+                        const newActivity = await Activity.create({
+                            SE_ID: activity._id,
+                            type: activity.type,
+                            createdAt: activity.createdAt,
+                            data: activity.data,
+                            provider: activity.provider,
+                            flagged: activity.flagged ?? false,
+                            feedSource: 'schedule',
+                        });
 
-                    const filters =
-                        activity.provider === 'youtube'
-                            ? streamElementsSettings.streamElementsYTFilters
-                            : streamElementsSettings.streamElementsTwitchFilters;
-
-                    if (!filters) {
-                        return;
-                    }
-
-                    if (
-                        filters.includes(activity.type) ||
-                        filters.length === 0
-                    ) {
-                        const newEvent = await Activity.create(data);
-
-                        if (!newEvent) {
+                        if (!newActivity) {
+                            // Log an error message if saving fails
                             logIfDebugging(
-                                `[WEBSOCKET/BACKEND]: Error in handleClientConnections: Error creating event: ${data}`
+                                `${streamActivityLog} ${new Date().toTimeString()} - Failed to save activity to database.`
                             );
+                            return;
                         }
 
-                        socket
-                            .to(EVENTS.STREAM_ACTIVITY)
-                            .emit('event', newEvent);
+                        const filters =
+                            activity.provider === 'youtube'
+                                ? streamElementsSettings.streamElementsYTFilters
+                                : streamElementsSettings.streamElementsTwitchFilters;
+
+                        if (!filters) {
+                            return;
+                        }
+
+                        if (
+                            filters.includes(activity.type) ||
+                            filters.length === 0
+                        ) {
+                            const newEvent = await Activity.create(data);
+
+                            if (!newEvent) {
+                                logIfDebugging(
+                                    `[WEBSOCKET/BACKEND]: Error in handleClientConnections: Error creating event: ${data}`
+                                );
+                            }
+
+                            socket
+                                .to(EVENTS.STREAM_ACTIVITY)
+                                .emit('event', newEvent);
+                            socket.emit('event', newEvent);
+                        }
+                        return newActivity;
                     }
-                    return newActivity;
+                } catch (error) {
+                    // Log an error if there's an exception
+                    logIfDebugging(
+                        `${streamActivityLog} ${new Date().toTimeString()} - Error in fetchStreamActivity: ${error} - `
+                    );
                 }
             }
         });
