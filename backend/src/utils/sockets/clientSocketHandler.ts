@@ -292,6 +292,19 @@ const handleAuthenticationSuccess = async (
     }
   }
 
+  // Double check if the user is already connected using the encoded username
+  const userAlreadyConnected = Array.from(activeSockets).find(
+    ([_, socket]) => socket.username === decoded.username
+  );
+
+  if (userAlreadyConnected) {
+    // Disconnect the old socket
+    const oldSocket = activeSockets.get(userAlreadyConnected[0]);
+    if (oldSocket) {
+      io.sockets.sockets.get(oldSocket.socketId)?.disconnect();
+    }
+  }
+
   // Let the client know that they are authenticated
   socket.emit('authenticated', { message: 'Authenticated' });
 
