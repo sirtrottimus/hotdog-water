@@ -9,6 +9,7 @@ import Activity from '../../database/schema/Activity';
 import { StreamElementsSettingsService } from '../../services/streamElements';
 import { StreamElementsSettings } from '../../database/schema';
 import { fetchActivity } from '../tasks/fetchStreamActivity';
+import { io } from './socket';
 
 const streamActivityLog = '[SCHEDULE/SE/D_REFRESH]:';
 
@@ -33,7 +34,7 @@ const EVENTS = {
   REFRESH_DATE: 'refresh-date',
 };
 
-const activeSockets = new Map();
+const activeSockets = new Map<string, SocketConnection>();
 
 const handleClientConnections = (io: ServerIO) => {
   io.on(EVENTS.CONNECTION, (socket: Socket) => {
@@ -283,13 +284,12 @@ const handleAuthenticationSuccess = async (
   }
 
   // Check if user is already connected
-  if (
-    activeSockets.has(decoded.id) &&
-    activeSockets.get(decoded.id) !== socket.id
-  ) {
+  if (activeSockets.has(decoded.id)) {
     // Disconnect the old socket
     const oldSocket = activeSockets.get(decoded.id);
-    oldSocket?.disconnect();
+    if (oldSocket) {
+      io.sockets.sockets.get(oldSocket.socketId)?.disconnect();
+    }
   }
 
   // Let the client know that they are authenticated
