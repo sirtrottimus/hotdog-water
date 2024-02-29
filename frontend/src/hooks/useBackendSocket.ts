@@ -14,17 +14,18 @@ interface Data {
   [key: string]: any;
 }
 
-interface ActiveSocket {
+type SocketConnection = {
   socketId: string;
   userId: string;
   username: string;
-  iat: number;
-}
+};
 
 const useBackendSocket = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [eventsData, setEventsData] = useState<EventData[]>([]);
-  const [activeSockets, setActiveSockets] = useState<ActiveSocket[]>([]);
+  const [activeSockets, setActiveSockets] = useState<
+    Map<string, SocketConnection>
+  >(new Map<string, SocketConnection>());
   const jwtToken = getCookie('token');
 
   const onConnect = useCallback(() => {
@@ -113,7 +114,15 @@ const useBackendSocket = () => {
       {
         name: 'active-sockets',
         callback: (data: any) => {
-          setActiveSockets(data);
+          console.log(data);
+          setActiveSockets(
+            new Map<string, SocketConnection>(
+              Array.from(data, ([socketId, socketData]) => [
+                socketId,
+                socketData,
+              ])
+            )
+          );
         },
       },
       {
