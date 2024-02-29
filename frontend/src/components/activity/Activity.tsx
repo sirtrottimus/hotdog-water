@@ -227,12 +227,11 @@ function RenderCommunityGiftPurchaseEvent(
   handleMarkAsRead: (id: string) => void
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
-  const { displayName, quantity } = result.data;
+  const { displayName, amount } = result.data;
   const tierText = ''; // You can customize this if needed for this specific event type.
 
   return (
     <Paper mb={10}>
-      {' '}
       {/* Add the Paper component */}
       <Flex align={'stretch'} justify={'space-between'}>
         <Box
@@ -245,8 +244,8 @@ function RenderCommunityGiftPurchaseEvent(
             {dayjs(result.createdAt).calendar()}
           </Text>
           <Text>
-            <b>{displayName}</b> Gifted <b>{quantity}</b> Subs. Remember to
-            thank them in chat! {tierText}
+            <b>{displayName}</b> Gifted <b>{amount}</b> Subs. Remember to thank
+            them in chat! {tierText}
           </Text>
         </Box>
         <Box
