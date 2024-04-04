@@ -206,7 +206,8 @@ function RenderSubscriberEvent(
             </Text>
 
             <Text>
-              <b>{username}</b> subscribed on YouTube
+              <b>{(username as string).truncateSecondName()}</b> subscribed on
+              YouTube
             </Text>
           </Box>
           <Box

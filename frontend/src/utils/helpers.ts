@@ -196,3 +196,22 @@ export function decodeHtmlEntities(message: string): string {
     }
   });
 }
+
+// Function to truncate second name to initials.
+export function truncateSecondName(name: string): string {
+  const nameArray = name.split(' ');
+  if (nameArray.length > 1) {
+    return `${nameArray[0]} ${nameArray[1].charAt(0)}.`;
+  }
+  return name;
+}
+
+// add the function as a part of string prototype
+declare global {
+  interface String {
+    truncateSecondName(): string;
+  }
+}
+String.prototype.truncateSecondName = function () {
+  return truncateSecondName(this);
+};
