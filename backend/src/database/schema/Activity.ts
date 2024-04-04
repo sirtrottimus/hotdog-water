@@ -1,7 +1,8 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 type DataInt = {
-  username: string;
+  displayName?: string;
+  username?: string;
   amount: number;
   message?: string;
   tier: string;

@@ -21,7 +21,9 @@ const fetchActivity = async () => {
 // post the activity to SE
 const postAnnouncement = async () => {
   const random = await fetchActivity();
-  const announcementText = `Activity will be read out intermittently during the stream. (Except you ${random.Data.username}, you're banned.)`;
+  const announcementText = `Activity will be read out intermittently during the stream. (Except you ${
+    random.Data.username ?? random.Data.displayName
+  }, you're banned.)`;
   const postTo = ['Twitch (StreamElements)'];
 
   try {
