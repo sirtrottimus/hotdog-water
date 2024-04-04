@@ -24,7 +24,7 @@ type ActivityTypeInt =
 interface ActivityInt extends Document {
   _id: string;
   type: ActivityTypeInt;
-  Data: DataInt;
+  data: DataInt;
   createdAt: Date;
   SE_ID: string;
   flagged: boolean;

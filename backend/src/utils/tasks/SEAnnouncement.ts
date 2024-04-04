@@ -12,7 +12,7 @@ const fetchActivity = async (): Promise<any> => {
   const unreadActivities = activities.filter((activity) => !activity.read);
   const randomActivity =
     unreadActivities[Math.floor(Math.random() * unreadActivities.length)];
-  if (randomActivity.Data.username) return randomActivity;
+  if (randomActivity.data.username) return randomActivity;
   else return fetchActivity();
 };
 
@@ -20,11 +20,11 @@ const fetchActivity = async (): Promise<any> => {
 const postAnnouncement = async () => {
   console.log('Posting announcement to SE');
   const random = await fetchActivity();
-  if (!random.Data.username) {
-    random.Data.username = 'Chucklehead';
+  if (!random.data.username) {
+    random.data.username = 'Chucklehead';
   }
   const announcementText = `Activity will be read out intermittently during the stream. (Except you ${
-    random.Data.username ?? random.Data.displayName
+    random.data.username ?? random.data.displayName
   }, you're banned.)`;
   const postTo = ['Twitch (StreamElements)'];
 
