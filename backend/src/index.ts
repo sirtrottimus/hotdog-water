@@ -16,7 +16,6 @@ import { createServer as createServerDev } from 'http'; // Import from https in 
 import { join } from 'path';
 import dotenv from 'dotenv';
 import startFetchStreamActivity from './utils/tasks/fetchStreamActivity';
-import { Server as ServerIO } from 'socket.io';
 import handleClientConnections from './utils/sockets/clientSocketHandler';
 import { initSocket, io } from './utils/sockets/socket';
 
