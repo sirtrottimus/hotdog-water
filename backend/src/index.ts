@@ -18,6 +18,7 @@ import dotenv from 'dotenv';
 import startFetchStreamActivity from './utils/tasks/fetchStreamActivity';
 import handleClientConnections from './utils/sockets/clientSocketHandler';
 import { initSocket, io } from './utils/sockets/socket';
+import startAnnouncement from './utils/tasks/SEAnnouncement';
 
 dotenv.config({ path: join(__dirname, '.env') });
 // Destructure environment variables
@@ -69,6 +70,7 @@ const main = async () => {
 
     //Start any tasks that need to run in the background
     startFetchStreamActivity(io);
+    startAnnouncement();
 
     // Start server
     httpServer.listen(app.get('port'), () => {

@@ -4,6 +4,7 @@ import axios from 'axios';
 import cron from 'node-cron';
 import { AnnouncementsService } from '../../services/announcement';
 import Activity from '../../database/schema/Activity';
+import { logIfDebugging } from '../helpers';
 
 const CRON_SCHEDULE = 5;
 const announcement = new AnnouncementsService();
@@ -38,9 +39,17 @@ const postAnnouncement = async () => {
 
 // schedule the announcement
 const startAnnouncement = () => {
+  logIfDebugging(
+    `[SCHEDULE/SE]: Scheduling - Posting announcement every ${CRON_SCHEDULE} minutes...`
+  );
+
   cron.schedule(`*/${CRON_SCHEDULE} * * * *`, async () => {
     await postAnnouncement();
   });
+
+  logIfDebugging(
+    `[SCHEDULE/SE]: Scheduled - Posting announcement every ${CRON_SCHEDULE} minutes.`
+  );
 };
 
 export default startAnnouncement;
