@@ -213,5 +213,5 @@ declare global {
   }
 }
 String.prototype.truncateSecondName = function () {
-  return truncateSecondName(this);
+  return truncateSecondName(this.toString());
 };
