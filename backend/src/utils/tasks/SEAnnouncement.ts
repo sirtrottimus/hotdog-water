@@ -9,7 +9,9 @@ const CRON_SCHEDULE = 5;
 // get a list of unread activities from the database and choose one
 const fetchActivity = async (): Promise<any> => {
   const activities = await Activity.find({ flagged: false });
-  const unreadActivities = activities.filter((activity) => !activity.read);
+  const unreadActivities = activities.filter(
+    (activity) => !activity.read && !activity.provider === 'twitch'
+  );
   const randomActivity =
     unreadActivities[Math.floor(Math.random() * unreadActivities.length)];
   if (randomActivity.data.username) return randomActivity;
