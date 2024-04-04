@@ -43,8 +43,14 @@ const startAnnouncement = () => {
     `[SCHEDULE/SE]: Scheduling - Posting announcement every ${CRON_SCHEDULE} minutes...`
   );
 
-  cron.schedule(`*/${CRON_SCHEDULE} * * * *`, async () => {
-    await postAnnouncement();
+  cron.schedule(`*/${CRON_SCHEDULE} * * * *`, () => {
+    postAnnouncement()
+      .then(() => {
+        logIfDebugging('[SCHEDULE/SE]: Scheduled - Posted announcement to SE.');
+      })
+      .catch((error) => {
+        console.error('Error posting announcement:', error);
+      });
   });
 
   logIfDebugging(
