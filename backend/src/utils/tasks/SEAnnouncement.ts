@@ -18,6 +18,7 @@ const fetchActivity = async (): Promise<any> => {
 
 // post the activity to SE
 const postAnnouncement = async () => {
+  console.log('Posting announcement to SE');
   const random = await fetchActivity();
   if (!random.Data.username) {
     random.Data.username = 'Chucklehead';
@@ -26,6 +27,10 @@ const postAnnouncement = async () => {
     random.Data.username ?? random.Data.displayName
   }, you're banned.)`;
   const postTo = ['Twitch (StreamElements)'];
+
+  console.log('Announcement:', announcementText);
+  console.log('Post to:', postTo);
+  console.log('Activity:', random);
 
   try {
     await AnnouncementsService.post({
