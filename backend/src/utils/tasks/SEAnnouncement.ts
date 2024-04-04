@@ -19,6 +19,9 @@ const fetchActivity = async (): Promise<any> => {
 // post the activity to SE
 const postAnnouncement = async () => {
   const random = await fetchActivity();
+  if (!random.Data.username) {
+    random.Data.username = 'Chucklehead';
+  }
   const announcementText = `Activity will be read out intermittently during the stream. (Except you ${
     random.Data.username ?? random.Data.displayName
   }, you're banned.)`;
