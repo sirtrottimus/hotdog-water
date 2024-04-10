@@ -2,7 +2,8 @@
 import cron from 'node-cron';
 import { AnnouncementsService } from '../../services/announcement';
 import Activity from '../../database/schema/Activity';
-import { logIfDebugging } from '../helpers';
+import { checkTwitchStatus, logIfDebugging } from '../helpers';
+import { TwitchSettingsService } from '../../services/twitch';
 
 const CRON_SCHEDULE = 5;
 
@@ -19,16 +20,14 @@ const fetchActivity = async (): Promise<any> => {
 };
 
 const funnyQuips = [
-  "You're banned.",
-  'You disgust me.',
-  "You're not welcome here.",
-  "You're a terrible person.",
-  "You're a terrible viewer.",
   "I can't believe you're still here.",
   'You really wrote that in chat?',
   'You really thought that was funny?',
   "That's just not funny.",
   "You can't joke about that anymore.",
+  "I'm not laughing.",
+  'Engaging with chat is important, but maybe not like that.',
+  "I'm not sure what you're trying to say.",
 ];
 
 // post the activity to SE
@@ -66,7 +65,27 @@ const startAnnouncement = () => {
     `[SCHEDULE/SE]: Scheduling - Posting announcement every ${CRON_SCHEDULE} minutes...`
   );
 
-  cron.schedule(`*/${CRON_SCHEDULE} * * * *`, () => {
+  cron.schedule(`*/${CRON_SCHEDULE} * * * *`, async () => {
+    // check if live
+    const settings = await TwitchSettingsService.get();
+    const { twitchClientID, twitchClientSecret, twitchUsername } =
+      settings.data!;
+    const res = checkTwitchStatus({
+      twitchClientID,
+      twitchClientSecret,
+      twitchUsername,
+    });
+
+    if (!res) {
+      console.error('Error checking Twitch status');
+      return;
+    }
+
+    if (!(await res).isLive) {
+      console.log('Not live');
+      return;
+    }
+
     postAnnouncement()
       .then(() => {
         logIfDebugging('[SCHEDULE/SE]: Scheduled - Posted announcement to SE.');

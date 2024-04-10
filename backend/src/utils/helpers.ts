@@ -166,3 +166,82 @@ export async function populateDatabase(): Promise<void> {
     console.error('An error occurred:', error);
   }
 }
+
+export type TwitchSettingsInt = {
+  twitchUsername: string;
+  twitchClientID: string;
+  twitchClientSecret: string;
+};
+
+/**
+ * Checks if a Twitch channel is live
+ * @param twitchClientID - Twitch Client ID
+ * @param twitchClientSecret - Twitch Client Secret
+ * @param twitchUsername - Twitch Username
+ * @returns Promise with success flag, data and error message (if any)
+ *
+ * Todo: Look into replacing with websocket connection. See https://dev.twitch.tv/docs/api/webhooks-reference
+ */
+export async function checkTwitchStatus({
+  twitchClientID,
+  twitchClientSecret,
+  twitchUsername,
+}: TwitchSettingsInt) {
+  // Set up Twitch API
+  const twitchAuthUrl = 'https://id.twitch.tv/oauth2/token';
+  const twitchStreamUrl = 'https://api.twitch.tv/helix/streams';
+
+  const authResponse = await fetch(twitchAuthUrl, {
+    method: 'POST',
+
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      client_id: twitchClientID,
+      client_secret: twitchClientSecret,
+      grant_type: 'client_credentials',
+    }),
+  });
+
+  type AuthData = {
+    access_token: string;
+    expires_in: number;
+    token_type: string;
+  };
+
+  type StreamData = {
+    data: {
+      id: string;
+      user_id: string;
+      user_name: string;
+      game_id: string;
+      type: string;
+      title: string;
+      viewer_count: number;
+      started_at: string;
+      language: string;
+      thumbnail_url: string;
+      tag_ids: string[];
+    }[];
+  };
+
+  const authData = (await authResponse.json()) as AuthData;
+  const twitchToken = authData.access_token;
+
+  const streamResponse = await fetch(
+    `${twitchStreamUrl}?user_login=${twitchUsername}`,
+    {
+      headers: {
+        'Client-ID': twitchClientID,
+        Authorization: `Bearer ${twitchToken}`,
+      },
+    }
+  );
+
+  const streamData = (await streamResponse.json()) as StreamData;
+  return {
+    isLive: streamData.data[0]?.type === 'live',
+    streamData: streamData,
+  };
+}
