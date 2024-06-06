@@ -4,7 +4,7 @@ import socket from '../../utils/sockets/backendSocket';
 import dayjs from 'dayjs';
 import calendar from 'dayjs/plugin/calendar';
 import { IconCheck } from '@tabler/icons-react';
-import { decodeHtmlEntities } from '../../utils/helpers';
+import { decodeHtmlEntities, sentenceToEmoji } from '../../utils/helpers';
 
 dayjs.extend(calendar);
 
@@ -172,7 +172,10 @@ function RenderSubscriberEvent(
             </Text>
             {result.data.message ? (
               <Text mt={10}>
-                Saying: <b>{decodeHtmlEntities(result.data.message)}</b>
+                Saying:{' '}
+                <b>
+                  {sentenceToEmoji(decodeHtmlEntities(result.data.message))}
+                </b>
               </Text>
             ) : (
               <Text mt={10} c={'dimmed'}>
@@ -369,7 +372,10 @@ function RenderCheerEvent(
           {
             result.data.message ? (
               <Text mt={10}>
-                Saying: <b>{decodeHtmlEntities(result.data.message)}</b>
+                Saying:{' '}
+                <b>
+                  {sentenceToEmoji(decodeHtmlEntities(result.data.message))}
+                </b>
               </Text>
             ) : (
               <Text mt={10} c={'dimmed'}>
@@ -423,7 +429,10 @@ function RenderTipEvent(
           {
             result.data.message ? (
               <Text mt={10}>
-                Saying: <b>{decodeHtmlEntities(result.data.message)}</b>
+                Saying:{' '}
+                <b>
+                  {sentenceToEmoji(decodeHtmlEntities(result.data.message))}
+                </b>
               </Text>
             ) : (
               <Text mt={10} c={'dimmed'}>
@@ -524,7 +533,7 @@ function RenderSuperChatEvent(
           {
             message ? (
               <Text mt={10}>
-                Saying: <b>{decodeHtmlEntities(message)}</b>
+                Saying: <b>{sentenceToEmoji(decodeHtmlEntities(message))}</b>
               </Text>
             ) : (
               <Text mt={10} c={'dimmed'}>
