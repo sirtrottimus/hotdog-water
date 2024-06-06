@@ -604,7 +604,7 @@ export default function Activity(event: EventInt): JSX.Element | null {
   if (eventName === 'event:test_room') {
     return (
       <div>
-        <p>Test Room Event Received - Sent By: {activity.data}</p>
+        <p>Test Room Event Received - Sent By: {activity.data} hatLUL</p>
       </div>
     );
   }

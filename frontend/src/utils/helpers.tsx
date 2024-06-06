@@ -1,5 +1,7 @@
 import { DefaultMantineColor } from '@mantine/core';
 import { TwitchSettingsInt } from './api/TwitchService';
+import { format } from 'path';
+import { emojiList } from './emojis';
 
 /**
  * Escapes regex special characters
@@ -215,3 +217,24 @@ declare global {
 String.prototype.truncateSecondName = function () {
   return truncateSecondName(this.toString());
 };
+
+// convert a string to a emoji
+// taking a string and checking if it matches a list, if so fetch the emoji via the url and return it
+export function StringToEmoji(input: string): React.ReactNode {
+  const emoji = emojiList.find((emoji) => emoji.name === input);
+  if (emoji) {
+    return (
+      <img
+        src={`https://cdn.frankerfacez.com/emoticon/${emoji.id}/${emoji.format}`}
+        alt={input}
+      />
+    );
+  }
+}
+
+// function to take a sentence, split it into words, check regex against emoji list and return the emoji
+export function sentenceToEmoji(sentence: string): React.ReactNode {
+  const words = sentence.split(' ');
+  const emojiSentence = words.map((word) => StringToEmoji(word));
+  return emojiSentence;
+}

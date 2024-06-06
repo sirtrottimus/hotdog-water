@@ -11,7 +11,10 @@ const CRON_SCHEDULE = 5;
 const fetchActivity = async (): Promise<any> => {
   const activities = await Activity.find({ flagged: false });
   const unreadActivities = activities.filter(
-    (activity) => !activity.read && activity.provider === 'twitch'
+    (activity) =>
+      !activity.read &&
+      activity.provider === 'twitch' &&
+      activity.type !== 'follow'
   );
   const randomActivity =
     unreadActivities[Math.floor(Math.random() * unreadActivities.length)];

@@ -33,7 +33,7 @@ const ACTIVITY_TYPES = [
   'membership',
   'member',
 ];
-const CRON_SCHEDULE = 20;
+const CRON_SCHEDULE = 2;
 
 // Create a log message for fetching stream activity
 const streamActivityLog = '[SCHEDULE/SE]:';
@@ -71,18 +71,8 @@ const fetchStreamActivity = async (io: ServerIO) => {
       return;
     }
 
-    // Initialize the 'after' date
-    let after = new Date();
-    // Find the last activity in the database and set 'after' accordingly
-    const lastActivity = await Activity.findOne({}).sort({ createdAt: -1 });
-
-    if (!lastActivity) {
-      // If there's no last activity, set 'after' to one day ago
-      after.setDate(after.getDate() - 1);
-    } else {
-      // If there's a last activity, set 'after' to its createdAt date
-      after = lastActivity.createdAt;
-    }
+    // Initialize the 'after' date to the current date and time as midnight
+    const after = new Date(new Date().setHours(0, 0, 0, 0));
 
     // Retrieve the fetched activity data
     const YTActivity = await fetchActivity(
@@ -211,8 +201,6 @@ export async function fetchActivity(
       return;
     }
 
-    // Return the fetched activity data
-    console.log('fetch_response', response.data);
     return response.data;
   } catch (error) {
     const res = await JWTAuthService.getActive();
