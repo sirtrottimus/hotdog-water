@@ -23,6 +23,7 @@ type SocketConnection = {
 const useBackendSocket = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [eventsData, setEventsData] = useState<EventData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeSockets, setActiveSockets] = useState<
     Map<string, SocketConnection>
   >(new Map<string, SocketConnection>());
@@ -178,6 +179,7 @@ const useBackendSocket = () => {
   ]); // Empty dependency array, memoizes the customEvents array
 
   useEffect(() => {
+    setIsLoading(true);
     socket.connect();
 
     socket.on('connect', onConnect);
@@ -188,6 +190,8 @@ const useBackendSocket = () => {
     customEvents.forEach((event) => {
       socket.on(event.name, event.callback);
     });
+
+    setIsLoading(false);
 
     return () => {
       socket.off('connect', onConnect);
@@ -219,6 +223,7 @@ const useBackendSocket = () => {
     activeSockets,
     disconnect,
     connect,
+    isLoading,
   };
 };
 

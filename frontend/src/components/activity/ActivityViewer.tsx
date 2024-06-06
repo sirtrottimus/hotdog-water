@@ -83,13 +83,11 @@ function ActivityViewer({
     isConnected: isBackendConnected,
     eventsData: backendEventsData,
     activeSockets,
+    isLoading,
   } = useBackendSocket();
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  console.log('backendEventsData', backendEventsData);
-  console.log('activeSockets', activeSockets);
-
   return (
     <Paper
       mt={30}
@@ -205,7 +203,9 @@ function ActivityViewer({
           ) : (
             <Box className={`${classes.activityContainer}`}>
               <Center>
-                <Text c="dimmed">No events to display yet.</Text>
+                <Text c="dimmed">
+                  {isLoading ? 'Loading...' : 'No events to display yet.'}
+                </Text>
               </Center>
             </Box>
           )}
