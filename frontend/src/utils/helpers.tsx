@@ -225,7 +225,7 @@ export function StringToEmoji(input: string): React.ReactNode {
   if (emoji) {
     return (
       <img
-        src={`https://cdn.frankerfacez.com/emoticon/${emoji.id}/${emoji.format}`}
+        src={`https://static-cdn.jtvnw.net/emoticons/v2/${emoji.id}/${emoji.format[0]}/dark/1.0`}
         alt={input}
       />
     );
