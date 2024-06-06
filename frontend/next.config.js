@@ -7,6 +7,9 @@ const nextConfig = {
 
     return config;
   },
+  env:{
+    NEXT_PUBLIC_VERSION: '1.6.1',
+  }
 };
 
 export default nextConfig;
