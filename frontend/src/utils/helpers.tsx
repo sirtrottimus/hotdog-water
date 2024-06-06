@@ -218,23 +218,31 @@ String.prototype.truncateSecondName = function () {
   return truncateSecondName(this.toString());
 };
 
-// function to take a sentence, split it into words, check regex against emoji list and return sentence with emojis replaced. has to keep the spaces and punctuation.
-export function sentenceToEmoji(sentence: string): React.ReactNode {
-  const words = sentence.split(' ');
-  const emojiSentence = words.map((word) => {
-    const emoji = emojiList.find((emoji) => {
-      return new RegExp(emoji.name).test(word);
-    });
-    if (emoji) {
-      return (
+export function sentenceToEmoji(sentence: string) {
+  // Create a map for quick lookup of emojis by name
+  const emojiMap = {};
+  emojiList.forEach((emoji) => {
+    emojiMap[emoji.name] = emoji.id;
+  });
+
+  // Split the sentence into words using a regular expression to include punctuation
+  const words = sentence.split(/(\s+)/);
+
+  // Map through the words and replace the matched words with image tags
+  const convertedWords = words.map((word) => {
+    if (emojiMap[word]) {
+      const emojiId = emojiMap[word];
+      return `
         <img
-          key={emoji.id}
-          src={`https://static-cdn.jtvnw.net/emoticons/v2/${emoji.id}/static/dark/1.0`}
-          alt={word}
+          key="${emojiId}"
+          src="https://static-cdn.jtvnw.net/emoticons/v2/${emojiId}/static/dark/1.0"
+          alt="${word}"
         />
-      );
+      `;
     }
     return word;
   });
-  return emojiSentence;
+
+  // Join the words back into a sentence
+  return convertedWords.join('');
 }
