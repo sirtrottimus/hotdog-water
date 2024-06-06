@@ -129,6 +129,7 @@ const useBackendSocket = () => {
       {
         name: 'event:initial',
         callback: (data: any) => {
+          setIsLoading(true);
           //Filter for duplicate events
           const uniqueArray = data.filter(
             (obj: any, index: any, self: any) =>
@@ -155,6 +156,7 @@ const useBackendSocket = () => {
                 _id: event.SE_ID,
               }))
           );
+          setIsLoading(false);
         },
       },
       // Add other custom events here
@@ -179,7 +181,6 @@ const useBackendSocket = () => {
   ]); // Empty dependency array, memoizes the customEvents array
 
   useEffect(() => {
-    setIsLoading(true);
     socket.connect();
 
     socket.on('connect', onConnect);
@@ -190,8 +191,6 @@ const useBackendSocket = () => {
     customEvents.forEach((event) => {
       socket.on(event.name, event.callback);
     });
-
-    setIsLoading(false);
 
     return () => {
       socket.off('connect', onConnect);
