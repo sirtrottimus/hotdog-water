@@ -228,21 +228,22 @@ export function sentenceToEmoji(sentence: string) {
   // Split the sentence into words using a regular expression to include punctuation
   const words = sentence.split(/(\s+)/);
 
-  // Map through the words and replace the matched words with image tags
-  const convertedWords = words.map((word) => {
+  // Map through the words and replace the matched words with React image components
+  const convertedWords = words.map((word, index) => {
     if (emojiMap[word]) {
       const emojiId = emojiMap[word];
-      return `
+      return (
         <img
-          key="${emojiId}"
-          src="https://static-cdn.jtvnw.net/emoticons/v2/${emojiId}/static/dark/1.0"
-          alt="${word}"
+          key={`${emojiId}-${index}`}
+          src={`https://static-cdn.jtvnw.net/emoticons/v2/${emojiId}/static/dark/1.0`}
+          alt={word}
+          style={{ display: 'inline' }}
         />
-      `;
+      );
     }
-    return word;
+    return `${word} `; // Add space back after the word
   });
 
-  // Join the words back into a sentence
-  return convertedWords.join('');
+  // Return the converted words as a React fragment
+  return <>{convertedWords}</>;
 }
