@@ -218,23 +218,21 @@ String.prototype.truncateSecondName = function () {
   return truncateSecondName(this.toString());
 };
 
-// convert a string to a emoji
-// taking a string and checking if it matches a list, if so fetch the emoji via the url and return it
-export function StringToEmoji(input: string): React.ReactNode {
-  const emoji = emojiList.find((emoji) => emoji.name === input);
-  if (emoji) {
-    return (
-      <img
-        src={`https://static-cdn.jtvnw.net/emoticons/v2/${emoji.id}/static/dark/1.0`}
-        alt={input}
-      />
-    );
-  }
-}
-
-// function to take a sentence, split it into words, check regex against emoji list and return the emoji
+// function to take a sentence, split it into words, check regex against emoji list and return sentence with emojis
 export function sentenceToEmoji(sentence: string): React.ReactNode {
   const words = sentence.split(' ');
-  const emojiSentence = words.map((word) => StringToEmoji(word));
-  return emojiSentence;
+
+  return words.map((word, index) => {
+    const emoji = emojiList.find((emoji) => emoji.name === word);
+    if (emoji) {
+      return (
+        <img
+          key={index}
+          src={`https://static-cdn.jtvnw.net/emoticons/v2/${emoji.id}/static/dark/1.0`}
+          alt={word}
+        />
+      );
+    }
+    return word;
+  });
 }
