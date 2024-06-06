@@ -220,7 +220,7 @@ String.prototype.truncateSecondName = function () {
 
 export function sentenceToEmoji(sentence: string) {
   // Create a map for quick lookup of emojis by name
-  const emojiMap = {};
+  const emojiMap = {} as Record<string, string>;
   emojiList.forEach((emoji) => {
     emojiMap[emoji.name] = emoji.id;
   });
