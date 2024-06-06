@@ -218,16 +218,17 @@ String.prototype.truncateSecondName = function () {
   return truncateSecondName(this.toString());
 };
 
-// function to take a sentence, split it into words, check regex against emoji list and return sentence with emojis
+// function to take a sentence, split it into words, check regex against emoji list and return sentence with emojis replaced. has to keep the spaces and punctuation.
 export function sentenceToEmoji(sentence: string): React.ReactNode {
   const words = sentence.split(' ');
-
-  return words.map((word, index) => {
-    const emoji = emojiList.find((emoji) => emoji.name === word);
+  const emojiSentence = words.map((word) => {
+    const emoji = emojiList.find((emoji) => {
+      return new RegExp(emoji.name).test(word);
+    });
     if (emoji) {
       return (
         <img
-          key={index}
+          key={emoji.id}
           src={`https://static-cdn.jtvnw.net/emoticons/v2/${emoji.id}/static/dark/1.0`}
           alt={word}
         />
@@ -235,4 +236,5 @@ export function sentenceToEmoji(sentence: string): React.ReactNode {
     }
     return word;
   });
+  return emojiSentence;
 }
