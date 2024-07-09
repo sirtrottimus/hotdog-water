@@ -75,7 +75,7 @@ export class TwitchSettingsService {
     const adDuration = options.body.duration || 90;
 
     const twitchSettings = await TwitchSettingsService.get();
-    const { twitchClientID, twitchAccessToken, twitchUsername } =
+    const { twitchClientID, twitchAccessToken } =
       twitchSettings.data as Partial<TwitchSettingsInt>;
     const adSettings = {
       broadcaster_id: '21945983',
