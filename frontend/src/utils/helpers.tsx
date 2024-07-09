@@ -175,8 +175,14 @@ export async function checkTwitchStatus({
   );
 
   const streamData = (await streamResponse.json()) as StreamData;
+  if (!streamData.data) {
+    return {
+      isLive: false,
+      streamData: streamData,
+    };
+  }
   return {
-    isLive: streamData.data[0]?.type === 'live',
+    isLive: streamData.data[0]?.type === 'live' ?? false,
     streamData: streamData,
   };
 }

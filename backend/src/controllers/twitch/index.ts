@@ -90,6 +90,31 @@ const twitchSettingsController = {
       'twitchSettings'
     );
   },
+
+  async runAd(req: Request, res: Response) {
+    const user = req.user as UserInt;
+
+    const validationResult = await validateUserPerms(user._id, [
+      'SUPERADMIN',
+      'ADMIN',
+      'MODERATOR',
+      'RUN_TWITCH_AD',
+    ]);
+
+    if (!validationResult.success) {
+      return validationResult;
+    }
+
+    await handleRequest(
+      res,
+      TwitchSettingsService.runAd,
+      user,
+      {
+        body: req.body,
+      },
+      'twitchSettings'
+    );
+  },
 };
 
 export default twitchSettingsController;

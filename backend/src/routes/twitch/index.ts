@@ -17,5 +17,8 @@ router.post('/', isAuthenticated, twitchSettingsController.create);
 // Route for updating a role
 router.put('/', isAuthenticated, twitchSettingsController.update);
 
+// Route for running an ad
+router.post('/runAd', isAuthenticated, twitchSettingsController.runAd);
+
 // Export router
 export default router;

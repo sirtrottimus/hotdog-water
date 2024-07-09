@@ -1,5 +1,5 @@
 import { Alert, Center, SimpleGrid, Title } from '@mantine/core';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import { MainLayout } from '../../components/Layout/mainLayout';
 import AnnouncementSelector from '../../components/announcements/announcementSelector';
 import AnnouncementsViewer from '../../components/announcements/announcementsViewer';
@@ -23,6 +23,7 @@ export default function Home({
       return response.data;
     }
   });
+
   if (isLoading) {
     return (
       <>
@@ -32,6 +33,7 @@ export default function Home({
       </>
     );
   }
+
   // TODO: Rewrite this to be more robust.
   // Issues:
   // 1. JWT is not defined when the user is not logged in.

@@ -171,6 +171,9 @@ export type TwitchSettingsInt = {
   twitchUsername: string;
   twitchClientID: string;
   twitchClientSecret: string;
+  twitchAccessToken: string;
+  twitchRefreshToken: string;
+  twitchTokenExpires: Date;
 };
 
 /**
@@ -186,7 +189,7 @@ export async function checkTwitchStatus({
   twitchClientID,
   twitchClientSecret,
   twitchUsername,
-}: TwitchSettingsInt) {
+}: Partial<TwitchSettingsInt>) {
   // Set up Twitch API
   const twitchAuthUrl = 'https://id.twitch.tv/oauth2/token';
   const twitchStreamUrl = 'https://api.twitch.tv/helix/streams';
@@ -233,7 +236,7 @@ export async function checkTwitchStatus({
     `${twitchStreamUrl}?user_login=${twitchUsername}`,
     {
       headers: {
-        'Client-ID': twitchClientID,
+        'Client-ID': twitchClientID!,
         Authorization: `Bearer ${twitchToken}`,
       },
     }

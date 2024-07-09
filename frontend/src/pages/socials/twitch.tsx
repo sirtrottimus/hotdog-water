@@ -178,6 +178,14 @@ export default function Home({
     'canView'
   );
 
+  const handleLogin = () => {
+    if (process.env.NODE_ENV === 'development') {
+      window.location.href = `${process.env.NEXT_PUBLIC_DEV_API_URL}api/auth/twitch`;
+      return;
+    }
+    window.location.href = `${process.env.NEXT_PUBLIC_PROD_API_URL}api/auth/twitch`;
+  };
+
   if (!isAuthLoading && canView)
     return (
       <>
@@ -186,9 +194,23 @@ export default function Home({
         </Center>
         <Container>
           <Box pos="relative">
+            <Center>
+              <Button
+                size="lg"
+                m={50}
+                style={{
+                  background:
+                    '#9147ff' /* fallback for old browsers */ /* Chrome 10-25, Safari 5.1-6 */,
+                  color: 'white',
+                }}
+                onClick={handleLogin}
+              >
+                Login with Twitch
+              </Button>
+            </Center>
             <LoadingOverlay visible={isLoading} overlayBlur={2} />
             <Paper
-              mt={100}
+              mt={20}
               p={'xl'}
               sx={{
                 border: `3px solid ${

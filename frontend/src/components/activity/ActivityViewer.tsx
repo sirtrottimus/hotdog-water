@@ -18,8 +18,9 @@ import ConnectionState from './ConnectionState';
 
 import Activity from './Activity';
 import useBackendSocket from '../../hooks/useBackendSocket';
-import { IconExternalLink } from '@tabler/icons-react';
+import { IconAd, IconExternalLink } from '@tabler/icons-react';
 import { DateTimePicker } from '@mantine/dates';
+import TwitchService from '../../utils/api/TwitchService';
 
 const colorIndex = [
   'blue',
@@ -88,6 +89,7 @@ function ActivityViewer({
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+
   return (
     <Paper
       mt={30}
@@ -104,13 +106,10 @@ function ActivityViewer({
     >
       {!activityWindowed && (
         <>
-          <Flex justify={'space-between'} align={'center'}>
-            <ConnectionState
-              isConnected={isBackendConnected}
-              title={'Backend'}
-            />
-            <Badge size="lg">Alpha</Badge>
-          </Flex>
+          <ConnectionState
+            isConnected={isBackendConnected}
+            title={'Activity'}
+          />
           <Avatar.Group>
             {activeSockets
               ? Array.from(activeSockets).map(([socketId, socket], index) => (
@@ -128,7 +127,7 @@ function ActivityViewer({
         </>
       )}
       <Divider my={20} />
-      <Group my={20}>
+      <Group my={20} position="center">
         {!activityWindowed && (
           <>
             <Button
@@ -154,7 +153,11 @@ function ActivityViewer({
             </Button>
             <Popover opened={opened} onChange={setOpened} width={300} trapFocus>
               <Popover.Target>
-                <Button onClick={() => setOpened((o) => !o)}>
+                <Button
+                  onClick={() => setOpened((o) => !o)}
+                  variant="outline"
+                  color="gray"
+                >
                   Fetch Previous Events
                 </Button>
               </Popover.Target>
@@ -179,6 +182,21 @@ function ActivityViewer({
                 </form>
               </Popover.Dropdown>
             </Popover>
+            <Button
+              size="sm"
+              onClick={() => {
+                TwitchService.runAd();
+              }}
+              variant="gradient"
+              ml={'auto'}
+              gradient={{
+                from: '#6838f1',
+                to: '#dc51f2',
+              }}
+              leftIcon={<IconAd />}
+            >
+              Run Advert
+            </Button>
           </>
         )}
       </Group>

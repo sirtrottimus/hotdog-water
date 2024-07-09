@@ -1,6 +1,7 @@
 // Services for handling twitch settings
 import { Options } from '../helpers';
 import { TwitchSettings as TwitchSettingsSchema } from '../../database/schema';
+import { TwitchSettingsInt } from '../../utils/helpers';
 
 export class TwitchSettingsService {
   static async get() {
@@ -67,5 +68,41 @@ export class TwitchSettingsService {
       error: null,
       msg: null,
     };
+  }
+
+  static async runAd(options: Options) {
+    const adURL = 'https://api.twitch.tv/helix/channels/commercial';
+    const adDuration = options.body.duration || 90;
+
+    const twitchSettings = await TwitchSettingsService.get();
+    const { twitchClientID, twitchAccessToken, twitchUsername } =
+      twitchSettings.data as Partial<TwitchSettingsInt>;
+    const adSettings = {
+      broadcaster_id: '21945983',
+      length: adDuration,
+    };
+
+    const response = await fetch(adURL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Client-ID': twitchClientID!,
+        Authorization: `Bearer ${twitchAccessToken}`,
+      },
+      body: JSON.stringify(adSettings),
+    });
+
+    if (!response.ok) {
+      return {
+        success: false,
+        data: null,
+        error: response.statusText,
+        msg: 'Error Running Ad',
+      };
+    }
+
+    console.log(response);
+
+    return { success: true, data: null, error: null, msg: null };
   }
 }

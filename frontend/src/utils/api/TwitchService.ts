@@ -113,6 +113,23 @@ class TwitchService extends BaseApiService {
       error: null,
     });
   }
+
+  /**
+   * Run an ad on twitch.
+   * @param {twitchSettings:TwitchSettingsInt}
+   * @returns {Promise<TwitchSettingsInt>}
+   * @memberof TwitchService
+   * @see Twitch
+   *
+   */
+  async runAd(): Promise<APIResponse<any>> {
+    const res = await this.post(`${this.url}/runAd`, {});
+    return Promise.resolve({
+      success: true,
+      data: res,
+      error: null,
+    });
+  }
 }
 
 export default new TwitchService();
