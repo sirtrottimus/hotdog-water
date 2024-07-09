@@ -8,6 +8,7 @@ import ActivityViewer from '../../components/activity/ActivityViewer';
 import { useQuery } from '@tanstack/react-query';
 import StreamElementsService from '../../utils/api/StreamElementsService';
 import NewWindow from 'react-new-window';
+import useAuthorization from '../../hooks/useAuthorization';
 
 export default function Home({
   user,
@@ -17,14 +18,27 @@ export default function Home({
   isBlurred: boolean;
 }) {
   const [activityWindowed, setActivityWindowed] = React.useState(false);
-  const { data: JWT, isLoading } = useQuery(['Stream_elem_JWT'], async () => {
-    const response = await StreamElementsService.getOne();
-    if (response.success) {
-      return response.data;
-    }
-  });
 
-  if (isLoading) {
+  const { isAuthorized: canSeeJWT } = useAuthorization(
+    user,
+    ['SUPERADMIN', 'ADMIN', 'CAN_SEE_JWT'],
+    'canSeeJWT'
+  );
+
+  const { data: JWT, isLoading } = useQuery(
+    ['Stream_elem_JWT'],
+    async () => {
+      const response = await StreamElementsService.getOne();
+      if (response.success) {
+        return response.data;
+      }
+    },
+    {
+      enabled: canSeeJWT,
+    }
+  );
+
+  if (canSeeJWT && isLoading) {
     return (
       <>
         <Center>
@@ -42,7 +56,7 @@ export default function Home({
   // 4. JWT is null when the user is not logged in and has not set up their JWT.
   // 5. JWT is null when the user is not logged in and has set up their JWT.
 
-  if (JWT === undefined && !isLoading) {
+  if (canSeeJWT && JWT === undefined && !isLoading) {
     return (
       <>
         <Alert>
@@ -52,7 +66,7 @@ export default function Home({
       </>
     );
   }
-  if (!JWT) {
+  if (canSeeJWT && !JWT) {
     return (
       <>
         <Alert>
@@ -84,12 +98,14 @@ export default function Home({
           <ActivityViewer
             activityWindowed={activityWindowed}
             setActivityWindowed={setActivityWindowed}
+            user={user}
           />
         </NewWindow>
       ) : (
         <ActivityViewer
           activityWindowed={activityWindowed}
           setActivityWindowed={setActivityWindowed}
+          user={user}
         />
       )}
     </>

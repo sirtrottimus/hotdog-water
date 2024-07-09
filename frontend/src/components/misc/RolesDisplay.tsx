@@ -128,7 +128,11 @@ export default function RolesDisplay({
               radius={'xs'}
               mx={-1}
               sx={{
-                paddingRight: canRemoveRole(role) ? 0 : 10,
+                paddingRight: displayActions
+                  ? canRemoveRole(role)
+                    ? 0
+                    : 10
+                  : 10,
                 '::before': {
                   content: '""',
                   width: 7,

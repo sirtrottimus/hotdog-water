@@ -64,10 +64,10 @@ const Index = ({ user }: { user: UserInt }) => {
         header: 'Description',
         accessorKey: 'description',
       },
-      {
-        header: 'Color',
-        Cell: ColorCell,
-      },
+      // {
+      //   header: 'Color',
+      //   Cell: ColorCell,
+      // },
     ];
   }, []);
 

@@ -83,7 +83,8 @@ const useStyles = createStyles((theme) => {
 
 function RenderSubscriberEvent(
   result: any,
-  handleMarkAsRead: (id: string) => void
+  handleMarkAsRead: (id: string) => void,
+  canDismissActivity: boolean
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
   const { tier, displayName, amount, username } = result.data;
@@ -138,12 +139,14 @@ function RenderSubscriberEvent(
               at {tierText} What a nice person!
             </Text>
           </Box>
-          <Box
-            onClick={() => handleMarkAsRead(result._id)}
-            className={`${classes.markAsRead}`}
-          >
-            <IconCheck size={20} />
-          </Box>
+          {canDismissActivity && (
+            <Box
+              onClick={() => handleMarkAsRead(result._id)}
+              className={`${classes.markAsRead}`}
+            >
+              <IconCheck size={20} />
+            </Box>
+          )}
         </Flex>
       </Paper>
     );
@@ -183,12 +186,14 @@ function RenderSubscriberEvent(
               </Text>
             )}
           </Box>
-          <Box
-            onClick={() => handleMarkAsRead(result._id)}
-            className={`${classes.markAsRead}`}
-          >
-            <IconCheck size={20} />
-          </Box>
+          {canDismissActivity && (
+            <Box
+              onClick={() => handleMarkAsRead(result._id)}
+              className={`${classes.markAsRead}`}
+            >
+              <IconCheck size={20} />
+            </Box>
+          )}
         </Flex>
       </Paper>
     );
@@ -213,12 +218,14 @@ function RenderSubscriberEvent(
               YouTube
             </Text>
           </Box>
-          <Box
-            onClick={() => handleMarkAsRead(result._id)}
-            className={`${classes.markAsRead}`}
-          >
-            <IconCheck size={20} />
-          </Box>
+          {canDismissActivity && (
+            <Box
+              onClick={() => handleMarkAsRead(result._id)}
+              className={`${classes.markAsRead}`}
+            >
+              <IconCheck size={20} />
+            </Box>
+          )}
         </Flex>
       </Paper>
     );
@@ -228,7 +235,8 @@ function RenderSubscriberEvent(
 
 function RenderCommunityGiftPurchaseEvent(
   result: any,
-  handleMarkAsRead: (id: string) => void
+  handleMarkAsRead: (id: string) => void,
+  canDismissActivity: boolean
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
   const { displayName, amount } = result.data;
@@ -252,12 +260,14 @@ function RenderCommunityGiftPurchaseEvent(
             them in chat! {tierText}
           </Text>
         </Box>
-        <Box
-          onClick={() => handleMarkAsRead(result._id)}
-          className={`${classes.markAsRead}`}
-        >
-          <IconCheck size={20} />
-        </Box>
+        {canDismissActivity && (
+          <Box
+            onClick={() => handleMarkAsRead(result._id)}
+            className={`${classes.markAsRead}`}
+          >
+            <IconCheck size={20} />
+          </Box>
+        )}
       </Flex>
     </Paper>
   );
@@ -265,7 +275,8 @@ function RenderCommunityGiftPurchaseEvent(
 
 function RenderRaidEvent(
   result: any,
-  handleMarkAsRead: (id: string) => void
+  handleMarkAsRead: (id: string) => void,
+  canDismissActivity: boolean
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
   const { displayName, amount } = result.data;
@@ -289,12 +300,14 @@ function RenderRaidEvent(
             <b>{displayName}</b> Raided with <b>{amount}</b> Viewers {tierText}
           </Text>
         </Box>
-        <Box
-          onClick={() => handleMarkAsRead(result._id)}
-          className={`${classes.markAsRead}`}
-        >
-          <IconCheck size={20} />
-        </Box>
+        {canDismissActivity && (
+          <Box
+            onClick={() => handleMarkAsRead(result._id)}
+            className={`${classes.markAsRead}`}
+          >
+            <IconCheck size={20} />
+          </Box>
+        )}
       </Flex>
     </Paper>
   );
@@ -302,7 +315,8 @@ function RenderRaidEvent(
 
 function RenderCheerEvent(
   result: any,
-  handleMarkAsRead: (id: string) => void
+  handleMarkAsRead: (id: string) => void,
+  canDismissActivity: boolean
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
   const { displayName, amount, message } = result.data;
@@ -384,12 +398,14 @@ function RenderCheerEvent(
             ) // You can customize this if needed for this specific event type.
           }
         </Box>
-        <Box
-          onClick={() => handleMarkAsRead(result._id)}
-          className={`${classes.markAsRead}`}
-        >
-          <IconCheck size={20} />
-        </Box>
+        {canDismissActivity && (
+          <Box
+            onClick={() => handleMarkAsRead(result._id)}
+            className={`${classes.markAsRead}`}
+          >
+            <IconCheck size={20} />
+          </Box>
+        )}
       </Flex>
     </Paper>
   );
@@ -397,7 +413,8 @@ function RenderCheerEvent(
 
 function RenderTipEvent(
   result: any,
-  handleMarkAsRead: (id: string) => void
+  handleMarkAsRead: (id: string) => void,
+  canDismissActivity: boolean
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
   const { username, amount } = result.data;
@@ -441,12 +458,14 @@ function RenderTipEvent(
             ) // You can customize this if needed for this specific event type.
           }
         </Box>
-        <Box
-          onClick={() => handleMarkAsRead(result._id)}
-          className={`${classes.markAsRead}`}
-        >
-          <IconCheck size={20} />
-        </Box>
+        {canDismissActivity && (
+          <Box
+            onClick={() => handleMarkAsRead(result._id)}
+            className={`${classes.markAsRead}`}
+          >
+            <IconCheck size={20} />
+          </Box>
+        )}
       </Flex>
     </Paper>
   );
@@ -454,8 +473,8 @@ function RenderTipEvent(
 
 function RenderSponsorEvent(
   result: any,
-  type: string,
-  handleMarkAsRead: (id: string) => void
+  handleMarkAsRead: (id: string) => void,
+  canDismissActivity: boolean
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
   const { username, tier } = result.data;
@@ -484,12 +503,14 @@ function RenderSponsorEvent(
             </b>
           </Text>
         </Box>
-        <Box
-          onClick={() => handleMarkAsRead(result._id)}
-          className={`${classes.markAsRead}`}
-        >
-          <IconCheck size={20} />
-        </Box>
+        {canDismissActivity && (
+          <Box
+            onClick={() => handleMarkAsRead(result._id)}
+            className={`${classes.markAsRead}`}
+          >
+            <IconCheck size={20} />
+          </Box>
+        )}
       </Flex>
     </Paper>
   );
@@ -497,8 +518,8 @@ function RenderSponsorEvent(
 
 function RenderSuperChatEvent(
   result: any,
-  type: string,
-  handleMarkAsRead: (id: string) => void
+  handleMarkAsRead: (id: string) => void,
+  canDismissActivity: boolean
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
   const { amount, username, currency, message } = result.data;
@@ -542,12 +563,14 @@ function RenderSuperChatEvent(
             ) // You can customize this if needed for this specific event type.
           }
         </Box>
-        <Box
-          onClick={() => handleMarkAsRead(result._id)}
-          className={`${classes.markAsRead}`}
-        >
-          <IconCheck size={20} />
-        </Box>
+        {canDismissActivity && (
+          <Box
+            onClick={() => handleMarkAsRead(result._id)}
+            className={`${classes.markAsRead}`}
+          >
+            <IconCheck size={20} />
+          </Box>
+        )}
       </Flex>
     </Paper>
   );
@@ -556,7 +579,8 @@ function RenderSuperChatEvent(
 function RenderDefaultEvent(
   result: any,
   type: string,
-  handleMarkAsRead: (id: string) => void
+  handleMarkAsRead: (id: string) => void,
+  canDismissActivity: boolean
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
   const { displayName, amount, username } = result.data;
@@ -583,12 +607,14 @@ function RenderDefaultEvent(
             {tierText}
           </Text>
         </Box>
-        <Box
-          onClick={() => handleMarkAsRead(result._id)}
-          className={`${classes.markAsRead}`}
-        >
-          <IconCheck size={20} />
-        </Box>
+        {canDismissActivity && (
+          <Box
+            onClick={() => handleMarkAsRead(result._id)}
+            className={`${classes.markAsRead}`}
+          >
+            <IconCheck size={20} />
+          </Box>
+        )}
       </Flex>
     </Paper>
   );
@@ -596,7 +622,7 @@ function RenderDefaultEvent(
 // TODO: Add more events.
 
 export default function Activity(event: EventInt): JSX.Element | null {
-  const { eventName, type, data: activity } = event;
+  const { eventName, type, data: activity, canDismissActivity } = event;
 
   const handleMarkAsRead = (id: string) => {
     socket.emit('event:read', { _id: id });
@@ -621,21 +647,42 @@ export default function Activity(event: EventInt): JSX.Element | null {
   if (eventName === 'event' || eventName === 'event:initial') {
     switch (type) {
       case 'subscriber':
-        return RenderSubscriberEvent(activity, handleMarkAsRead);
+        return RenderSubscriberEvent(
+          activity,
+          handleMarkAsRead,
+          canDismissActivity
+        );
       case 'communityGiftPurchase':
-        return RenderCommunityGiftPurchaseEvent(activity, handleMarkAsRead);
+        return RenderCommunityGiftPurchaseEvent(
+          activity,
+          handleMarkAsRead,
+          canDismissActivity
+        );
       case 'raid':
-        return RenderRaidEvent(activity, handleMarkAsRead);
+        return RenderRaidEvent(activity, handleMarkAsRead, canDismissActivity);
       case 'cheer':
-        return RenderCheerEvent(activity, handleMarkAsRead);
+        return RenderCheerEvent(activity, handleMarkAsRead, canDismissActivity);
       case 'tip':
-        return RenderTipEvent(activity, handleMarkAsRead);
+        return RenderTipEvent(activity, handleMarkAsRead, canDismissActivity);
       case 'sponsor':
-        return RenderSponsorEvent(activity, type, handleMarkAsRead);
+        return RenderSponsorEvent(
+          activity,
+          handleMarkAsRead,
+          canDismissActivity
+        );
       case 'superchat':
-        return RenderSuperChatEvent(activity, type, handleMarkAsRead);
+        return RenderSuperChatEvent(
+          activity,
+          handleMarkAsRead,
+          canDismissActivity
+        );
       default:
-        return RenderDefaultEvent(activity, type, handleMarkAsRead);
+        return RenderDefaultEvent(
+          activity,
+          type,
+          handleMarkAsRead,
+          canDismissActivity
+        );
     }
   }
 

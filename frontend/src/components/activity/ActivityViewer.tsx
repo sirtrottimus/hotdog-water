@@ -21,21 +21,8 @@ import useBackendSocket from '../../hooks/useBackendSocket';
 import { IconAd, IconExternalLink } from '@tabler/icons-react';
 import { DateTimePicker } from '@mantine/dates';
 import TwitchService from '../../utils/api/TwitchService';
-
-const colorIndex = [
-  'blue',
-  'red',
-  'teal',
-  'yellow',
-  'gray',
-  'cyan',
-  'lime',
-  'indigo',
-  'pink',
-  'purple',
-  'orange',
-  'green',
-];
+import useAuthorization from '../../hooks/useAuthorization';
+import { UserInt } from '../../utils/types';
 
 interface ColorProps {
   color: string;
@@ -69,9 +56,11 @@ const useStyles = createStyles((theme, { color, depth }: ColorProps) => {
 function ActivityViewer({
   activityWindowed,
   setActivityWindowed,
+  user,
 }: {
   activityWindowed: boolean;
   setActivityWindowed: (activityWindowed: boolean) => void;
+  user: UserInt;
 }) {
   const { classes } = useStyles({
     color: 'blue',
@@ -89,6 +78,32 @@ function ActivityViewer({
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const { isAuthorized: canViewActivity } = useAuthorization(
+    user,
+    ['SUPERADMIN', 'ADMIN', 'CAN_VIEW_ACTIVITY'],
+    'canViewActivity'
+  );
+
+  const { isAuthorized: canRunAd } = useAuthorization(
+    user,
+    ['SUPERADMIN', 'ADMIN', 'CAN_RUN_AD'],
+    'canRunAd'
+  );
+
+  const { isAuthorized: canDismissActivity } = useAuthorization(
+    user,
+    ['SUPERADMIN', 'ADMIN', 'CAN_DISMISS_ACTIVITY'],
+    'canDismissActivity'
+  );
+
+  if (!canViewActivity) {
+    return (
+      <Center my={30}>
+        <Text color="red">You do not have permission to view activity.</Text>
+      </Center>
+    );
+  }
 
   return (
     <Paper
@@ -182,21 +197,23 @@ function ActivityViewer({
                 </form>
               </Popover.Dropdown>
             </Popover>
-            <Button
-              size="sm"
-              onClick={() => {
-                TwitchService.runAd();
-              }}
-              variant="gradient"
-              ml={'auto'}
-              gradient={{
-                from: '#6838f1',
-                to: '#dc51f2',
-              }}
-              leftIcon={<IconAd />}
-            >
-              Run Advert
-            </Button>
+            {canRunAd && (
+              <Button
+                size="sm"
+                onClick={() => {
+                  TwitchService.runAd();
+                }}
+                variant="gradient"
+                ml={'auto'}
+                gradient={{
+                  from: '#6838f1',
+                  to: '#dc51f2',
+                }}
+                leftIcon={<IconAd />}
+              >
+                Run Advert
+              </Button>
+            )}
           </>
         )}
       </Group>
@@ -214,6 +231,7 @@ function ActivityViewer({
                     eventName={event.eventName}
                     type={event.type}
                     data={event}
+                    canDismissActivity={canDismissActivity}
                   />
                 </div>
               ))}

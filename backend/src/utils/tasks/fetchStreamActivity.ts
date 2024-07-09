@@ -96,10 +96,6 @@ const fetchStreamActivity = async (io: ServerIO) => {
     }
 
     if (!YTActivity && !TwitchActivity) {
-      // Log an error message if fetching fails
-      logIfDebugging(
-        `${streamActivityLog} ${new Date().toTimeString()} - Failed to fetch stream activity from Stream Elements API.`
-      );
       return;
     }
 
@@ -188,7 +184,6 @@ export async function fetchActivity(
         minsub: MIN_SUB,
         mintip: MIN_TIP,
         origin: 'feed',
-        offset: '0',
         types: ACTIVITY_TYPES,
       },
     });
@@ -196,7 +191,7 @@ export async function fetchActivity(
     if (!response) {
       // Log an error message if fetching fails
       logIfDebugging(
-        `${streamActivityLog} ${new Date().toTimeString()} - ${type} Failed to fetch stream activity from Stream Elements API.`
+        `${streamActivityLog} ${new Date().toTimeString()} - ${type} Failed to fetch stream activity from Stream Elements API. (198)`
       );
       return;
     }
@@ -207,7 +202,7 @@ export async function fetchActivity(
 
     if (!res.success) {
       logIfDebugging(
-        `${streamActivityLog} ${new Date().toTimeString()} - Failed to fetch JWT Auth status from database.`
+        `${streamActivityLog} ${new Date().toTimeString()} - Failed to fetch JWT Auth status from database for ${type}`
       );
     }
 
@@ -215,7 +210,7 @@ export async function fetchActivity(
 
     if (!jwtAuth) {
       logIfDebugging(
-        `${streamActivityLog} ${new Date().toTimeString()} - Failed to fetch JWT Auth status from database.`
+        `${streamActivityLog} ${new Date().toTimeString()} - Failed to fetch JWT Auth status from database for ${type}`
       );
       return;
     }
@@ -226,14 +221,16 @@ export async function fetchActivity(
 
     if (exists) {
       logIfDebugging(
-        `${streamActivityLog} ${new Date().toTimeString()} - JWT Auth token notification is active.`
+        `${streamActivityLog} ${new Date().toTimeString()} - JWT Auth token notification is active for ${type}`
       );
       return;
     }
 
     if (isAxiosError(error)) {
       if (error.response?.status === 401) {
-        logIfDebugging(`${streamActivityLog} - JWT Auth token is invalid.`);
+        logIfDebugging(
+          `${streamActivityLog} - JWT Auth token is invalid for ${type}`
+        );
         const { data } = await JWTAuthService.create({
           body: {
             createdAt: new Date(),
@@ -244,7 +241,7 @@ export async function fetchActivity(
         });
         if (!data) {
           logIfDebugging(
-            `${streamActivityLog} ${new Date().toTimeString()} - Failed to create JWT Auth token.`
+            `${streamActivityLog} ${new Date().toTimeString()} - Failed to create JWT Auth token for ${type}`
           );
         }
       }

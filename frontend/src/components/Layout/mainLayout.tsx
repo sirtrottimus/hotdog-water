@@ -153,6 +153,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
       color: 'teal',
       label: 'Socials Settings',
       path: '/socials',
+      perms: ['SUPERADMIN', 'ADMIN'],
       children: [
         {
           color: 'blue',

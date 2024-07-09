@@ -109,9 +109,7 @@ const twitchSettingsController = {
       res,
       TwitchSettingsService.runAd,
       user,
-      {
-        body: req.body,
-      },
+      {},
       'twitchSettings'
     );
   },
