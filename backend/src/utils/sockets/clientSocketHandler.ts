@@ -158,6 +158,15 @@ const handleClientConnections = (io: ServerIO) => {
         return;
       }
 
+      // check if YTActivity and TwitchActivity are arrays
+      if (!Array.isArray(YTActivity) || !Array.isArray(TwitchActivity)) {
+        // Log an error message if fetching fails
+        logIfDebugging(
+          `${streamActivityLog} ${new Date().toTimeString()} - Failed to fetch stream activity from Stream Elements API.`
+        );
+        return;
+      }
+
       // Combine the fetched activity data
       const activityData = [...YTActivity, ...TwitchActivity];
 

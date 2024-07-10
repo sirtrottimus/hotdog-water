@@ -45,13 +45,9 @@ const postAnnouncement = async () => {
   }, ${funnyQuips[Math.floor(Math.random() * funnyQuips.length)]})`;
   const postTo = ['Twitch (StreamElements)'];
 
-  console.log('Announcement:', announcementText);
-  console.log('Post to:', postTo);
-  console.log('Activity:', random);
-
   try {
     await AnnouncementsService.post({
-      userId: 'difwfnewofnweofiewfhn',
+      userId: '64b6b3342319df1cd7f49256',
       body: {
         text: announcementText,
         postTo,
