@@ -175,7 +175,7 @@ function ActivityViewer({
             >
               <Popover.Target>
                 <Button
-                  onClick={() => setOpened((o) => !o)}
+                  onClick={() => setMessageOpened((o) => !o)}
                   variant="outline"
                   color="gray"
                 >
