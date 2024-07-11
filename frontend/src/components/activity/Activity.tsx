@@ -477,7 +477,7 @@ function RenderSponsorEvent(
   canDismissActivity: boolean
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
-  const { username, tier } = result.data;
+  const { username, tier, message } = result.data;
   return (
     <Paper mb={10}>
       {' '}
@@ -502,6 +502,20 @@ function RenderSponsorEvent(
               {tier}
             </b>
           </Text>
+          {
+            result.data.message ? (
+              <Text mt={10}>
+                Saying:{' '}
+                <b>
+                  {sentenceToEmoji(decodeHtmlEntities(result.data.message))}
+                </b>
+              </Text>
+            ) : (
+              <Text mt={10} c={'dimmed'}>
+                They left no message
+              </Text>
+            ) // You can customize this if needed for this specific event type.
+          }
         </Box>
         {canDismissActivity && (
           <Box
