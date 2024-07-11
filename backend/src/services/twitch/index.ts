@@ -112,8 +112,6 @@ export class TwitchSettingsService {
       };
     }
 
-    console.log(response);
-
     return { success: true, data: null, error: null, msg: null };
   }
 
@@ -188,14 +186,12 @@ export class TwitchSettingsService {
 
     const channelSettings = {} as any;
 
-    // if (gameID) {
-    //   channelSettings.game_id = gameID;
-    // }
+    if (gameID) {
+      channelSettings.game_id = gameID;
+    }
     if (title) {
       channelSettings.title = title;
     }
-
-    console.log(twitchClientID, twitchAccessToken, channelSettings);
 
     const response = await fetch(URL, {
       method: 'PATCH',
