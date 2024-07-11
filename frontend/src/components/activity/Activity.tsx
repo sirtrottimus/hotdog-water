@@ -708,5 +708,9 @@ export default function Activity(event: EventInt): JSX.Element | null {
     }
   }
 
-  return null;
+  return (
+    <div>
+      <p>Unknown Event Received: {eventName}</p>
+    </div>
+  );
 }
