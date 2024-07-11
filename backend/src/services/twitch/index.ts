@@ -73,7 +73,7 @@ export class TwitchSettingsService {
   static async runAd(options: Options) {
     const adURL = 'https://api.twitch.tv/helix/channels/commercial';
     const adDuration = 30;
-
+    // Get Twitch Settings
     const twitchSettings = await TwitchSettingsService.get();
     const { twitchClientID, twitchAccessToken } =
       twitchSettings.data as Partial<TwitchSettingsInt>;
