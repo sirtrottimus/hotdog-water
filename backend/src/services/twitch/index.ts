@@ -72,7 +72,7 @@ export class TwitchSettingsService {
 
   static async runAd(options: Options) {
     const adURL = 'https://api.twitch.tv/helix/channels/commercial';
-    const adDuration = options.body.duration || 90;
+    const adDuration = 30;
 
     const twitchSettings = await TwitchSettingsService.get();
     const { twitchClientID, twitchAccessToken } =
@@ -80,6 +80,7 @@ export class TwitchSettingsService {
     const adSettings = {
       broadcaster_id: '21945983',
       length: adDuration,
+      duration: adDuration,
     };
 
     const response = await fetch(adURL, {
