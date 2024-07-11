@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import StreamElementsService from '../../utils/api/StreamElementsService';
 import NewWindow from 'react-new-window';
 import useAuthorization from '../../hooks/useAuthorization';
+import { ModifyDetails } from '../../components/TwitchChannel/modify-details';
 
 export default function Home({
   user,
@@ -89,6 +90,8 @@ export default function Home({
         <AnnouncementSelector user={user} />
         <AnnouncementsViewer isBlurred={isBlurred} />
       </SimpleGrid>
+
+      <ModifyDetails />
 
       {activityWindowed ? (
         <NewWindow

@@ -10,6 +10,8 @@ const functionsToLog = [
   'getAllAudits',
   'getAuditById',
   'post',
+  'updateChannel',
+  'runAd',
 ];
 
 export async function handleRequest(

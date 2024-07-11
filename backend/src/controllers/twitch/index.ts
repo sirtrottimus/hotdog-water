@@ -113,6 +113,60 @@ const twitchSettingsController = {
       'twitchSettings'
     );
   },
+
+  async searchCategories(req: Request, res: Response) {
+    const user = req.user as UserInt;
+
+    const validationResult = await validateUserPerms(user._id, [
+      'SUPERADMIN',
+      'ADMIN',
+      'MODERATOR',
+      'VIEW_TWITCH_SETTINGS',
+    ]);
+
+    if (!validationResult.success) {
+      return validationResult;
+    }
+
+    console.log('searchCategories');
+    console.log(req.params);
+
+    await handleRequest(
+      res,
+      TwitchSettingsService.searchCategories,
+      user,
+      {
+        query: req.params.query,
+      },
+      'twitchSettings'
+    );
+  },
+
+  async updateChannel(req: Request, res: Response) {
+    const user = req.user as UserInt;
+
+    const validationResult = await validateUserPerms(user._id, [
+      'SUPERADMIN',
+      'ADMIN',
+      'MODERATOR',
+      'UPDATE_TWITCH_CHANNEL_SETTINGS',
+    ]);
+
+    if (!validationResult.success) {
+      return validationResult;
+    }
+
+    await handleRequest(
+      res,
+      TwitchSettingsService.updateChannel,
+      user,
+      {
+        gameName: req.body.category,
+        title: req.body.title,
+      },
+      'twitchSettings'
+    );
+  },
 };
 
 export default twitchSettingsController;

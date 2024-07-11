@@ -130,6 +130,56 @@ class TwitchService extends BaseApiService {
       error: null,
     });
   }
+
+  async getTwitchMods(): Promise<APIResponse<any>> {
+    const res = await this.get(`${this.url}/mods`);
+    return Promise.resolve({
+      success: true,
+      data: res,
+      error: null,
+    });
+  }
+
+  async addTwitchMod(username: string): Promise<APIResponse<any>> {
+    const res = await this.post(`${this.url}/mods`, { username });
+    return Promise.resolve({
+      success: true,
+      data: res,
+      error: null,
+    });
+  }
+  async removeTwitchMod(username: string): Promise<APIResponse<any>> {
+    const res = await this.delete(`${this.url}/mods/${username}`);
+    return Promise.resolve({
+      success: true,
+      data: res,
+      error: null,
+    });
+  }
+
+  async searchCategories(query: string): Promise<APIResponse<any>> {
+    const res = await this.get(`${this.url}/categories/${query}`);
+    return Promise.resolve({
+      success: true,
+      data: res,
+      error: null,
+    });
+  }
+
+  async modifyChannel({
+    title,
+    category,
+  }: {
+    title: string;
+    category: string;
+  }): Promise<APIResponse<any>> {
+    const res = await this.put(`${this.url}/channel`, { title, category });
+    return Promise.resolve({
+      success: true,
+      data: res,
+      error: null,
+    });
+  }
 }
 
 export default new TwitchService();

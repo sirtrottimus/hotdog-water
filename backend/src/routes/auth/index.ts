@@ -117,7 +117,14 @@ router.get('/twitch', async (req, res) => {
   }
   const { twitchClientID } = twitchSettings.data as Partial<TwitchSettingsInt>;
 
-  const authURL = `https://id.twitch.tv/oauth2/authorize?client_id=${twitchClientID}&redirect_uri=${redirectURI}&response_type=code&scope=channel:read:subscriptions+user:read:email+channel:edit:commercial+channel:manage:moderators`;
+  const scopes = [
+    'channel:read:subscriptions',
+    'user:read:email',
+    'channel:edit:commercial',
+    'channel:manage:moderators',
+    'channel:manage:broadcast',
+  ].join('+');
+  const authURL = `https://id.twitch.tv/oauth2/authorize?client_id=${twitchClientID}&redirect_uri=${redirectURI}&response_type=code&scope=${scopes}`;
   res.redirect(authURL);
 });
 

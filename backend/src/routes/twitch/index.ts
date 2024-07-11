@@ -20,5 +20,14 @@ router.put('/', isAuthenticated, twitchSettingsController.update);
 // Route for running an ad
 router.post('/runAd', isAuthenticated, twitchSettingsController.runAd);
 
+// Route for searching categories
+router.get(
+  '/categories/:query',
+  isAuthenticated,
+  twitchSettingsController.searchCategories
+);
+
+router.put('/channel', isAuthenticated, twitchSettingsController.updateChannel);
+
 // Export router
 export default router;
