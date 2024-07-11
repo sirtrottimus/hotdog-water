@@ -644,6 +644,14 @@ export default function Activity(event: EventInt): JSX.Element | null {
     );
   }
 
+  if (eventName === 'message') {
+    return (
+      <div>
+        <p>Message Received: {activity.data}</p>
+      </div>
+    );
+  }
+
   if (eventName === 'event' || eventName === 'event:initial') {
     switch (type) {
       case 'subscriber':
