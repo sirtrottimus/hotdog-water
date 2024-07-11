@@ -173,7 +173,7 @@ function ActivityViewer({
                   variant="outline"
                   color="gray"
                 >
-                  Fetch Previous Events
+                  Send Message
                 </Button>
               </Popover.Target>
 
