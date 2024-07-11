@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import {
   Avatar,
-  Badge,
   Box,
   Button,
   Center,
   Divider,
-  Flex,
   Group,
   Paper,
   Popover,
   Text,
+  TextInput,
   createStyles,
   useMantineTheme,
 } from '@mantine/core';
@@ -78,6 +77,7 @@ function ActivityViewer({
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [message, setMessage] = useState('Hello, world!');
 
   const { isAuthorized: canViewActivity } = useAuthorization(
     user,
@@ -166,6 +166,34 @@ function ActivityViewer({
             >
               Refresh From Schedule
             </Button>
+            <Popover opened={opened} onChange={setOpened} width={300} trapFocus>
+              <Popover.Target>
+                <Button
+                  onClick={() => setOpened((o) => !o)}
+                  variant="outline"
+                  color="gray"
+                >
+                  Fetch Previous Events
+                </Button>
+              </Popover.Target>
+
+              <Popover.Dropdown>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    backendSocket.emit('send-message', message);
+                  }}
+                >
+                  <TextInput
+                    placeholder="Enter message"
+                    onChange={(e) => setMessage(e.currentTarget.value)}
+                  />
+                  <Center>
+                    <Button type="submit">Submit</Button>
+                  </Center>
+                </form>
+              </Popover.Dropdown>
+            </Popover>
             <Popover opened={opened} onChange={setOpened} width={300} trapFocus>
               <Popover.Target>
                 <Button

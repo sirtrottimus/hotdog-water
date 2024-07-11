@@ -32,6 +32,7 @@ const EVENTS = {
   EVENT: 'event',
   PING: 'PING',
   REFRESH_DATE: 'refresh-date',
+  SEND_MESSAGE: 'send-message',
 };
 
 const activeSockets = new Map<string, SocketConnection>();
@@ -227,6 +228,13 @@ const handleClientConnections = (io: ServerIO) => {
           );
         }
       }
+    });
+
+    socket.on(EVENTS.SEND_MESSAGE, (data) => {
+      logIfDebugging('[WEBSOCKET/BACKEND]: Received send message event:');
+      logIfDebugging(data);
+      socket.to(EVENTS.STREAM_ACTIVITY).emit('message', data);
+      socket.emit('message', data);
     });
 
     socket.on(EVENTS.READ, async (data) => {
