@@ -78,6 +78,7 @@ function ActivityViewer({
   const [opened, setOpened] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [message, setMessage] = useState('Hello, world!');
+  const [messageOpened, setMessageOpened] = useState(false);
 
   const { isAuthorized: canViewActivity } = useAuthorization(
     user,
@@ -166,7 +167,12 @@ function ActivityViewer({
             >
               Refresh From Schedule
             </Button>
-            <Popover opened={opened} onChange={setOpened} width={300} trapFocus>
+            <Popover
+              opened={messageOpened}
+              onChange={setMessageOpened}
+              width={300}
+              trapFocus
+            >
               <Popover.Target>
                 <Button
                   onClick={() => setOpened((o) => !o)}
