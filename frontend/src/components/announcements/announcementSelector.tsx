@@ -134,7 +134,6 @@ function AnnouncementSelector({ user }: { user: UserInt }) {
         toast.error(`Error posting announcement. ${response.error}`);
       },
       onMutate: (d) => {
-        console.log(d);
         setSubmitting(true);
       },
     }
@@ -213,7 +212,7 @@ function AnnouncementSelector({ user }: { user: UserInt }) {
           name="postTo"
           control={control}
           render={({ field }) => (
-            <Chip.Group multiple {...field}>
+            <Chip.Group multiple value={field.value} onChange={field.onChange}>
               <Group position="center" mt={20}>
                 {forms[announcementType].chips.map((chip) => {
                   if (

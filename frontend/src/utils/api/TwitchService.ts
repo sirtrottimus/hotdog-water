@@ -180,6 +180,15 @@ class TwitchService extends BaseApiService {
       error: null,
     });
   }
+
+  async getChannelData(): Promise<APIResponse<any>> {
+    const res = await this.get(`${this.url}/channel`);
+    return Promise.resolve({
+      success: true,
+      data: res,
+      error: null,
+    });
+  }
 }
 
 export default new TwitchService();

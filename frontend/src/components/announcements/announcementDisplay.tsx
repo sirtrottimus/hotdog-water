@@ -50,12 +50,12 @@ export default function AnnouncementDisplay({
   announcement: AnnouncementInt;
 }) {
   const { classes } = useStyles();
-
+  console.log(announcement);
   return (
     <Card my={15} mx={4} className={classes.card}>
       <Group>
         <Avatar
-          src={`https://cdn.discordapp.com/avatars/${announcement.postedBy._id}/${announcement.postedBy.avatar}.png`}
+          src={`https://cdn.discordapp.com/avatars/${announcement.postedBy.discordId}/${announcement.postedBy.avatar}.png`}
           alt={announcement.postedBy.username}
           radius="xl"
           color="violet"

@@ -39,6 +39,8 @@ const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
   )
 );
 
+AutoCompleteItem.displayName = '@mantine/core/AutocompleteItem';
+
 export const ModifyDetails = () => {
   const [category, setCategory] = React.useState('');
   const [debounced] = useDebouncedValue(category, 1000);
@@ -49,7 +51,6 @@ export const ModifyDetails = () => {
     if (!debounced || debounced === '') return;
     async function fetchCategories() {
       const response = await TwitchService.searchCategories(debounced);
-      console.log(response.data.data.data);
       if (response.success) {
         setCategories(response.data.data.data);
       }
@@ -57,6 +58,21 @@ export const ModifyDetails = () => {
 
     fetchCategories();
   }, [debounced]);
+
+  React.useEffect(() => {
+    // fetch the initial channel data
+    async function fetchChannelData() {
+      const response = await TwitchService.getChannelData();
+      if (response.success) {
+        setTitle(response.data.data[0].title);
+        setCategory(response.data.data[0].game_name);
+      } else {
+        alert('Failed to fetch channel data');
+      }
+    }
+
+    fetchChannelData();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -92,12 +108,14 @@ export const ModifyDetails = () => {
           value={category}
           itemComponent={AutoCompleteItem}
           onChange={(event) => setCategory(event)}
-          data={categories.map((category) => ({
-            value: category.name,
-            color: 'blue',
-            description: category.id,
-            image: category.box_art_url,
-          }))}
+          data={categories.map(
+            (category: { name: string; id: string; box_art_url: string }) => ({
+              value: category.name,
+              color: 'blue',
+              description: category.id,
+              image: category.box_art_url,
+            })
+          )}
           limit={50}
           dropdownPosition="bottom"
           styles={{

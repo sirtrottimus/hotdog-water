@@ -185,7 +185,7 @@ export class AnnouncementsService {
       .sort({ createdAt: -1 })
       .skip(offset)
       .limit(offset + 5)
-      .populate('postedBy', ['username', 'avatar'])
+      .populate('postedBy', ['username', 'avatar', 'discordId'])
       .exec();
 
     const count = await AnnouncementsSchema.countDocuments();

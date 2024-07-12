@@ -35,7 +35,6 @@ export async function checkTwitchStatus({
   );
 
   const streamData = (await streamResponse.json())
-  console.log(streamData);
 }
 
 const twitchClientID = 'rry34c74ncddj1uwtqn8u7rsdchas6';
@@ -47,5 +46,4 @@ checkTwitchStatus({
   twitchClientSecret,
   twitchbroadcasterUsername,
 }).then((res) => {
-  console.log(res);
 });

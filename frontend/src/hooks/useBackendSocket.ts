@@ -37,10 +37,6 @@ const useBackendSocket = () => {
     });
   }, [jwtToken]);
 
-  const onAuthenticated = useCallback(() => {
-    console.log('Authenticated');
-  }, []);
-
   const onDisconnect = useCallback(() => {
     setIsConnected(false);
   }, []);
@@ -86,9 +82,6 @@ const useBackendSocket = () => {
             if (isDuplicate) {
               return prevData;
             }
-
-            console.log(data);
-
             const newArray = [...prevData, { eventName: 'event', ...data }];
             const sortedData = [...newArray].sort(
               (a, b) => b.createdAt - a.createdAt
@@ -108,14 +101,12 @@ const useBackendSocket = () => {
             });
             return newData;
           });
-          console.log('event');
         },
       },
 
       {
         name: 'active-sockets',
         callback: (data: any) => {
-          console.log(data);
           setActiveSockets(
             new Map<string, SocketConnection>(
               Array.from(data, ([socketId, socketData]) => [
@@ -184,7 +175,6 @@ const useBackendSocket = () => {
     socket.connect();
 
     socket.on('connect', onConnect);
-    socket.on('authenticated', onAuthenticated);
     socket.on('unauthorized', console.error);
     socket.on('disconnect', onDisconnect);
 
@@ -194,7 +184,6 @@ const useBackendSocket = () => {
 
     return () => {
       socket.off('connect', onConnect);
-      socket.off('authenticated', onAuthenticated);
       socket.off('unauthorized', console.error);
       socket.off('disconnect', onDisconnect);
 
@@ -203,7 +192,7 @@ const useBackendSocket = () => {
       });
       socket.disconnect();
     };
-  }, [jwtToken, onConnect, onAuthenticated, onDisconnect, customEvents]);
+  }, [jwtToken, onConnect, onDisconnect, customEvents]);
 
   function disconnect() {
     socket.disconnect();

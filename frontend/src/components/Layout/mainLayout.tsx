@@ -72,9 +72,6 @@ export function MainLayout({ children }: { children: ReactNode }) {
     isLoading: checkJWTAuthStatusLoading,
   } = useJWTAuth();
   const [isBlurred, setIsBlurred] = React.useState(true);
-
-  console.log(jwtAuth);
-
   const { theme } = useStyles();
   const [mini, setMini] = useState(false);
 
@@ -132,7 +129,9 @@ export function MainLayout({ children }: { children: ReactNode }) {
             {capitalizeFirstLetter(auth.provider)} JWT Token is missing or
             invalid. Please head over to the{' '}
             <Link href="/socials/streamElements">
-              <Anchor color="red">Stream Elements</Anchor>
+              <Anchor component="span" color="red">
+                Stream Elements
+              </Anchor>
             </Link>{' '}
             page and re-authenticate {auth.provider}.
           </Text>

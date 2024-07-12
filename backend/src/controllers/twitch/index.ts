@@ -167,6 +167,29 @@ const twitchSettingsController = {
       'twitchSettings'
     );
   },
+
+  async getChannelData(req: Request, res: Response) {
+    const user = req.user as UserInt;
+
+    const validationResult = await validateUserPerms(user._id, [
+      'SUPERADMIN',
+      'ADMIN',
+      'MODERATOR',
+      'VIEW_TWITCH_SETTINGS',
+    ]);
+
+    if (!validationResult.success) {
+      return validationResult;
+    }
+
+    await handleRequest(
+      res,
+      TwitchSettingsService.getChannelData,
+      user,
+      {},
+      'twitchSettings'
+    );
+  },
 };
 
 export default twitchSettingsController;

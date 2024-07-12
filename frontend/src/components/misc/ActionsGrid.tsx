@@ -81,7 +81,12 @@ export function ActionsGrid({
         <Group position="apart">
           <Text className={classes.title}>{title}</Text>
           <Link href={seeAll?.href ?? ''}>
-            <Anchor size="xs" color="dimmed" sx={{ lineHeight: 1 }}>
+            <Anchor
+              component="span"
+              size="xs"
+              color="dimmed"
+              sx={{ lineHeight: 1 }}
+            >
               {seeAll?.title}
             </Anchor>
           </Link>

@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import { UserInt } from './User';
 
 export type AnnouncementType = 'public' | 'membersOnly';
 
@@ -7,7 +8,7 @@ interface AnnouncementInt extends Document {
   announcementType: AnnouncementType;
   text: string;
   postTo: string[];
-  postedBy: string;
+  postedBy: UserInt;
   createdAt: Date;
   updatedAt: Date;
 }

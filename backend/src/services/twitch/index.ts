@@ -2,8 +2,6 @@
 import { Options } from '../helpers';
 import { TwitchSettings as TwitchSettingsSchema } from '../../database/schema';
 import { TwitchSettingsInt } from '../../utils/helpers';
-import { urlencoded } from 'express';
-
 export class TwitchSettingsService {
   static async get() {
     const twitchSettings = await TwitchSettingsSchema.findOne({});
@@ -247,6 +245,51 @@ export class TwitchSettingsService {
         twitchRefreshToken: data.refresh_token,
         twitchTokenExpires: new Date(Date.now() + data.expires_in * 1000),
       },
+    });
+
+    return { success: true, data, error: null, msg: null };
+  }
+
+  static async getChannelData(options: Options) {
+    const URL = 'https://api.twitch.tv/helix/channels?broadcaster_id=21945983';
+
+    let twitchSettings = await TwitchSettingsService.get();
+
+    if (new Date() > twitchSettings.data?.twitchTokenExpires!) {
+      console.log('Getting New Access Token');
+      await TwitchSettingsService.getNewAccessToken();
+      twitchSettings = await TwitchSettingsService.get();
+    }
+
+    const { twitchClientID, twitchAccessToken } =
+      twitchSettings.data as Partial<TwitchSettingsInt>;
+
+    const response = await fetch(URL, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Client-ID': twitchClientID!,
+        Authorization: `Bearer ${twitchAccessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      return {
+        success: false,
+        data: null,
+        error: response.statusText,
+        msg: 'Error Getting Channel Data',
+      };
+    }
+
+    const unclean = await response.json();
+
+    //remove the unnecessary nested data and return only the first element
+    const data = unclean.data.map((d: any) => {
+      return {
+        game_name: d.game_name,
+        title: d.title,
+      };
     });
 
     return { success: true, data, error: null, msg: null };

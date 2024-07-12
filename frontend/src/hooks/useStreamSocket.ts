@@ -20,10 +20,6 @@ const useSocket = (jwtToken: string) => {
       });
     };
 
-    const onAuthenticated = () => {
-      console.log('Authenticated');
-    };
-
     const onDisconnect = () => {
       setIsConnected(false);
     };
@@ -51,7 +47,6 @@ const useSocket = (jwtToken: string) => {
     ];
 
     socket.on('connect', onConnect);
-    socket.on('authenticated', onAuthenticated);
     socket.on('unauthorized', console.error);
     socket.on('disconnect', onDisconnect);
 
@@ -61,7 +56,6 @@ const useSocket = (jwtToken: string) => {
 
     return () => {
       socket.off('connect', onConnect);
-      socket.off('authenticated', onAuthenticated);
       socket.off('unauthorized', console.error);
       socket.off('disconnect', onDisconnect);
 
