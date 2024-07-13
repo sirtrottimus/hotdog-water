@@ -163,6 +163,7 @@ const twitchSettingsController = {
       {
         gameName: req.body.category,
         title: req.body.title,
+        isBrandedContent: req.body.isBrandedContent,
       },
       'twitchSettings'
     );
