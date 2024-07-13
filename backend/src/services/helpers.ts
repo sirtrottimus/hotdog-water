@@ -1,4 +1,6 @@
 import { TwitterApi } from 'twitter-api-v2';
+import { TwitchSettingsService } from './twitch';
+import { TwitchSettingsInt } from '../utils/helpers';
 
 export type Options = Record<string, any>;
 
@@ -35,4 +37,37 @@ export function createTwitterClient({
 export function createTwitterBearerClient(bearerToken: string) {
   const client = new TwitterApi(bearerToken);
   return client;
+}
+
+export async function getTwitchSettings() {
+  let twitchSettings = await TwitchSettingsService.get();
+
+  const isTokenExpired = () => {
+    const currentDate = new Date();
+    const expiryDate = twitchSettings.data?.twitchTokenExpires;
+    if (!expiryDate) return true;
+    return currentDate.getTime() > expiryDate.getTime();
+  };
+
+  if (isTokenExpired()) {
+    await TwitchSettingsService.getNewAccessToken();
+    twitchSettings = await TwitchSettingsService.get();
+  }
+
+  const {
+    twitchClientID,
+    twitchAccessToken,
+    twitchClientSecret,
+    twitchRefreshToken,
+    twitchTokenExpires,
+    twitchUsername,
+  } = twitchSettings.data as Partial<TwitchSettingsInt>;
+  return {
+    twitchClientID,
+    twitchAccessToken,
+    twitchClientSecret,
+    twitchRefreshToken,
+    twitchTokenExpires,
+    twitchUsername,
+  };
 }
