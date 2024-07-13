@@ -3,7 +3,7 @@ const nextConfig = {
   pageExtensions: ['tsx', 'ts', 'jsx', 'js', 'mjs'],
   reactStrictMode: true,
   env:{
-    NEXT_PUBLIC_VERSION: '1.6.1',
+    NEXT_PUBLIC_VERSION: '1.7.16',
   }
 };
 
