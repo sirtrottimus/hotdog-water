@@ -15,8 +15,6 @@ import BaseApiService from './BaseApiService';
 export interface FormYoutubeSettingsInput {
   consumerKey: string;
   consumerSecret: string;
-  accessToken: string;
-  accessTokenSecret: string;
   _id?: string;
 }
 

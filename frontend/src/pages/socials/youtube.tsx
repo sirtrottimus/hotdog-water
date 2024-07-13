@@ -34,8 +34,6 @@ import YoutubeService, {
 type FormYoutubeSettingsInput = {
   consumerKey: string;
   consumerSecret: string;
-  accessToken: string;
-  accessTokenSecret: string;
 };
 
 const schema = z.object({
@@ -44,12 +42,6 @@ const schema = z.object({
   }),
   consumerSecret: z.string().min(1, {
     message: 'Youtube Consumer Secret is required',
-  }),
-  accessToken: z.string().min(1, {
-    message: 'Youtube Access Token is required',
-  }),
-  accessTokenSecret: z.string().min(1, {
-    message: 'Youtube Access Token Secret is required',
   }),
 });
 
@@ -103,8 +95,6 @@ export default function Home({
   const defaultValues = {
     consumerKey: settings?.consumerKey ?? '',
     consumerSecret: settings?.consumerSecret ?? '',
-    accessToken: settings?.accessToken ?? '',
-    accessTokenSecret: settings?.accessTokenSecret ?? '',
   };
 
   const {
@@ -303,50 +293,6 @@ export default function Home({
                   />
                 )}
               />
-              <Divider my={20} />
-              <Text mb={20}>
-                The Access Token and Access Token Secret are used to
-                authenticate your User Account Instead of a username and
-                password. They are tied to a specific user, and they need to be
-                kept secret.
-                <Text size={'sm'} c="dimmed">
-                  Note: These need to be for the account you want to post tweets
-                  to.
-                </Text>
-              </Text>
-              <Controller
-                name="accessToken"
-                control={control}
-                render={({ field }) => (
-                  <PasswordInput
-                    label="Youtube Access Token"
-                    placeholder="Youtube Access Token"
-                    withAsterisk
-                    error={errors.accessToken?.message}
-                    disabled={isBlurred}
-                    mb={30}
-                    {...field}
-                    description="This is the Access Token of the Youtube App. You can get this from the Youtube Developer Console. Keep this secret!"
-                  />
-                )}
-              />
-              <Controller
-                name="accessTokenSecret"
-                control={control}
-                render={({ field }) => (
-                  <PasswordInput
-                    label="Youtube Access Token Secret"
-                    placeholder="Youtube Access Token Secret"
-                    withAsterisk
-                    error={errors.accessTokenSecret?.message}
-                    mb={30}
-                    {...field}
-                    disabled={isBlurred}
-                    description="This is the Access Token Secret of the Youtube App. You can get this from the Youtube Developer Console. Keep this secret!"
-                  />
-                )}
-              />
-
               <Group position="center">
                 <Button
                   variant="gradient"
