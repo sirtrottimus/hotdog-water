@@ -50,7 +50,6 @@ export default function AnnouncementDisplay({
   announcement: AnnouncementInt;
 }) {
   const { classes } = useStyles();
-  console.log(announcement);
   return (
     <Card my={15} mx={4} className={classes.card}>
       <Group>

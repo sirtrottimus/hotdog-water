@@ -1,5 +1,5 @@
 // Services for handling twitch settings
-import { Options } from '../helpers';
+import { getTwitchSettings, Options } from '../helpers';
 import { TwitchSettings as TwitchSettingsSchema } from '../../database/schema';
 import { TwitchSettingsInt } from '../../utils/helpers';
 export class TwitchSettingsService {
@@ -73,18 +73,7 @@ export class TwitchSettingsService {
     const adURL = 'https://api.twitch.tv/helix/channels/commercial';
     const adDuration = 30;
     // Get Twitch Settings
-    let twitchSettings = await TwitchSettingsService.get();
-
-    if (
-      new Date(new Date().getDay() + 1) >
-      twitchSettings.data?.twitchTokenExpires!
-    ) {
-      await TwitchSettingsService.getNewAccessToken();
-      twitchSettings = await TwitchSettingsService.get();
-    }
-
-    const { twitchClientID, twitchAccessToken } =
-      twitchSettings.data as Partial<TwitchSettingsInt>;
+    const { twitchClientID, twitchAccessToken } = await getTwitchSettings();
 
     const adSettings = {
       broadcaster_id: '21945983',
@@ -118,19 +107,7 @@ export class TwitchSettingsService {
 
     const searchURL = `https://api.twitch.tv/helix/search/categories?query=${query}`;
 
-    let twitchSettings = await TwitchSettingsService.get();
-
-    if (
-      new Date(new Date().getDay() + 1) >
-      twitchSettings.data?.twitchTokenExpires!
-    ) {
-      console.log('Getting New Access Token');
-      await TwitchSettingsService.getNewAccessToken();
-      twitchSettings = await TwitchSettingsService.get();
-    }
-
-    const { twitchClientID, twitchAccessToken } =
-      twitchSettings.data as Partial<TwitchSettingsInt>;
+    const { twitchClientID, twitchAccessToken } = await getTwitchSettings();
 
     const response = await fetch(searchURL, {
       method: 'GET',
@@ -156,7 +133,7 @@ export class TwitchSettingsService {
   }
 
   static async updateChannel(options: Options) {
-    const { gameName, title } = options;
+    const { gameName, title, isBrandedContent } = options;
 
     let gameID = null;
     if (gameName) {
@@ -168,27 +145,19 @@ export class TwitchSettingsService {
 
     const URL = 'https://api.twitch.tv/helix/channels?broadcaster_id=21945983';
 
-    let twitchSettings = await TwitchSettingsService.get();
-
-    if (
-      new Date(new Date().getDay() + 1) >
-      twitchSettings.data?.twitchTokenExpires!
-    ) {
-      console.log('Getting New Access Token');
-      await TwitchSettingsService.getNewAccessToken();
-      twitchSettings = await TwitchSettingsService.get();
-    }
-
-    const { twitchClientID, twitchAccessToken } =
-      twitchSettings.data as Partial<TwitchSettingsInt>;
+    const { twitchClientID, twitchAccessToken } = await getTwitchSettings();
 
     const channelSettings = {} as any;
+    channelSettings.is_branded_content = false;
 
     if (gameID) {
       channelSettings.game_id = gameID;
     }
     if (title) {
       channelSettings.title = title;
+    }
+    if (isBrandedContent !== undefined) {
+      channelSettings.is_branded_content = isBrandedContent;
     }
 
     const response = await fetch(URL, {
@@ -200,8 +169,6 @@ export class TwitchSettingsService {
       },
       body: JSON.stringify(channelSettings),
     });
-
-    console.log(response);
 
     if (!response.ok) {
       return {
@@ -253,16 +220,7 @@ export class TwitchSettingsService {
   static async getChannelData(options: Options) {
     const URL = 'https://api.twitch.tv/helix/channels?broadcaster_id=21945983';
 
-    let twitchSettings = await TwitchSettingsService.get();
-
-    if (new Date() > twitchSettings.data?.twitchTokenExpires!) {
-      console.log('Getting New Access Token');
-      await TwitchSettingsService.getNewAccessToken();
-      twitchSettings = await TwitchSettingsService.get();
-    }
-
-    const { twitchClientID, twitchAccessToken } =
-      twitchSettings.data as Partial<TwitchSettingsInt>;
+    const { twitchClientID, twitchAccessToken } = await getTwitchSettings();
 
     const response = await fetch(URL, {
       method: 'GET',
@@ -290,7 +248,7 @@ export class TwitchSettingsService {
         game_name: d.game_name,
         title: d.title,
       };
-    });
+    })[0];
 
     return { success: true, data, error: null, msg: null };
   }

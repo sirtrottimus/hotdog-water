@@ -1,4 +1,12 @@
-import { Alert, Center, SimpleGrid, Title } from '@mantine/core';
+import {
+  Alert,
+  Center,
+  Flex,
+  Paper,
+  SimpleGrid,
+  Text,
+  Title,
+} from '@mantine/core';
 import React, { ReactElement, useEffect } from 'react';
 import { MainLayout } from '../../components/Layout/mainLayout';
 import AnnouncementSelector from '../../components/announcements/announcementSelector';
@@ -91,7 +99,41 @@ export default function Home({
         <AnnouncementsViewer isBlurred={isBlurred} />
       </SimpleGrid>
 
-      <ModifyDetails />
+      <Flex justify={'space-around'}>
+        <ModifyDetails />
+        <Paper mt={30} w={'30%'}>
+          <Text
+            //Center text in the paper both vertically and horizontally
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100%',
+            }}
+            //Set the font size to 1.5rem
+            size={'xl'}
+            weight={700}
+          >
+            Coming Soon
+          </Text>
+        </Paper>
+        <Paper mt={30} w={'30%'}>
+          <Text
+            //Center text in the paper both vertically and horizontally
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100%',
+            }}
+            //Set the font size to 1.5rem
+            size={'xl'}
+            weight={700}
+          >
+            Coming Soon
+          </Text>
+        </Paper>
+      </Flex>
 
       {activityWindowed ? (
         <NewWindow
