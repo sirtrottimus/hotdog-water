@@ -25,6 +25,12 @@ export type TwitchSettingsInt = {
   twitchClientSecret: string;
 };
 
+export type TwitchChannelInt = {
+  title: string;
+  category: string;
+  isBrandedContent: boolean;
+};
+
 // ------ Actual API calls ------ //
 class TwitchService extends BaseApiService {
   // This is the base url for this endpoint. It is relative to the API_URL
@@ -161,7 +167,7 @@ class TwitchService extends BaseApiService {
     const res = await this.get(`${this.url}/categories/${query}`);
     return Promise.resolve({
       success: true,
-      data: res,
+      data: res.data,
       error: null,
     });
   }
@@ -169,14 +175,20 @@ class TwitchService extends BaseApiService {
   async modifyChannel({
     title,
     category,
+    isBrandedContent,
   }: {
     title: string;
     category: string;
+    isBrandedContent: boolean;
   }): Promise<APIResponse<any>> {
-    const res = await this.put(`${this.url}/channel`, { title, category });
+    const res = await this.put(`${this.url}/channel`, {
+      title,
+      category,
+      isBrandedContent,
+    });
     return Promise.resolve({
       success: true,
-      data: res,
+      data: res.data,
       error: null,
     });
   }
