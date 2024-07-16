@@ -2,17 +2,19 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 interface YoutubeSettingsInt extends Document {
   _id: string;
-  consumerKey: string;
-  consumerSecret: string;
-  accessToken: string;
-  accessTokenSecret: string;
+  youtubeClientID: string;
+  youtubeClientSecret: string;
+  youtubeAccessToken?: string;
+  youtubeRefreshToken?: string;
+  youtubeTokenExpires?: Date;
 }
 
 const youtubeSettingsSchema: Schema = new Schema({
-  consumerKey: { type: String, required: true },
-  consumerSecret: { type: String, required: true },
-  accessToken: { type: String, required: true },
-  accessTokenSecret: { type: String, required: true },
+  youtubeClientID: { type: String, required: true },
+  youtubeClientSecret: { type: String, required: true },
+  youtubeAccessToken: { type: String },
+  youtubeRefreshToken: { type: String },
+  youtubeTokenExpires: { type: Date },
 });
 
 const YoutubeSettings = mongoose.model<YoutubeSettingsInt>(

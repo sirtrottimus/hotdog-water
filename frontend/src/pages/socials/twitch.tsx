@@ -7,6 +7,7 @@ import {
   Center,
   Container,
   Divider,
+  Flex,
   Group,
   LoadingOverlay,
   Paper,
@@ -26,16 +27,11 @@ import { toast } from 'react-toastify';
 
 import { Prism } from '@mantine/prism';
 import TwitchService, {
+  FormTwitchSettingsInput,
   TwitchSettingsInt,
 } from '../../utils/api/TwitchService';
 import useAuthorization from '../../hooks/useAuthorization';
 import { useRouter } from 'next/router';
-
-type FormTwitchSettingsInput = {
-  twitchUsername: string;
-  twitchClientID: string;
-  twitchClientSecret: string;
-};
 
 const schema = z.object({
   twitchUsername: z.string().min(1, { message: 'Twitch username is required' }),
@@ -45,6 +41,9 @@ const schema = z.object({
   twitchClientSecret: z
     .string()
     .min(1, { message: 'Twitch Client Secret is required' }),
+  twitchBroadcasterID: z
+    .string()
+    .min(1, { message: 'Twitch Broadcaster ID is required' }),
 });
 
 export default function Home({
@@ -79,6 +78,7 @@ export default function Home({
 
   const defaultValues = {
     twitchUsername: '',
+    twitchBroadcasterID: '',
     twitchClientID: '',
     twitchClientSecret: '',
   };
@@ -194,20 +194,6 @@ export default function Home({
         </Center>
         <Container>
           <Box pos="relative">
-            <Center>
-              <Button
-                size="lg"
-                m={50}
-                style={{
-                  background:
-                    '#9147ff' /* fallback for old browsers */ /* Chrome 10-25, Safari 5.1-6 */,
-                  color: 'white',
-                }}
-                onClick={handleLogin}
-              >
-                Login with Twitch
-              </Button>
-            </Center>
             <LoadingOverlay visible={isLoading} overlayBlur={2} />
             <Paper
               mt={20}
@@ -251,7 +237,37 @@ export default function Home({
                       mb={30}
                       disabled={isBlurred || !canEdit}
                       error={errors.twitchUsername?.message}
-                      description="This is the username of the Twitch account you want to check is live."
+                      description="This is the username of your Twitch Account."
+                      {...field}
+                    />
+                  )}
+                />
+
+                <Controller
+                  name="twitchBroadcasterID"
+                  control={control}
+                  render={({ field }) => (
+                    <TextInput
+                      label="Twitch Broadcast ID"
+                      placeholder="Twitch Broadcast ID"
+                      mb={30}
+                      disabled={isBlurred || !canEdit}
+                      error={errors.twitchBroadcasterID?.message}
+                      description={
+                        <>
+                          This is the Broadcaster ID of your Twitch account. You
+                          can get this from the Twitch Developer Console, or
+                          from{' '}
+                          <a
+                            href="https://www.streamweasels.com/tools/convert-twitch-username-to-user-id/"
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ color: theme.colors.blue[6] }}
+                          >
+                            Stream Weasel
+                          </a>
+                        </>
+                      }
                       {...field}
                     />
                   )}
@@ -290,47 +306,58 @@ export default function Home({
                     />
                   )}
                 />
-
-                <Group position="center">
+                <Flex justify={'space-between'}>
+                  <Group position="center">
+                    <Button
+                      variant="gradient"
+                      gradient={{
+                        from: '#6838f1',
+                        to: '#dc51f2',
+                      }}
+                      size="md"
+                      radius="sm"
+                      styles={{
+                        root: {
+                          display: 'block',
+                        },
+                      }}
+                      loading={submitting}
+                      type="submit"
+                      disabled={!isDirty || !canEdit}
+                    >
+                      {update ? 'Update' : 'Save'}
+                    </Button>
+                    <Button
+                      variant="light"
+                      color="gray"
+                      size="md"
+                      radius="sm"
+                      styles={{
+                        root: {
+                          display: 'block',
+                        },
+                      }}
+                      onClick={() => {
+                        reset();
+                      }}
+                      disabled={!isDirty || !canEdit}
+                    >
+                      Cancel
+                    </Button>
+                  </Group>
                   <Button
-                    variant="gradient"
-                    gradient={{
-                      from: '#6838f1',
-                      to: '#dc51f2',
-                    }}
                     size="md"
-                    radius="sm"
-                    my={10}
-                    styles={{
-                      root: {
-                        display: 'block',
-                      },
+                    style={{
+                      background:
+                        '#9147ff' /* fallback for old browsers */ /* Chrome 10-25, Safari 5.1-6 */,
+                      color: 'white',
                     }}
-                    loading={submitting}
-                    type="submit"
-                    disabled={!isDirty || !canEdit}
+                    onClick={handleLogin}
+                    disabled={!settings}
                   >
-                    {update ? 'Update' : 'Save'}
+                    Login with Twitch
                   </Button>
-                  <Button
-                    variant="light"
-                    color="gray"
-                    size="md"
-                    radius="sm"
-                    my={10}
-                    styles={{
-                      root: {
-                        display: 'block',
-                      },
-                    }}
-                    onClick={() => {
-                      reset();
-                    }}
-                    disabled={!isDirty || !canEdit}
-                  >
-                    Cancel
-                  </Button>
-                </Group>
+                </Flex>
               </form>
               <Divider />
               <Group position="center" mt={10}>

@@ -5,7 +5,7 @@ import Activity from '../../database/schema/Activity';
 import { checkTwitchStatus, logIfDebugging } from '../helpers';
 import { TwitchSettingsService } from '../../services/twitch';
 
-const CRON_SCHEDULE = 5;
+const CRON_SCHEDULE = 12;
 
 // get a list of unread activities from the database and choose one
 const fetchActivity = async (): Promise<any> => {
@@ -81,7 +81,6 @@ const startAnnouncement = () => {
     }
 
     if (!(await res).isLive) {
-      console.log('Not live');
       return;
     }
 

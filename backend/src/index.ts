@@ -3,15 +3,15 @@
  * It imports the createApp() function from utils/createApp.ts
  * It also imports the database connection from database/index.ts
  *
- * Author: DetectiveMichaelScarn
+ * Author: DMS
  * Date: 27/07/2023
  * Version: 1.0.0
  * License: Closed-Source
  */
 
 import { createApp } from './utils/createApp';
-import './database/index'; // Connect to MongoDB
-import { createServer as createServerDev } from 'http'; // Import from https in production
+import './database/index';
+import { createServer as createServerDev } from 'http';
 
 import { join } from 'path';
 import dotenv from 'dotenv';
@@ -57,10 +57,6 @@ const main = async () => {
   try {
     // Create Express app by calling createApp()
     const app = createApp();
-
-    // Create HTTP server
-    // const httpServer =
-    //   NODE_ENV === 'production' ? createServerProd(app) : createServerDev(app);
 
     const httpServer = createServerDev(app);
     initSocket(httpServer);

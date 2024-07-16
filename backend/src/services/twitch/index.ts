@@ -45,7 +45,6 @@ export class TwitchSettingsService {
     if (!twitchSettings) {
       throw new Error('No Twitch Settings Provided');
     }
-
     const updatedTwitchSettings = await TwitchSettingsSchema.findOneAndUpdate(
       {},
       twitchSettings,
@@ -73,10 +72,11 @@ export class TwitchSettingsService {
     const adURL = 'https://api.twitch.tv/helix/channels/commercial';
     const adDuration = 30;
     // Get Twitch Settings
-    const { twitchClientID, twitchAccessToken } = await getTwitchSettings();
+    const { twitchClientID, twitchAccessToken, twitchBroadcasterID } =
+      await getTwitchSettings();
 
     const adSettings = {
-      broadcaster_id: '21945983',
+      broadcaster_id: twitchBroadcasterID,
       length: adDuration,
     };
 
@@ -143,9 +143,10 @@ export class TwitchSettingsService {
       gameID = response.data.data[0].id;
     }
 
-    const URL = 'https://api.twitch.tv/helix/channels?broadcaster_id=21945983';
+    const { twitchClientID, twitchAccessToken, twitchBroadcasterID } =
+      await getTwitchSettings();
 
-    const { twitchClientID, twitchAccessToken } = await getTwitchSettings();
+    const URL = `https://api.twitch.tv/helix/channels?broadcaster_id=${twitchBroadcasterID}`;
 
     const channelSettings = {} as any;
     channelSettings.is_branded_content = false;
@@ -218,9 +219,10 @@ export class TwitchSettingsService {
   }
 
   static async getChannelData(options: Options) {
-    const URL = 'https://api.twitch.tv/helix/channels?broadcaster_id=21945983';
+    const { twitchClientID, twitchAccessToken, twitchBroadcasterID } =
+      await getTwitchSettings();
 
-    const { twitchClientID, twitchAccessToken } = await getTwitchSettings();
+    const URL = `https://api.twitch.tv/helix/channels?broadcaster_id=${twitchBroadcasterID}`;
 
     const response = await fetch(URL, {
       method: 'GET',

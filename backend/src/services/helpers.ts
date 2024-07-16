@@ -1,6 +1,7 @@
 import { TwitterApi } from 'twitter-api-v2';
 import { TwitchSettingsService } from './twitch';
-import { TwitchSettingsInt } from '../utils/helpers';
+import { TwitchSettingsInt, YoutubeSettingsInt } from '../utils/helpers';
+import { YoutubeSettingsService } from './youtube';
 
 export type Options = Record<string, any>;
 
@@ -61,7 +62,8 @@ export async function getTwitchSettings() {
     twitchRefreshToken,
     twitchTokenExpires,
     twitchUsername,
-  } = twitchSettings.data as Partial<TwitchSettingsInt>;
+    twitchBroadcasterID,
+  } = twitchSettings.data as TwitchSettingsInt;
   return {
     twitchClientID,
     twitchAccessToken,
@@ -69,5 +71,36 @@ export async function getTwitchSettings() {
     twitchRefreshToken,
     twitchTokenExpires,
     twitchUsername,
+    twitchBroadcasterID,
+  };
+}
+
+export async function getYouTubeSettings() {
+  let youtubeSettings = await YoutubeSettingsService.get();
+
+  const isTokenExpired = () => {
+    const currentDate = new Date();
+    const expiryDate = youtubeSettings.data?.youtubeTokenExpires;
+    if (!expiryDate) return true;
+    return currentDate > expiryDate;
+  };
+
+  if (isTokenExpired()) {
+    await YoutubeSettingsService.getNewAccessToken();
+    youtubeSettings = await YoutubeSettingsService.get();
+  }
+  const {
+    youtubeClientID,
+    youtubeClientSecret,
+    youtubeAccessToken,
+    youtubeRefreshToken,
+    youtubeTokenExpires,
+  } = youtubeSettings.data as YoutubeSettingsInt;
+  return {
+    youtubeClientID,
+    youtubeClientSecret,
+    youtubeAccessToken,
+    youtubeRefreshToken,
+    youtubeTokenExpires,
   };
 }

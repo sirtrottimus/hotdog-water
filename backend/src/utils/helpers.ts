@@ -3,10 +3,9 @@
  * Any helper functions that are used in multiple places should be added here.
  * If a helper function is only used in one place, it should be added to the file where it is used.
  *
- * Author: DetectiveScarn
+ * Author: DMS
  * Date: 21/12/2022
  * Version: 1.0.0
- * License: MIT
  *
  */
 import mongoose from 'mongoose';
@@ -171,9 +170,18 @@ export type TwitchSettingsInt = {
   twitchUsername: string;
   twitchClientID: string;
   twitchClientSecret: string;
+  twitchBroadcasterID: string;
   twitchAccessToken: string;
   twitchRefreshToken: string;
   twitchTokenExpires: Date;
+};
+
+export type YoutubeSettingsInt = {
+  youtubeClientID: string;
+  youtubeClientSecret: string;
+  youtubeAccessToken: string;
+  youtubeRefreshToken: string;
+  youtubeTokenExpires: Date;
 };
 
 /**
@@ -248,3 +256,69 @@ export async function checkTwitchStatus({
     streamData: streamData,
   };
 }
+
+export const getEnv = () => {
+  const {
+    DEV_DISCORD_CLIENT_URL,
+    PROD_DISCORD_CLIENT_URL,
+    PROD_DISCORD_SERVER_URL,
+    PROD_DISCORD_CLIENT_ID,
+    PROD_DISCORD_CLIENT_SECRET,
+    DEV_DISCORD_CLIENT_ID,
+    DEV_DISCORD_CLIENT_SECRET,
+    DEV_DISCORD_SERVER_URL,
+  } = process.env;
+
+  let clientUrl = '';
+  let serverUrl = '';
+  let clientID = '';
+  let clientSecret = '';
+  let cookie = {};
+  // Set client and server url based on environment
+  if (process.env.NODE_ENV === 'production') {
+    if (
+      !PROD_DISCORD_CLIENT_URL ||
+      !PROD_DISCORD_SERVER_URL ||
+      !PROD_DISCORD_CLIENT_ID ||
+      !PROD_DISCORD_CLIENT_SECRET
+    ) {
+      throw new Error('[SERVER]: Missing environment variables for production');
+    }
+
+    serverUrl = PROD_DISCORD_SERVER_URL;
+    clientUrl = PROD_DISCORD_CLIENT_URL;
+    clientID = PROD_DISCORD_CLIENT_ID;
+    clientSecret = PROD_DISCORD_CLIENT_SECRET;
+    cookie = {
+      sameSite: 'strict',
+      httpOnly: false,
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      secure: false,
+      domain: '.hatfilms.co.uk',
+    };
+  } else {
+    if (
+      !DEV_DISCORD_CLIENT_URL ||
+      !DEV_DISCORD_SERVER_URL ||
+      !DEV_DISCORD_CLIENT_ID ||
+      !DEV_DISCORD_CLIENT_SECRET
+    ) {
+      throw new Error(
+        '[SERVER]: Missing environment variables for development'
+      );
+    }
+
+    serverUrl = DEV_DISCORD_SERVER_URL;
+    clientUrl = DEV_DISCORD_CLIENT_URL;
+    clientID = DEV_DISCORD_CLIENT_ID;
+    clientSecret = DEV_DISCORD_CLIENT_SECRET;
+    cookie = {
+      sameSite: 'lax',
+      httpOnly: false,
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      secure: false,
+      domain: 'localhost',
+    };
+  }
+  return { clientUrl, cookie, serverUrl, clientID, clientSecret };
+};

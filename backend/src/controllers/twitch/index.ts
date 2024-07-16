@@ -128,9 +128,6 @@ const twitchSettingsController = {
       return validationResult;
     }
 
-    console.log('searchCategories');
-    console.log(req.params);
-
     await handleRequest(
       res,
       TwitchSettingsService.searchCategories,

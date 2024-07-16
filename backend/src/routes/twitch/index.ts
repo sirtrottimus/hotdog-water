@@ -27,8 +27,8 @@ router.get(
   twitchSettingsController.searchCategories
 );
 
-// Route for updating channel
-router.put('/channel', isAuthenticated, twitchSettingsController.updateChannel);
+// Route for updating livestream settings
+router.put('/live', isAuthenticated, twitchSettingsController.updateChannel);
 
 // Route for getting initial channel details
 router.get(
