@@ -414,8 +414,8 @@ function RenderTipEvent(
   canDismissActivity: boolean
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
-  const { username, amount } = result.data;
-
+  const { username, amount, currency } = result.data;
+  const currencySymbol = symbolMap[currency];
   return (
     <Paper mb={10}>
       {' '}
@@ -437,7 +437,8 @@ function RenderTipEvent(
                 color: 'green',
               }}
             >
-              £{amount}
+              {currencySymbol}
+              {amount}
             </b>
           </Text>
           {
@@ -632,9 +633,9 @@ function RenderDefaultEvent(
 }
 // TODO: Add more events.
 
-export default function Activity(event: EventInt): JSX.Element | null {
+export default function Activity(event: EventInt): JSX.Element {
   const { eventName, type, data: activity, canDismissActivity } = event;
-
+  const { classes } = useStyles(); // Add the useStyles hook here.
   const handleMarkAsRead = (id: string) => {
     socket.emit('event:read', { _id: id });
   };
@@ -657,9 +658,33 @@ export default function Activity(event: EventInt): JSX.Element | null {
 
   if (eventName === 'message') {
     return (
-      <div>
-        <p>Message Received: {activity.data}</p>
-      </div>
+      <Paper mb={10}>
+        <Flex align={'stretch'} justify={'space-between'}>
+          <Box
+            style={{
+              padding: '10px 20px 10px 20px',
+              borderLeft: '3px solid darkGreen',
+            }}
+          >
+            <Text size={'sm'} c={'dimmed'}>
+              {dayjs(activity.createdAt).calendar()}
+            </Text>
+            <Text>
+              <b>Mod Message From {activity.data.displayName}:</b>
+              <br />
+              {activity.data.message}
+            </Text>
+          </Box>
+          {canDismissActivity && (
+            <Box
+              onClick={() => handleMarkAsRead(activity._id)}
+              className={`${classes.markAsRead}`}
+            >
+              <IconCheck size={20} />
+            </Box>
+          )}
+        </Flex>
+      </Paper>
     );
   }
 
@@ -704,10 +729,5 @@ export default function Activity(event: EventInt): JSX.Element | null {
         );
     }
   }
-
-  return (
-    <div>
-      <p>Unknown Event Received: {eventName}</p>
-    </div>
-  );
+  return <></>;
 }

@@ -10,6 +10,7 @@ import {
   Popover,
   Text,
   TextInput,
+  Title,
   createStyles,
   useMantineTheme,
 } from '@mantine/core';
@@ -106,6 +107,10 @@ function ActivityViewer({
     );
   }
 
+  //Filter remove read events from backendEventsData
+  const filteredEvents = backendEventsData?.filter(
+    (event: any) => event.read === false
+  );
   return (
     <Paper
       mt={30}
@@ -187,7 +192,10 @@ function ActivityViewer({
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    backendSocket.emit('send-message', message);
+                    backendSocket.emit('send-message', {
+                      displayName: user.username,
+                      message,
+                    });
                   }}
                 >
                   <TextInput
@@ -254,12 +262,15 @@ function ActivityViewer({
 
       {isBackendConnected && (
         <>
-          {backendEventsData?.length > 0 ? (
+          {filteredEvents?.length > 0 ? (
             <Box
               className={`${classes.activityContainer}`}
               mah={activityWindowed ? '75vh' : '100%'}
             >
-              {backendEventsData?.map((event: any, index: number) => (
+              <Title order={5} mb={10} align="center">
+                {filteredEvents.length} Events to Display
+              </Title>
+              {filteredEvents?.map((event: any, index: number) => (
                 <div key={index}>
                   <Activity
                     eventName={event.eventName}

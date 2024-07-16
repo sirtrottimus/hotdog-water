@@ -164,6 +164,23 @@ const useBackendSocket = () => {
           socket.connect();
         },
       },
+      {
+        name: 'message',
+        callback: (data: any) => {
+          console.log(data);
+          setEventsData((prevData) => {
+            return [
+              ...prevData,
+              {
+                eventName: 'message',
+                data: data,
+                read: false,
+                _id: Math.random().toString(36).substring(7),
+              },
+            ];
+          });
+        },
+      },
     ];
   }, [
     setEventsData,
