@@ -111,8 +111,6 @@ function ActivityViewer({
   const filteredEvents = backendEventsData?.filter(
     (event: any) => event.read === false
   );
-  console.log(filteredEvents);
-  console.log(backendEventsData);
   return (
     <Paper
       mt={30}

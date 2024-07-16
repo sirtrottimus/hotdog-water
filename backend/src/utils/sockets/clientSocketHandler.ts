@@ -89,6 +89,7 @@ const handleClientConnections = (io: ServerIO) => {
 
       if (filters.includes(type) || filters.length === 0) {
         const newEvent = await Activity.create(data);
+        newEvent.read = false;
 
         if (!newEvent) {
           logIfDebugging(
