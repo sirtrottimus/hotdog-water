@@ -18,10 +18,9 @@
  *  export default router;
  *
  *
- * Author: Shagger
+ * Author: DMS
  * Date: 21/12/2022
  * Version: 1.0.0
- * License: MIT
  *
  */
 import { Router } from 'express';
