@@ -475,7 +475,44 @@ function RenderSponsorEvent(
   canDismissActivity: boolean
 ): JSX.Element {
   const { classes } = useStyles(); // Add the useStyles hook here.
-  const { username, tier, message } = result.data;
+  const { username, tier, message, amount } = result.data;
+
+  // Example message:Aatar celebrates 17 months of membership: Well if it isn't the demon Christ Rott.
+  // We want to take all the text after the colon and display it as the message.
+
+  const messageText = message.split(':').slice(1).join(':').trim();
+  let startingText = <></>;
+  if (amount === 1) {
+    startingText = (
+      <Text>
+        <b>{(username as string).truncateSecondName()} </b>Became a{' '}
+        <b
+          style={{
+            color: '#ff0000',
+          }}
+        >
+          {tier}
+        </b>
+      </Text>
+    );
+  }
+
+  if (amount > 1) {
+    startingText = (
+      <Text>
+        <b>{(username as string).truncateSecondName()} </b>Renewed their{' '}
+        <b
+          style={{
+            color: '#ff0000',
+          }}
+        >
+          {tier}
+        </b>{' '}
+        for <b>{amount}</b> months
+      </Text>
+    );
+  }
+
   return (
     <Paper mb={10}>
       {' '}
@@ -504,9 +541,7 @@ function RenderSponsorEvent(
             result.data.message ? (
               <Text mt={10}>
                 Saying:{' '}
-                <b>
-                  {sentenceToEmoji(decodeHtmlEntities(result.data.message))}
-                </b>
+                <b>{sentenceToEmoji(decodeHtmlEntities(messageText))}</b>
               </Text>
             ) : (
               <Text mt={10} c={'dimmed'}>
