@@ -384,12 +384,9 @@ function RenderCheerEvent(
             <b>{displayName}</b> Cheered <b>{tierText}</b> Bits
           </Text>
           {
-            result.data.message ? (
+            message ? (
               <Text mt={10}>
-                Saying:{' '}
-                <b>
-                  {sentenceToEmoji(decodeHtmlEntities(result.data.message))}
-                </b>
+                Saying: <b>{sentenceToEmoji(decodeHtmlEntities(message))}</b>
               </Text>
             ) : (
               <Text mt={10} c={'dimmed'}>
@@ -555,7 +552,7 @@ function RenderSuperChatEvent(
             {dayjs(result.createdAt).calendar()}
           </Text>
           <Text>
-            <b>{username} </b> Superchatted{' '}
+            <b>{username} </b> Gave:{' '}
             <b
               style={{
                 color: 'green',

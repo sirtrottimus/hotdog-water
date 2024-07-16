@@ -54,7 +54,7 @@ const possibleTwitchFilters = [
 
 const possibleYTFilters = [
   { value: 'subscriber', label: 'Subscriptions' },
-  { value: 'superChat', label: 'Super Chats' },
+  { value: 'superchat', label: 'Super Chats' },
   { value: 'sponsor', label: 'Memberships' },
   { value: 'cheer', label: 'Cheers' },
   { value: 'raid', label: 'Raids' },
