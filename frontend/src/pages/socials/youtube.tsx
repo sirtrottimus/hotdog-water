@@ -8,6 +8,7 @@ import {
   Center,
   Container,
   Divider,
+  Flex,
   Group,
   LoadingOverlay,
   Paper,
@@ -28,20 +29,17 @@ import { Prism } from '@mantine/prism';
 import { useWindowScroll } from '@mantine/hooks';
 import { IconArrowUp } from '@tabler/icons-react';
 import YoutubeService, {
+  FormYoutubeSettingsInput,
   YoutubeSettingsInt,
 } from '../../utils/api/YoutubeService';
-
-type FormYoutubeSettingsInput = {
-  consumerKey: string;
-  consumerSecret: string;
-};
+import useAuthorization from '../../hooks/useAuthorization';
 
 const schema = z.object({
-  consumerKey: z.string().min(1, {
-    message: 'Youtube Consumer Key is required',
+  youtubeClientID: z.string().min(1, {
+    message: 'Youtube Client ID is required',
   }),
-  consumerSecret: z.string().min(1, {
-    message: 'Youtube Consumer Secret is required',
+  youtubeClientSecret: z.string().min(1, {
+    message: 'Youtube Client Secret is required',
   }),
 });
 
@@ -76,6 +74,18 @@ export default function Home({
   });
   const [scroll, scrollTo] = useWindowScroll();
 
+  const { isAuthorized: canView, isLoading: isAuthLoading } = useAuthorization(
+    user,
+    ['SUPERADMIN', 'ADMIN', 'VIEW_TWITCH_SETTINGS'],
+    'canView'
+  );
+
+  const { isAuthorized: canEdit } = useAuthorization(
+    user,
+    ['SUPERADMIN', 'ADMIN', 'EDIT_TWITCH_SETTINGS'],
+    'canEdit'
+  );
+
   const {
     data: settings,
     isLoading,
@@ -89,12 +99,15 @@ export default function Home({
       } else {
         return null;
       }
-    } // query function
+    },
+    {
+      enabled: canView && !isAuthLoading,
+    }
   );
 
   const defaultValues = {
-    consumerKey: settings?.consumerKey ?? '',
-    consumerSecret: settings?.consumerSecret ?? '',
+    youtubeClientID: settings?.youtubeClientID ?? '',
+    youtubeClientSecret: settings?.youtubeClientSecret ?? '',
   };
 
   const {
@@ -217,6 +230,14 @@ export default function Home({
     }
   }, [settings, reset]);
 
+  const handleLogin = () => {
+    if (process.env.NODE_ENV === 'development') {
+      window.location.href = `${process.env.NEXT_PUBLIC_DEV_API_URL}api/auth/youtube`;
+      return;
+    }
+    window.location.href = `${process.env.NEXT_PUBLIC_PROD_API_URL}api/auth/youtube`;
+  };
+
   return (
     <>
       <Center>
@@ -239,7 +260,7 @@ export default function Home({
             {!isLoading && !settings && !isError && (
               <Alert mb={20}>
                 <b>Warning:</b> You have not set up your Youtube settings yet.
-                You will not be able to use the Youtube bot until you do so.
+                You will not be able to use Youtube features until you do so.
               </Alert>
             )}
             {!isLoading && isError && (
@@ -256,82 +277,92 @@ export default function Home({
               )}
             >
               <Text mb={20}>
-                The Consumer Key and Consumer Secret are the API Key and API
-                Secret. They are used to authenticate your Youtube App. These
-                Don&apos;t need to be tied to a specific user, but they do need
-                to be kept secret.
+                Fill in your Youtube details below. You can get these from the
+                Youtube Developer Console, under the OAuth credentials tab.
               </Text>
               <Controller
-                name="consumerKey"
+                name="youtubeClientID"
                 control={control}
                 render={({ field }) => (
                   <PasswordInput
-                    label="Youtube Consumer Key"
-                    placeholder="Youtube Consumer Key"
+                    label="Youtube Client ID"
+                    placeholder="Youtube Client ID"
                     withAsterisk
-                    error={errors.consumerKey?.message}
+                    error={errors.youtubeClientID?.message}
                     disabled={isBlurred}
                     mb={30}
                     {...field}
-                    description="This is the Consumer Key of the Youtube App. You can get this from the Youtube Developer Console. Keep this secret! (This is also known as the API Key.)"
+                    description="This is your Youtube App's Client ID. You can get this from the Youtube Developer Console, under the OAuth credentials tab. Keep this secret!"
                   />
                 )}
               />
               <Controller
-                name="consumerSecret"
+                name="youtubeClientSecret"
                 control={control}
                 render={({ field }) => (
                   <PasswordInput
-                    label="Youtube Consumer Secret"
-                    placeholder="Youtube Consumer Secret"
+                    label="Youtube Client Secret"
+                    placeholder="Youtube Client Secret"
                     withAsterisk
-                    error={errors.consumerSecret?.message}
+                    error={errors.youtubeClientSecret?.message}
                     disabled={isBlurred}
                     mb={30}
                     {...field}
-                    description="This is the Consumer Secret of the Youtube App. You can get this from the Youtube Developer Console. Keep this secret! (This is also known as the API Secret Key.)"
+                    description="This is your Youtube App's Client Secret. You can get this from the Youtube Developer Console, under the OAuth credentials tab. Keep this secret!"
                   />
                 )}
               />
-              <Group position="center">
+              <Flex justify={'space-between'}>
+                <Group position="center">
+                  <Button
+                    variant="gradient"
+                    gradient={{
+                      from: '#6838f1',
+                      to: '#dc51f2',
+                    }}
+                    size="md"
+                    radius="sm"
+                    styles={{
+                      root: {
+                        display: 'block',
+                      },
+                    }}
+                    loading={submitting}
+                    type="submit"
+                    disabled={!isDirty || !canEdit}
+                  >
+                    {update ? 'Update' : 'Save'}
+                  </Button>
+                  <Button
+                    variant="light"
+                    color="gray"
+                    size="md"
+                    radius="sm"
+                    styles={{
+                      root: {
+                        display: 'block',
+                      },
+                    }}
+                    onClick={() => {
+                      reset();
+                    }}
+                    disabled={!isDirty || !canEdit}
+                  >
+                    Cancel
+                  </Button>
+                </Group>
                 <Button
-                  variant="gradient"
-                  gradient={{
-                    from: '#6838f1',
-                    to: '#dc51f2',
-                  }}
                   size="md"
-                  radius="sm"
-                  my={10}
-                  styles={{
-                    root: {
-                      display: 'block',
-                    },
+                  style={{
+                    background: 'red',
+                    color: 'white',
                   }}
-                  loading={submitting}
-                  type="submit"
-                  disabled={!isDirty}
+                  onClick={handleLogin}
+                  disabled={!settings}
                 >
-                  {update ? 'Update' : 'Save'}
+                  Login with Youtube
                 </Button>
-                <Button
-                  variant="light"
-                  color="gray"
-                  size="md"
-                  radius="sm"
-                  my={10}
-                  styles={{
-                    root: {
-                      display: 'block',
-                    },
-                  }}
-                  onClick={() => {
-                    reset();
-                  }}
-                >
-                  Cancel
-                </Button>
-              </Group>
+              </Flex>
             </form>
           </Paper>
           <Divider my={80} size={'md'} />

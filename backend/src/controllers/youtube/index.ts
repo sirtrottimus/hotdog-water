@@ -136,6 +136,77 @@ const youtubeSettingsController = {
       'youtubeSettings'
     );
   },
+
+  async getChannelDetails(req: Request, res: Response) {
+    const user = req.user as UserInt;
+
+    const validationResult = await validateUserPerms(user._id, [
+      'SUPERADMIN',
+      'ADMIN',
+      'MODERATOR',
+      'GET_YOUTUBE_CHANNEL_DETAILS',
+    ]);
+
+    if (!validationResult.success) {
+      return validationResult;
+    }
+
+    await handleRequest(
+      res,
+      YoutubeSettingsService.getChannelDetails,
+      user,
+      {},
+      'youtubeSettings'
+    );
+  },
+
+  async isChannelLive(req: Request, res: Response) {
+    const user = req.user as UserInt;
+
+    const validationResult = await validateUserPerms(user._id, [
+      'SUPERADMIN',
+      'ADMIN',
+      'MODERATOR',
+      'CHECK_YOUTUBE_CHANNEL_LIVE',
+    ]);
+
+    if (!validationResult.success) {
+      return validationResult;
+    }
+
+    await handleRequest(
+      res,
+      YoutubeSettingsService.isChannelLive,
+      user,
+      {},
+      'youtubeSettings'
+    );
+  },
+
+  async updateLiveStream(req: Request, res: Response) {
+    const user = req.user as UserInt;
+
+    const validationResult = await validateUserPerms(user._id, [
+      'SUPERADMIN',
+      'ADMIN',
+      'MODERATOR',
+      'UPDATE_YOUTUBE_LIVE_STREAM',
+    ]);
+
+    if (!validationResult.success) {
+      return validationResult;
+    }
+
+    await handleRequest(
+      res,
+      YoutubeSettingsService.updateLiveStream,
+      user,
+      {
+        body: req.body,
+      },
+      'youtubeSettings'
+    );
+  },
 };
 
 export default youtubeSettingsController;

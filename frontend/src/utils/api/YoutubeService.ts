@@ -12,18 +12,20 @@ import { APIResponse } from '../types';
 import BaseApiService from './BaseApiService';
 
 // ------ Types ------ //
-export interface FormYoutubeSettingsInput {
-  consumerKey: string;
-  consumerSecret: string;
+export type FormYoutubeSettingsInput = {
+  youtubeClientID: string;
+  youtubeClientSecret: string;
   _id?: string;
-}
+};
 
-export interface YoutubeSettingsInt {
-  consumerKey: string;
-  consumerSecret: string;
-  accessToken: string;
-  accessTokenSecret: string;
-}
+export type YoutubeSettingsInt = {
+  youtubeClientID: string;
+  youtubeClientSecret: string;
+};
+
+export type YoutubeChannelInt = {
+  title: string;
+};
 
 // ------ Actual API calls ------ //
 class YoutubeService extends BaseApiService {
@@ -85,10 +87,7 @@ class YoutubeService extends BaseApiService {
   async update(
     youtubeSettings: FormYoutubeSettingsInput
   ): Promise<APIResponse<YoutubeSettingsInt>> {
-    return await this.put(
-      `${this.url}/${youtubeSettings._id}`,
-      youtubeSettings
-    );
+    return await this.put(`${this.url}/`, youtubeSettings);
   }
 
   /**
@@ -120,6 +119,18 @@ class YoutubeService extends BaseApiService {
    */
   async testPost(): Promise<APIResponse<any>> {
     return await this.get(`${this.url}/test/post`);
+  }
+
+  async getChannelDetails(): Promise<APIResponse<any>> {
+    return await this.get(`${this.url}/channel`);
+  }
+
+  async checkLiveStatus(): Promise<APIResponse<any>> {
+    return await this.get(`${this.url}/live`);
+  }
+
+  async modifyLiveStream(data: YoutubeChannelInt): Promise<APIResponse<any>> {
+    return await this.put(`${this.url}/live`, data);
   }
 }
 
