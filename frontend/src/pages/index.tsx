@@ -1,8 +1,38 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
 import LandingPageTemplate from '../components/LandingPage/LandingPageTemplate';
+import { useUsers } from '../hooks/userQuery';
+import { useRouter } from 'next/router';
+import CenteredLoader from '../components/misc/CenteredLoader';
+import { useMantineColorScheme } from '@mantine/core';
 
 const Index: NextPage = () => {
+  const userQuery = useUsers();
+  const router = useRouter();
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+
+  if (userQuery.isLoading) {
+    return (
+      <CenteredLoader
+        colorScheme={colorScheme}
+        size={'xl'}
+        loadingText={'Checking Auth Status'}
+      />
+    );
+  }
+
+  if (!userQuery.isLoading && userQuery.users) {
+    router.push('/dashboard');
+    return (
+      <CenteredLoader
+        colorScheme={colorScheme}
+        redirecting
+        redirectText={'Taking you to Dashboard..'}
+        size={'xl'}
+      />
+    );
+  }
+
   return (
     <>
       <Head>

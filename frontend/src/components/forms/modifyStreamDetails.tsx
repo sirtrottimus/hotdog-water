@@ -6,7 +6,6 @@ import {
   Button,
   Checkbox,
   Group,
-  Loader,
   LoadingOverlay,
   MantineColor,
   SelectItemProps,
@@ -20,6 +19,9 @@ import TwitchService, { TwitchChannelInt } from '../../utils/api/TwitchService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDebouncedValue } from '@mantine/hooks';
 import { toast } from 'react-toastify';
+import YoutubeService, {
+  YoutubeChannelInt,
+} from '../../utils/api/YoutubeService';
 
 interface ItemProps extends SelectItemProps {
   color: MantineColor;
@@ -49,10 +51,10 @@ AutoCompleteItem.displayName = '@mantine/core/AutocompleteItem';
 const schema = z.object({
   title: z.string().min(3, 'Title is too short').max(50, 'Title is too long'),
   category: z.string(),
-  isBrandedContent: z.boolean(),
+  isBrandedContent: z.boolean().optional(),
 }) satisfies z.ZodType<TwitchChannelInt, z.ZodTypeDef, unknown>;
 
-export default function ModifyChannelDetails(
+export default function ModifyStreamDetails(
   {
     submitCallback,
     isBlurred,
@@ -64,7 +66,7 @@ export default function ModifyChannelDetails(
   const [submitting, setSubmitting] = React.useState(false);
 
   const { data: channelData, isLoading: channelLoading } = useQuery(
-    ['twitchChannelData'],
+    ['twitchStreamData'],
     async () => {
       const response = await TwitchService.getChannelData();
       if (response.success) {
@@ -131,12 +133,33 @@ export default function ModifyChannelDetails(
 
   const queryClient = useQueryClient();
 
-  const modifyChannelMutation = useMutation(
-    (data: TwitchChannelInt) => TwitchService.modifyChannel(data),
+  const modifyTwitchStreamMutation = useMutation(
+    (data: TwitchChannelInt) => TwitchService.modifyLiveStream(data),
     {
       onSuccess: () => {
-        toast.success('Channel updated successfully');
-        queryClient.invalidateQueries(['twitchChannelData']).finally(() => {});
+        toast.success('Twitch Stream updated successfully');
+        queryClient.invalidateQueries(['twitchStreamData']).finally(() => {});
+        if (submitCallback) submitCallback(true);
+        setSubmitting(false);
+      },
+      onError: () => {
+        toast.error(
+          'Failed to update channel, Check Audit Logs for more information'
+        );
+        setSubmitting(false);
+      },
+      onMutate: () => {
+        setSubmitting(true);
+      },
+    }
+  );
+
+  const modifyYoutubeStreamMutation = useMutation(
+    (data: YoutubeChannelInt) => YoutubeService.modifyLiveStream(data),
+    {
+      onSuccess: () => {
+        toast.success('Youtube Stream updated successfully');
+        queryClient.invalidateQueries(['youtubeStreamData']).finally(() => {});
         if (submitCallback) submitCallback(true);
         setSubmitting(false);
       },
@@ -157,7 +180,8 @@ export default function ModifyChannelDetails(
       <LoadingOverlay visible={submitting} overlayBlur={2} />
       <form
         onSubmit={handleSubmit(async (data: TwitchChannelInt) => {
-          modifyChannelMutation.mutate(data);
+          modifyTwitchStreamMutation.mutate(data);
+          modifyYoutubeStreamMutation.mutate(data);
         })}
       >
         <Controller
@@ -168,7 +192,6 @@ export default function ModifyChannelDetails(
               {...field}
               label="Change Stream Title"
               placeholder="Enter a new stream title"
-              withAsterisk
               mb={30}
               value={field.value}
               error={errors.title?.message?.toString()}
@@ -185,7 +208,7 @@ export default function ModifyChannelDetails(
             <Autocomplete
               {...field}
               mt={10}
-              label="Change Stream Category"
+              label="Change Stream Category  - Twitch Only"
               description="Select a category/game for your stream"
               placeholder="Select a category"
               value={field.value}
@@ -228,7 +251,7 @@ export default function ModifyChannelDetails(
               label="Is Branded Content - Twitch Only"
               description="Check this if your stream has branded content (sponsored)"
               checked={field.value}
-              value={field.value === true ? 0 : 1}
+              value={field.value === true ? 'true' : 'false'}
             />
           )}
         />
@@ -248,7 +271,6 @@ export default function ModifyChannelDetails(
             },
           }}
           type="submit"
-          disabled={!isDirty}
         >
           Save Changes
         </Button>

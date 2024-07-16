@@ -1,49 +1,14 @@
 import { Profile, Strategy } from 'passport-discord';
 import passport from 'passport';
 import User from '../database/schema/User';
+import { getEnv } from '../utils/helpers';
 
-// Destructure environment variables
-const {
-  PROD_DISCORD_CLIENT_ID,
-  PROD_DISCORD_CLIENT_SECRET,
-  PROD_DISCORD_SERVER_URL,
-  DEV_DISCORD_CLIENT_ID,
-  DEV_DISCORD_CLIENT_SECRET,
-  DEV_DISCORD_SERVER_URL,
-} = process.env;
-
-const strategyOptions: any = {};
-
-// Set up strategy options based on environment
-if (process.env.NODE_ENV === 'production') {
-  if (
-    !PROD_DISCORD_CLIENT_ID ||
-    !PROD_DISCORD_CLIENT_SECRET ||
-    !PROD_DISCORD_SERVER_URL
-  ) {
-    throw new Error(
-      `[DISCORD STRATEGY]: Missing environment variables for production ${PROD_DISCORD_CLIENT_ID}|${PROD_DISCORD_CLIENT_SECRET}|${PROD_DISCORD_SERVER_URL}`
-    );
-  }
-
-  strategyOptions.clientID = PROD_DISCORD_CLIENT_ID;
-  strategyOptions.clientSecret = PROD_DISCORD_CLIENT_SECRET;
-  strategyOptions.callbackURL = `${PROD_DISCORD_SERVER_URL}/api/auth/discord/callback`;
-} else {
-  if (
-    !DEV_DISCORD_CLIENT_ID ||
-    !DEV_DISCORD_CLIENT_SECRET ||
-    !DEV_DISCORD_SERVER_URL
-  ) {
-    throw new Error(
-      '[DISCORD STRATEGY]: Missing environment variables for development'
-    );
-  }
-
-  strategyOptions.clientID = DEV_DISCORD_CLIENT_ID;
-  strategyOptions.clientSecret = DEV_DISCORD_CLIENT_SECRET;
-  strategyOptions.callbackURL = `${DEV_DISCORD_SERVER_URL}/api/auth/discord/callback`;
-}
+const { serverUrl, clientUrl, clientID, clientSecret } = getEnv();
+const strategyOptions: any = {
+  clientID,
+  clientSecret,
+  callbackURL: `${serverUrl}/api/auth/discord/callback`,
+};
 passport.use(
   new Strategy(strategyOptions, async function (
     accessToken: string,
@@ -74,7 +39,7 @@ passport.use(
         // Call the 'done' function with the error and additional info
         done(null, undefined, {
           message: 'No user found with that Discord ID, No Access Granted',
-          redirectUrl: `${process.env.CLIENT_URL}/dashboard?error=NOUSER`,
+          redirectUrl: `${clientUrl}/dashboard?error=NOUSER`,
         });
       }
     } catch (error) {

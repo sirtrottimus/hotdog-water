@@ -10,42 +10,9 @@ import 'dotenv/config';
 
 // require('../strategies/github'); // Uncomment when GitHub OAuth is implemented
 import '../strategies/discord';
+import { getEnv } from './helpers';
 
-// Destructure environment variables
-const { DEV_DISCORD_CLIENT_URL, PROD_DISCORD_CLIENT_URL, NODE_ENV } =
-  process.env;
-
-let clientUrl = '';
-let cookie = {};
-
-// Set client and server url based on environment
-if (NODE_ENV === 'production') {
-  if (!PROD_DISCORD_CLIENT_URL) {
-    throw new Error('[SERVER]: Missing environment variables for production');
-  }
-
-  clientUrl = PROD_DISCORD_CLIENT_URL!;
-  cookie = {
-    sameSite: 'strict',
-    httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-    secure: false,
-    domain: '.hatfilms.co.uk',
-  };
-} else {
-  if (!DEV_DISCORD_CLIENT_URL) {
-    throw new Error('[SERVER]: Missing environment variables for development');
-  }
-
-  clientUrl = DEV_DISCORD_CLIENT_URL!;
-  cookie = {
-    sameSite: 'lax',
-    httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-    secure: false,
-    domain: 'localhost',
-  };
-}
+const { cookie, clientUrl } = getEnv();
 
 /**
  * Creates an Express app with middleware and routes
@@ -81,7 +48,6 @@ export const createApp = (): express.Application => {
       resave: false,
       saveUninitialized: false,
       cookie,
-      // deepcode ignore WebCookieSecureDisabledExplicitly: <please specify a reason of ignoring this>
       store: store.create({ mongoUrl: process.env.MONGO_URI! }),
     })
   );

@@ -66,11 +66,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
   const userQuery = useUsers();
   const smallScreen = useMediaQuery('(max-width: 768px)');
   const { users: user } = userQuery;
-  const {
-    jwtAuth,
-    isError: checkJWTAuthStatus,
-    isLoading: checkJWTAuthStatusLoading,
-  } = useJWTAuth();
+  const { jwtAuth, isLoading: checkJWTAuthStatusLoading } = useJWTAuth();
   const [isBlurred, setIsBlurred] = React.useState(true);
   const { theme } = useStyles();
   const [mini, setMini] = useState(false);

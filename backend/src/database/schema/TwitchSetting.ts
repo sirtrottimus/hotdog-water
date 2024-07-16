@@ -5,6 +5,7 @@ interface TwitchSettingsInt extends Document {
   twitchClientID: string;
   twitchClientSecret: string;
   twitchUsername: string;
+  twitchBroadcasterID: string;
   twitchAccessToken?: string;
   twitchRefreshToken?: string;
   twitchTokenExpires?: Date;
@@ -14,6 +15,7 @@ const twitchSettingsSchema: Schema = new Schema({
   twitchClientID: { type: String, required: true },
   twitchClientSecret: { type: String, required: true },
   twitchUsername: { type: String, required: true },
+  twitchBroadcasterID: { type: String, required: true },
   twitchAccessToken: { type: String },
   twitchRefreshToken: { type: String },
   twitchTokenExpires: { type: Date },

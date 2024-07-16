@@ -14,6 +14,8 @@ interface CenteredLoaderProps {
   size?: MantineNumberSize;
   colorScheme?: ColorScheme;
   redirecting?: boolean;
+  redirectText?: string;
+  loadingText?: string;
   errored?: boolean;
   align?: 'center' | 'flex-start' | 'flex-end' | 'stretch' | 'baseline';
   justify?:
@@ -40,6 +42,8 @@ const useStyles = createStyles((theme) => ({
 const CenteredLoader = ({
   size,
   redirecting,
+  redirectText,
+  loadingText,
   errored,
   error,
   align,
@@ -60,7 +64,8 @@ const CenteredLoader = ({
       ) : (
         <>
           <Loader size={size} color="violet" />
-          {redirecting && <Title>Redirecting...</Title>}
+          {redirecting && <Title>{redirectText ?? 'Redirecting...'}</Title>}
+          {!redirecting && loadingText && <Title>{loadingText}</Title>}
         </>
       )}
     </Flex>

@@ -7,7 +7,7 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement, use, useEffect } from 'react';
 import { MainLayout } from '../../components/Layout/mainLayout';
 import AnnouncementSelector from '../../components/announcements/announcementSelector';
 import AnnouncementsViewer from '../../components/announcements/announcementsViewer';
@@ -17,7 +17,8 @@ import { useQuery } from '@tanstack/react-query';
 import StreamElementsService from '../../utils/api/StreamElementsService';
 import NewWindow from 'react-new-window';
 import useAuthorization from '../../hooks/useAuthorization';
-import { ModifyDetails } from '../../components/TwitchChannel/modify-details';
+import { ModifyDetails } from '../../components/LiveStreams/modify-details';
+import YoutubeService from '../../utils/api/YoutubeService';
 
 export default function Home({
   user,
@@ -46,6 +47,27 @@ export default function Home({
       enabled: canSeeJWT,
     }
   );
+
+  //Call the youtube service to get the youtubechannelDetails then console log the response
+
+  const { data: youtubeChannelDetails, isLoading: youtubeLoading } = useQuery(
+    ['youtubeChannelDetails'],
+    async () => {
+      const response = await YoutubeService.getChannelDetails();
+      if (response.success) {
+        return response.data;
+      } else {
+        console.log(response.error);
+      }
+    },
+    {
+      enabled: canSeeJWT,
+    }
+  );
+
+  useEffect(() => {
+    console.log(youtubeChannelDetails);
+  }, [youtubeChannelDetails]);
 
   if (canSeeJWT && isLoading) {
     return (

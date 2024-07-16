@@ -13,14 +13,16 @@ import { APIResponse } from '../types';
 import BaseApiService from './BaseApiService';
 
 // ------ Types ------ //
-type FormTwitchSettingsInput = {
+export type FormTwitchSettingsInput = {
   twitchUsername: string;
+  twitchBroadcasterID: string;
   twitchClientID: string;
   twitchClientSecret: string;
 };
 
 export type TwitchSettingsInt = {
   twitchUsername: string;
+  twitchBroadcasterID: string;
   twitchClientID: string;
   twitchClientSecret: string;
 };
@@ -28,7 +30,7 @@ export type TwitchSettingsInt = {
 export type TwitchChannelInt = {
   title: string;
   category: string;
-  isBrandedContent: boolean;
+  isBrandedContent?: boolean;
 };
 
 // ------ Actual API calls ------ //
@@ -90,6 +92,7 @@ class TwitchService extends BaseApiService {
   async update(
     twitch: TwitchSettingsInt
   ): Promise<APIResponse<TwitchSettingsInt>> {
+    console.log('twitch', twitch);
     return await this.put(`${this.url}/`, twitch);
   }
 
@@ -172,16 +175,12 @@ class TwitchService extends BaseApiService {
     });
   }
 
-  async modifyChannel({
+  async modifyLiveStream({
     title,
     category,
     isBrandedContent,
-  }: {
-    title: string;
-    category: string;
-    isBrandedContent: boolean;
-  }): Promise<APIResponse<any>> {
-    const res = await this.put(`${this.url}/channel`, {
+  }: TwitchChannelInt): Promise<APIResponse<any>> {
+    const res = await this.put(`${this.url}/live`, {
       title,
       category,
       isBrandedContent,

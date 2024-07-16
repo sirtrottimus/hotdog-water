@@ -2,12 +2,12 @@
 
 import React from 'react';
 import { Paper } from '@mantine/core';
-import ModifyChannelDetails from '../forms/modifyChannelDetails';
+import ModifyStreamDetails from '../forms/modifyStreamDetails';
 
 export const ModifyDetails = () => {
   return (
     <Paper mt={30} w={'30%'} p={20}>
-      <ModifyChannelDetails />
+      <ModifyStreamDetails />
     </Paper>
   );
 };

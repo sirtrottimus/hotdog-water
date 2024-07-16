@@ -2,6 +2,8 @@ import { Flex, Title } from '@mantine/core';
 import React, { useEffect } from 'react';
 import TwitchService from '../../utils/api/TwitchService';
 import { checkTwitchStatus } from '../../utils/helpers';
+import YoutubeService from '../../utils/api/YoutubeService';
+import ConnectionDisplay from './ConnectionDisplay';
 
 interface Props {
   isConnected: boolean;
@@ -9,7 +11,8 @@ interface Props {
 }
 
 export default function ConnectionState({ isConnected, title }: Props) {
-  const [live, setLive] = React.useState(false);
+  const [isTwitchLive, setTwitchLive] = React.useState(false);
+  const [isYouTubeLive, setYouTubeLive] = React.useState(false);
   useEffect(() => {
     async function TwitchStatus() {
       const response = await TwitchService.getOne();
@@ -17,49 +20,61 @@ export default function ConnectionState({ isConnected, title }: Props) {
 
       const res = await checkTwitchStatus(response.data);
       if (!res.isLive) {
-        setLive(false);
+        setTwitchLive(false);
+      }
+
+      if (res.isLive) {
+        setTwitchLive(true);
       }
     }
     TwitchStatus();
   }, []);
+
+  useEffect(() => {
+    async function YouTubeStatus() {
+      const response = await YoutubeService.checkLiveStatus();
+      if (!response.success) {
+        return;
+      }
+      if (!response.data.isLive) {
+        setYouTubeLive(false);
+      }
+
+      if (response.data.isLive) {
+        setYouTubeLive(true);
+      }
+    }
+    YouTubeStatus();
+  }, []);
+
   return (
     <Title>
       <Flex justify={'space-around'}>
-        <div>
-          {title} -{' '}
-          {isConnected ? (
-            <span style={{ color: 'green', fontWeight: 'bold' }}>
-              Connected
-            </span>
-          ) : (
-            <span style={{ color: 'red', fontWeight: 'bold' }}>
-              Disconnected
-            </span>
-          )}
-        </div>
-        <div>
-          Twitch -{' '}
-          {live ? (
-            <span
-              style={{
-                color: 'green',
-                fontWeight: 'bold',
-              }}
-            >
-              Live
-            </span>
-          ) : (
-            <span
-              style={{
-                color: 'red',
-                fontWeight: 'bold',
-              }}
-            >
-              Offline
-            </span>
-          )}
-        </div>
-        YouTube - TBA
+        <ConnectionDisplay
+          isconnected={isConnected}
+          isLoading={false}
+          title={title}
+        />
+        <ConnectionDisplay
+          isconnected={isTwitchLive}
+          isLoading={false}
+          title={'Twitch'}
+          wording={{
+            connected: 'Live',
+            disconnected: 'Offline',
+            loading: 'Loading...',
+          }}
+        />
+        <ConnectionDisplay
+          isconnected={isYouTubeLive}
+          isLoading={false}
+          title={'YouTube'}
+          wording={{
+            connected: 'Live',
+            disconnected: 'Offline',
+            loading: 'Loading...',
+          }}
+        />
       </Flex>
     </Title>
   );
