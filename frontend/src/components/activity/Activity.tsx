@@ -479,8 +479,15 @@ function RenderSponsorEvent(
 
   // Example message:Aatar celebrates 17 months of membership: Well if it isn't the demon Christ Rott.
   // We want to take all the text after the colon and display it as the message.
+  let messageIndex;
+  let messageText;
+  if (message) {
+    messageIndex = message.indexOf(':');
+    messageText = messageIndex !== -1 ? message.slice(messageIndex + 1) : '';
+  }
 
   let startingText = <></>;
+
   if (amount === 1) {
     startingText = (
       <Text>
@@ -526,20 +533,12 @@ function RenderSponsorEvent(
           <Text size={'sm'} c={'dimmed'}>
             {dayjs(result.createdAt).calendar()}
           </Text>
-          <Text>
-            <b>{(username as string).truncateSecondName()} </b>Became a{' '}
-            <b
-              style={{
-                color: '#ff0000',
-              }}
-            >
-              {tier}
-            </b>
-          </Text>
+          {startingText}
           {
-            result.data.message ? (
+            messageText ? (
               <Text mt={10}>
-                Saying: <b>{sentenceToEmoji(decodeHtmlEntities(message))}</b>
+                Saying:{' '}
+                <b>{sentenceToEmoji(decodeHtmlEntities(messageText))}</b>
               </Text>
             ) : (
               <Text mt={10} c={'dimmed'}>
