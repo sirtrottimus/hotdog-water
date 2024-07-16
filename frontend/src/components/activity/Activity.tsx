@@ -480,7 +480,6 @@ function RenderSponsorEvent(
   // Example message:Aatar celebrates 17 months of membership: Well if it isn't the demon Christ Rott.
   // We want to take all the text after the colon and display it as the message.
 
-  const messageText = message.split(':').slice(1).join(':').trim();
   let startingText = <></>;
   if (amount === 1) {
     startingText = (
@@ -540,8 +539,7 @@ function RenderSponsorEvent(
           {
             result.data.message ? (
               <Text mt={10}>
-                Saying:{' '}
-                <b>{sentenceToEmoji(decodeHtmlEntities(messageText))}</b>
+                Saying: <b>{sentenceToEmoji(decodeHtmlEntities(message))}</b>
               </Text>
             ) : (
               <Text mt={10} c={'dimmed'}>
