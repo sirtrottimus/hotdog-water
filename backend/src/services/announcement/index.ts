@@ -161,7 +161,6 @@ export class AnnouncementsService {
     const announcements = await AnnouncementsSchema.create<AnnouncementType>({
       ...announcement,
       postedBy: userId,
-      announcementType: 'public',
     });
 
     if (!announcements) {

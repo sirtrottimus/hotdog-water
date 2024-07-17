@@ -51,6 +51,7 @@ const postAnnouncement = async () => {
       body: {
         text: announcementText,
         postTo,
+        announcementType: 'scheduled',
       },
     });
   } catch (error) {
