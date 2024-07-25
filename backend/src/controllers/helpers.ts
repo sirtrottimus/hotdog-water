@@ -61,15 +61,20 @@ export async function handleRequest(
       error
     );
 
-    logToDatabase(
-      controller,
-      user,
-      serviceFunction.name,
-      false,
-      (error as Error).message,
-      params,
-      { 'Failed to process request': 'See server logs for more information.' }
-    );
+    if (
+      serviceFunction.name !== 'getChannelDetails' &&
+      serviceFunction.name !== 'isChannelLive'
+    ) {
+      logToDatabase(
+        controller,
+        user,
+        serviceFunction.name,
+        false,
+        (error as Error).message,
+        params,
+        { 'Failed to process request': 'See server logs for more information.' }
+      );
+    }
 
     res.status(400).send({
       msg: 'An error occurred while processing your request. For more information, please contact the system administrator. (This response was logged.)',
