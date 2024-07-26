@@ -3,7 +3,6 @@ import { UserInt } from '../../utils/types';
 import useAuthorization from '../../hooks/useAuthorization';
 import GenericTable from '../../components/table/GenericTable';
 import { Alert, Button, Group, Text } from '@mantine/core';
-import CreateRoleForm from '../../components/forms/createRoles';
 import { useMachine } from '@xstate/react';
 import formMachine from '../../utils/machines/modalFormMachine';
 import { IconEditCircle, IconPlus, IconTrash } from '@tabler/icons-react';
@@ -54,10 +53,6 @@ const SchedulePage = ({ user }: { user: UserInt }) => {
         accessorKey: 'type',
       },
       {
-        header: 'Recurring',
-        accessorKey: 'isRecurring',
-      },
-      {
         header: 'Recurring Days',
         accessorKey: 'recurringDays',
       },
@@ -65,8 +60,9 @@ const SchedulePage = ({ user }: { user: UserInt }) => {
   }, []);
 
   const queryClient = useQueryClient();
+
   const deleteEventMutation = useMutation(
-    (id: string) => ScheduleService.delete(id),
+    (id: string) => ScheduleService.remove(id),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(['schedule']).finally(() => {});
@@ -119,7 +115,7 @@ const SchedulePage = ({ user }: { user: UserInt }) => {
               color="violet"
               onClick={() => {
                 send('OPEN', {
-                  title: `Update Event ${row.original.title} ${row.original._id}`,
+                  title: `Update Event ${row.original.title}`,
                   form: 'updateEvent',
                   size: 'xl',
                   element: (
@@ -149,7 +145,7 @@ const SchedulePage = ({ user }: { user: UserInt }) => {
                     <>
                       <Alert
                         color="red"
-                        title={`Are you sure you want to delete ${row.original.name}?`}
+                        title={`Are you sure you want to delete ${row.original.title}?`}
                         withCloseButton={false}
                       >
                         <Text>This action is irreversible.</Text>
@@ -163,6 +159,7 @@ const SchedulePage = ({ user }: { user: UserInt }) => {
                           variant="filled"
                           color="red"
                           onClick={() => {
+                            console.log('deleting', row.original._id);
                             deleteEventMutation.mutate(row.original._id);
                             send('CLOSE');
                           }}
