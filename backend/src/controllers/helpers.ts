@@ -17,12 +17,12 @@ const functionsToLog = [
 export async function handleRequest(
   res: Response,
   serviceFunction: Function,
-  user: UserInt,
+  user: UserInt | null,
   params: { [key: string]: any },
   controller: string
 ) {
   try {
-    const response = await serviceFunction({ userId: user._id, ...params });
+    const response = await serviceFunction({ userId: user?._id, ...params });
 
     // Check if the current function should be logged
     if (functionsToLog.includes(serviceFunction.name) || !response.success) {
@@ -61,15 +61,20 @@ export async function handleRequest(
       error
     );
 
-    logToDatabase(
-      controller,
-      user,
-      serviceFunction.name,
-      false,
-      (error as Error).message,
-      params,
-      { 'Failed to process request': 'See server logs for more information.' }
-    );
+    if (
+      serviceFunction.name !== 'getChannelDetails' &&
+      serviceFunction.name !== 'isChannelLive'
+    ) {
+      logToDatabase(
+        controller,
+        user,
+        serviceFunction.name,
+        false,
+        (error as Error).message,
+        params,
+        { 'Failed to process request': 'See server logs for more information.' }
+      );
+    }
 
     res.status(400).send({
       msg: 'An error occurred while processing your request. For more information, please contact the system administrator. (This response was logged.)',
@@ -80,7 +85,7 @@ export async function handleRequest(
 // Function to log the function call to the database
 export async function logToDatabase(
   controller: string,
-  user: UserInt,
+  user: UserInt | null,
   functionName: string,
   success: boolean,
   errorMessage: string,
