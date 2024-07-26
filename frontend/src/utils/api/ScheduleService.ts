@@ -63,7 +63,7 @@ class ScheduleService extends BaseApiService {
   async update(schedule: FormScheduleInput): Promise<APIResponse<ScheduleInt>> {
     return await this.put(`${this.url}/${schedule._id}`, schedule);
   }
-  async delete(id: string): Promise<APIResponse<ScheduleInt>> {
+  async remove(id: string): Promise<APIResponse<ScheduleInt>> {
     return await this.delete(`${this.url}/${id}`);
   }
 }
