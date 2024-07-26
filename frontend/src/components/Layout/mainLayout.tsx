@@ -19,6 +19,7 @@ import {
 import React, { ReactElement, ReactNode, useEffect, useState } from 'react';
 import { useUsers } from '../../hooks/userQuery';
 import {
+  IconActivity,
   IconAlertCircle,
   IconBrandDiscordFilled,
   IconBrandTwitch,
@@ -219,6 +220,13 @@ export function MainLayout({ children }: { children: ReactNode }) {
           perms: ['SUPERADMIN', 'ADMIN', 'VIEW_AUDIT_PAGE'],
         },
       ],
+    },
+    {
+      icon: <IconActivity />,
+      color: 'blue',
+      label: 'Schedule',
+      path: '/schedule',
+      perms: ['SUPERADMIN', 'ADMIN'],
     },
   ];
 

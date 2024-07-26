@@ -1,50 +1,32 @@
-/**
- * This component is the main page for the admin roles section.
- * It displays a table of all roles, with the ability to create, update, and delete roles.
- * It also displays the permissions for each role in a modal.
- * @param user - The user object containing information about the current user.
- * @returns A React component.
- */
-import {
-  Alert,
-  Button,
-  Group,
-  Text,
-  Title,
-  useMantineColorScheme,
-} from '@mantine/core';
-import { IconEditCircle, IconPlus, IconTrash } from '@tabler/icons';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMachine } from '@xstate/react';
-import { MRT_ColumnDef } from 'mantine-react-table';
 import React, { ReactElement, useMemo } from 'react';
+import { UserInt } from '../../utils/types';
+import useAuthorization from '../../hooks/useAuthorization';
+import GenericTable from '../../components/table/GenericTable';
+import { Alert, Button, Group, Text } from '@mantine/core';
+import CreateRoleForm from '../../components/forms/createRoles';
+import { useMachine } from '@xstate/react';
+import formMachine from '../../utils/machines/modalFormMachine';
+import { IconEditCircle, IconPlus, IconTrash } from '@tabler/icons-react';
+import FormModal from '../../components/modals/form';
+import { MainLayout } from '../../components/Layout/mainLayout';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import ScheduleService, { ScheduleInt } from '../../utils/api/ScheduleService';
 import { toast } from 'react-toastify';
-import { MainLayout } from '../../../components/Layout/mainLayout';
-import CreateRoleForm from '../../../components/forms/createRoles';
-import FormModal from '../../../components/modals/form';
-import GenericTable from '../../../components/table/GenericTable';
-import StatusCell from '../../../components/table/RolePermissionsCell';
-import useAuthorization from '../../../hooks/useAuthorization';
-import formMachine from '../../../utils/machines/modalFormMachine';
-import { RoleInt, UserInt } from '../../../utils/types';
-import RoleService from '../../../utils/api/RoleService';
-import CenteredLoader from '../../../components/misc/CenteredLoader';
-import { useRouter } from 'next/router';
+import { MRT_ColumnDef } from 'mantine-react-table';
+import CreateEventForm from '../../components/forms/createEvent';
 
-const Index = ({ user }: { user: UserInt }) => {
+const SchedulePage = ({ user }: { user: UserInt }) => {
   const [state, send] = useMachine(formMachine);
-  const [pushed, setPushed] = React.useState(false);
-  const router = useRouter();
-  const { colorScheme } = useMantineColorScheme();
   const { isAuthorized: canView, isLoading: isAuthLoading } = useAuthorization(
     user,
     ['SUPERADMIN', 'VIEW_ROLES_PAGE'],
     'admin'
   );
+
   const { data, isLoading, isFetching, isError, refetch } = useQuery(
-    ['roles'],
+    ['schedule'],
     async () => {
-      const res = await RoleService.getAll();
+      const res = await ScheduleService.getAll();
       if (res.success) {
         return res.data;
       } else {
@@ -53,56 +35,48 @@ const Index = ({ user }: { user: UserInt }) => {
     }
   );
 
-  const columns = useMemo<MRT_ColumnDef<RoleInt>[]>(() => {
+  const columns = useMemo<MRT_ColumnDef<ScheduleInt>[]>(() => {
     return [
       {
-        header: 'Name',
-        accessorKey: 'name',
+        header: 'Title',
+        accessorKey: 'title',
       },
       {
         header: 'Description',
         accessorKey: 'description',
       },
-      // {
-      //   header: 'Color',
-      //   Cell: ColorCell,
-      // },
+      {
+        header: 'Date',
+        accessorKey: 'date',
+      },
+      {
+        header: 'Type',
+        accessorKey: 'type',
+      },
+      {
+        header: 'Recurring',
+        accessorKey: 'isRecurring',
+      },
+      {
+        header: 'Recurring Days',
+        accessorKey: 'recurringDays',
+      },
     ];
   }, []);
 
   const queryClient = useQueryClient();
-
-  const deleteRoleMutation = useMutation(
-    (id: string) => RoleService.remove(id),
+  const deleteEventMutation = useMutation(
+    (id: string) => ScheduleService.delete(id),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(['roles']).finally(() => {});
-        toast.success('Role deleted successfully');
+        queryClient.invalidateQueries(['schedule']).finally(() => {});
+        toast.success('Event deleted successfully');
       },
       onError: (e) => {
         toast.error(e as string);
       },
     }
   );
-  switch (true) {
-    case isAuthLoading:
-      return <CenteredLoader colorScheme={colorScheme} size={'xl'} />;
-
-    case !isAuthLoading && !canView:
-      router.push('/dashboard');
-
-      if (!pushed) {
-        setPushed(true);
-        toast.error('You are not authorized to view this page.');
-      }
-      return (
-        <CenteredLoader colorScheme={colorScheme} redirecting size={'xl'} />
-      );
-    case isError:
-      return <CenteredLoader colorScheme={colorScheme} errored size={'xl'} />;
-    default:
-      break;
-  }
 
   return (
     <>
@@ -121,11 +95,11 @@ const Index = ({ user }: { user: UserInt }) => {
             size="xs"
             onClick={() => {
               send('OPEN', {
-                title: 'Create a Role',
-                form: 'createRole',
+                title: 'Create an Event',
+                form: 'createEvent',
                 size: 'xl',
                 element: (
-                  <CreateRoleForm
+                  <CreateEventForm
                     submitCallback={() => {
                       send('CLOSE');
                     }}
@@ -145,12 +119,12 @@ const Index = ({ user }: { user: UserInt }) => {
               color="violet"
               onClick={() => {
                 send('OPEN', {
-                  title: `Update Role ${row.original.name}`,
-                  form: 'updateRole',
+                  title: `Update Event ${row.original.title} ${row.original._id}`,
+                  form: 'updateEvent',
                   size: 'xl',
                   element: (
-                    <CreateRoleForm
-                      role={row.original}
+                    <CreateEventForm
+                      event={row.original}
                       submitCallback={() => {
                         send('CLOSE');
                       }}
@@ -166,11 +140,11 @@ const Index = ({ user }: { user: UserInt }) => {
               variant="light"
               size="xs"
               color="red"
-              onClick={() =>
+              onClick={() => {
                 send('OPEN', {
-                  title: `Delete Role ${row.original.name}`,
-                  form: 'deleteRole',
-                  size: 'lg',
+                  title: `Delete Event ${row.original.name}`,
+                  form: 'deleteEvent',
+                  size: 'xl',
                   element: (
                     <>
                       <Alert
@@ -189,7 +163,7 @@ const Index = ({ user }: { user: UserInt }) => {
                           variant="filled"
                           color="red"
                           onClick={() => {
-                            deleteRoleMutation.mutate(row.original._id);
+                            deleteEventMutation.mutate(row.original._id);
                             send('CLOSE');
                           }}
                         >
@@ -198,8 +172,8 @@ const Index = ({ user }: { user: UserInt }) => {
                       </Group>
                     </>
                   ),
-                })
-              }
+                });
+              }}
             >
               <IconTrash size={'19px'} />
             </Button>
@@ -207,8 +181,7 @@ const Index = ({ user }: { user: UserInt }) => {
         )}
         details={({ row }) => (
           <>
-            <Title order={4}>Permissions</Title>
-            <StatusCell row={row} />
+            <Text>{row.original.description}</Text>
           </>
         )}
       />
@@ -218,8 +191,8 @@ const Index = ({ user }: { user: UserInt }) => {
   );
 };
 
-export default Index;
+export default SchedulePage;
 
-Index.getLayout = function getLayout(page: ReactElement) {
+SchedulePage.getLayout = function getLayout(page: ReactElement) {
   return <MainLayout>{page}</MainLayout>;
 };
