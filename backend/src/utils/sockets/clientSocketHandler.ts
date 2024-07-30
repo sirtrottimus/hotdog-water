@@ -64,7 +64,7 @@ const handleClientConnections = (io: ServerIO) => {
 
     socket.on(EVENTS.EVENT, async (data) => {
       logIfDebugging('[WEBSOCKET/BACKEND]: Received event:');
-      logIfDebugging(data);
+      logIfDebugging(data.data);
 
       const { provider, type, _id } = data;
 
