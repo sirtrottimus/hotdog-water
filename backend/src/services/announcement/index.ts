@@ -157,21 +157,22 @@ export class AnnouncementsService {
     if (announcement.postTo.includes('YouTube (StreamElements)')) {
       await postToYouTube(announcement);
     }
+    let announcements;
+    if (announcement.announcementType !== 'scheduled') {
+      announcements = await AnnouncementsSchema.create<AnnouncementType>({
+        ...announcement,
+        postedBy: userId,
+      });
 
-    const announcements = await AnnouncementsSchema.create<AnnouncementType>({
-      ...announcement,
-      postedBy: userId,
-    });
-
-    if (!announcements) {
-      return {
-        success: false,
-        data: null,
-        error: null,
-        msg: 'Error Creating Announcement',
-      };
+      if (!announcements) {
+        return {
+          success: false,
+          data: null,
+          error: null,
+          msg: 'Error Creating Announcement',
+        };
+      }
     }
-
     return { success: true, data: announcements, error: null, msg: null };
   }
 

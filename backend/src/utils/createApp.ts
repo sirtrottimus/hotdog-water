@@ -33,7 +33,11 @@ export const createApp = (): express.Application => {
   // Enable CORS
   app.use(
     cors({
-      origin: [clientUrl],
+      origin: [
+        clientUrl,
+        'http://localhost:5173',
+        'https://schedule.hatfilms.co.uk',
+      ],
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
       allowedHeaders: ['Content-Type', 'Authorization'],

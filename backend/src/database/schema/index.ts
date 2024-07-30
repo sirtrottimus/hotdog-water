@@ -8,6 +8,7 @@ import Announcement from './Announcement';
 import StreamElementsSettings from './StreamElementsSetting';
 import YoutubeSettings from './YoutubeSettings';
 import JWTAuth from './JWTAuth';
+import Schedule from './Schedule';
 
 export {
   User,
@@ -20,4 +21,5 @@ export {
   StreamElementsSettings,
   YoutubeSettings,
   JWTAuth,
+  Schedule,
 };
