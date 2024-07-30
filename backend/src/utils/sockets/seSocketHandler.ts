@@ -132,7 +132,6 @@ const handleEventData = async (data: any, backendSocket: ServerSocket) => {
     backendSocket.emit('event', data);
     backendSocket.to('stream-activity').emit('event', data);
     console.log('emitted', data);
-    t;
 
     logIfDebugging(
       `[WEBSOCKET/SE]: Sent activity to the frontend with ID ${data._id}`
