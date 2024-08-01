@@ -161,11 +161,16 @@ const youtubeSettingsController = {
   },
 
   async getMemberships(req: Request, res: Response) {
+    const memberId = req.query.memberId as string;
     await handleRequest(
       res,
       YoutubeSettingsService.getMemberships,
       null,
-      { body: req.body },
+      {
+        body: {
+          memberId,
+        },
+      },
       'youtubeSettings'
     );
   },
