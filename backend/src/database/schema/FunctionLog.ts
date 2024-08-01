@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 interface IFunctionLog extends Document {
-  user: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId | null;
   controller: string;
   functionName: string;
   success: boolean;
@@ -12,7 +12,7 @@ interface IFunctionLog extends Document {
 }
 
 const functionLogSchema: Schema = new Schema({
-  user: { type: Schema.Types.ObjectId, ref: 'users', required: true },
+  user: { type: mongoose.Types.ObjectId, ref: 'User', default: null },
   controller: { type: String, required: true },
   functionName: { type: String, required: true },
   success: { type: Boolean, required: true },
