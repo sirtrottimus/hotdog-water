@@ -160,6 +160,16 @@ const youtubeSettingsController = {
     );
   },
 
+  async getMemberships(req: Request, res: Response) {
+    await handleRequest(
+      res,
+      YoutubeSettingsService.getMemberships,
+      null,
+      {body: req.body},
+      'youtubeSettings'
+    );
+  }
+
   async isChannelLive(req: Request, res: Response) {
     const user = req.user as UserInt;
 

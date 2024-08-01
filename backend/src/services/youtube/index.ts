@@ -277,4 +277,34 @@ export class YoutubeSettingsService {
     const data = await response.json();
     return { success: true, data, error: null, msg: null };
   }
+
+  static async getMemberships(options: Options) {
+    const { body } = options;
+    const { memberId } = body;
+
+    const youtubeSettings = await getYouTubeSettings();
+    const { youtubeAccessToken } = youtubeSettings;
+
+    const url = `https://www.googleapis.com/youtube/v3/membershipsLevels/list?part=snippet&mine=true&filterByMemberChannelId=${memberId}`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${youtubeAccessToken}`,
+        Accept: 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      return {
+        success: false,
+        data: null,
+        error: response.statusText,
+        msg: 'Error Getting Memberships',
+      };
+    }
+
+    const data = await response.json();
+    return { success: true, data, error: null, msg: null };
+  }
 }

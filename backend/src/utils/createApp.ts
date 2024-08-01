@@ -37,6 +37,8 @@ export const createApp = (): express.Application => {
         clientUrl,
         'http://localhost:5173',
         'https://schedule.hatfilms.co.uk',
+        'http://localhost:3000',
+        'https://greenlight.hatfilms.co.uk',
       ],
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
