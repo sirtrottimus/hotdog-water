@@ -30,7 +30,7 @@ router.get(
   youtubeSettingsController.getChannelDetails
 );
 
-router.get('memberships', youtubeSettingsController.getMemberships);
+router.get('/membership', youtubeSettingsController.getMemberships);
 
 router.get('/live', isAuthenticated, youtubeSettingsController.isChannelLive);
 
