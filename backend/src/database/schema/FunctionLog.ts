@@ -12,7 +12,7 @@ interface IFunctionLog extends Document {
 }
 
 const functionLogSchema: Schema = new Schema({
-  user: { type: mongoose.Types.ObjectId, ref: 'User', default: null },
+  user: { type: mongoose.Types.ObjectId, ref: 'users', default: null },
   controller: { type: String, required: true },
   functionName: { type: String, required: true },
   success: { type: Boolean, required: true },
@@ -23,7 +23,7 @@ const functionLogSchema: Schema = new Schema({
 });
 
 const FunctionLog = mongoose.model<IFunctionLog>(
-  'FunctionLog',
+  'function-logs',
   functionLogSchema
 );
 

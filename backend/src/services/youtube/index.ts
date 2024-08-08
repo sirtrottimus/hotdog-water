@@ -117,7 +117,6 @@ export class YoutubeSettingsService {
       {
         youtubeAccessToken: newAccessToken.credentials.access_token,
         youtubeTokenExpires: newAccessToken.credentials.expiry_date,
-        youtubeRefreshToken: newAccessToken.credentials.refresh_token,
       }
     );
   }
@@ -168,10 +167,9 @@ export class YoutubeSettingsService {
     }
   }
   static async isChannelLive() {
+    const youtubeSettings = await getYouTubeSettings();
+    const { youtubeAccessToken } = youtubeSettings;
     try {
-      const youtubeSettings = await getYouTubeSettings();
-      const { youtubeAccessToken } = youtubeSettings;
-
       const url =
         'https://www.googleapis.com/youtube/v3/liveStreams?part=snippet,cdn,contentDetails,status&mine=true';
 
@@ -285,7 +283,8 @@ export class YoutubeSettingsService {
     const youtubeSettings = await getYouTubeSettings();
     const { youtubeAccessToken } = youtubeSettings;
 
-    const url = `https://www.googleapis.com/youtube/v3/membershipsLevels/list?part=snippet&mine=true&filterByMemberChannelId=${memberId}`;
+    const url =
+      'https://www.googleapis.com/youtube/v3/memberships/list?part=snippet&mine=true';
 
     const response = await fetch(url, {
       method: 'GET',
