@@ -42,7 +42,7 @@ export class AuditService {
       return validationResult;
     }
 
-    const audit = await FunctionLog.findById(id).populate('users');
+    const audit = await FunctionLog.findById(id).populate('user');
 
     if (!audit) {
       return {
